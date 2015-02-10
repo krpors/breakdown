@@ -19,8 +19,6 @@ public class Main {
     private static Logger LOG = LoggerFactory.getLogger(Main.class);
     
     public static void main(String[] args) throws Exception {
-        LOG.info(":D");
-        System.out.println(Main.class.getClassLoader().getResource("/logback.xml"));
         JMSConnection c = new JMSConnection();
         c.setContextFactory("com.tibco.tibjms.naming.TibjmsInitialContextFactory");
         c.setConnectionUrl("tcp://localhost:7222");
@@ -43,7 +41,7 @@ public class Main {
         jrr.setReplyDestination(new JMSDestination(DestinationType.TOPIC, "sample.topic"));
 
         // Second test step:
-        StringAssertion sa = new StringAssertion("asjdh");
+        StringAssertion sa = new StringAssertion("Some response");
 
         AssertionCollection ac = new AssertionCollection("Bunch of assertions", "String checks");
         ac.getAssertionList().add(sa);
@@ -54,8 +52,7 @@ public class Main {
         try {
             testCase.execute();
         } catch (AssertionException ex) {
-            System.out.println("Assertions failed");
-            System.out.println("WHOOOOOOOOOOOOOOOOOPS: " + ex.getMessage());
+            LOG.error("Assertion failed: {}", ex.getMessage());
         }
     }
 }

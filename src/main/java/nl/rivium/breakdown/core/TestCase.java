@@ -98,9 +98,9 @@ public class TestCase extends GenericEntity {
 
             TestStep current = it.next();
 
-            System.out.printf("Step input: %s\n", current.getInput());
+            LOG.info("TestCase '{}' -> '{}' input: {}", getName(), current.getName(), current.getInput());
             current.execute(this, previous);
-            System.out.printf("Step output: %s\n", current.getOutput());
+            LOG.info("TestCase '{}' -> '{}' output: {}", getName(), current.getName(), current.getOutput());
         }
 
         tearDown();
@@ -117,7 +117,9 @@ public class TestCase extends GenericEntity {
             queueConnection.close();
             topicConnection.close();
         } catch (JMSException ex) {
-            throw new BreakdownException("Failed to tear down test case", ex);
+            String err = String.format("TestCase '{}': failed to tear down");
+            LOG.error(err, ex);
+            throw new BreakdownException(err, ex);
         }
     }
 }

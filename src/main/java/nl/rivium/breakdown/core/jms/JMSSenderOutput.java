@@ -24,6 +24,6 @@ public class JMSSenderOutput implements Output {
 
     @Override
     public String toString() {
-        return String.format("%s (Message ID: %s, Timestamp: %d", JMSSenderOutput.class.getName(), getJmsMessageId(), getJmsTimestamp());
+        return String.format("Message ID: %s, Timestamp: %d", getJmsMessageId(), getJmsTimestamp());
     }
 }

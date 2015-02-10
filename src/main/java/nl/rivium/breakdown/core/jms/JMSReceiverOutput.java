@@ -23,6 +23,6 @@ public class JMSReceiverOutput implements Output {
 
     @Override
     public String toString() {
-        return String.format("%s (Properties: %d, Content: '%s'", JMSReceiverOutput.class.getName(), getProperties().size(), getPayload());
+        return String.format("Properties: %d, Content: '%s'", getProperties().size(), getPayload());
     }
 }

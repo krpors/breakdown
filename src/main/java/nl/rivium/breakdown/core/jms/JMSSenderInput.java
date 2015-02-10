@@ -23,6 +23,6 @@ public class JMSSenderInput implements Input {
 
     @Override
     public String toString() {
-        return String.format("%s (Properties: %d, Content: '%s')", JMSSenderInput.class.getName(), getProperties().size(), getPayload());
+        return String.format("Properties: %d, Content: '%s'", getProperties().size(), getPayload());
     }
 }
