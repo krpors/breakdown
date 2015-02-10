@@ -17,6 +17,16 @@
             <version>1.1.1</version>
         </dependency>
         <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>1.1.2</version>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.11</version>
@@ -34,8 +44,6 @@
                     <source>1.7</source>
                     <target>1.7</target>
                     <compilerArgs>
-                        <!-- SQL JDBC driver van Microsoft zit niet in de Maven repo. We doen dit nu maar even zo.
-                        Dit betekent nu wel dat deze JAR niet meegenomen wordt in de packaging maar dat maakt niet veel uit. -->
                         <arg>-Djava.endorsed.dirs=${project.basedir}/lib</arg>
                     </compilerArgs>
                 </configuration>

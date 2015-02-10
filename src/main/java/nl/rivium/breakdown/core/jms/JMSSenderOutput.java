@@ -1,6 +1,8 @@
-package nl.rivium.breakdown.core;
+package nl.rivium.breakdown.core.jms;
 
-public class JMSSenderOutput extends Output {
+import nl.rivium.breakdown.core.Output;
+
+public class JMSSenderOutput implements Output {
     private String jmsMessageId;
     private long jmsTimestamp;
 

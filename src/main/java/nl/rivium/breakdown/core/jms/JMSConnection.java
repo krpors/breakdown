@@ -1,4 +1,4 @@
-package nl.rivium.breakdown.core;
+package nl.rivium.breakdown.core.jms;
 
 import javax.jms.*;
 import javax.naming.Context;
@@ -11,6 +11,8 @@ public class JMSConnection {
     private String connectionUrl;
     private String username;
     private String password;
+    private String queueConnectionFactory;
+    private String topicConnectionFactory;
 
     public String getContextFactory() {
         return contextFactory;
@@ -44,6 +46,22 @@ public class JMSConnection {
         this.password = password;
     }
 
+    public String getTopicConnectionFactory() {
+        return topicConnectionFactory;
+    }
+
+    public void setTopicConnectionFactory(String topicConnectionFactory) {
+        this.topicConnectionFactory = topicConnectionFactory;
+    }
+
+    public String getQueueConnectionFactory() {
+        return queueConnectionFactory;
+    }
+
+    public void setQueueConnectionFactory(String queueConnectionFactory) {
+        this.queueConnectionFactory = queueConnectionFactory;
+    }
+
     public Connection createQueueConnection() throws NamingException, JMSException {
         Properties env = new Properties();
         env.setProperty(Context.PROVIDER_URL, getConnectionUrl());
@@ -52,7 +70,7 @@ public class JMSConnection {
         env.setProperty(Context.SECURITY_CREDENTIALS, getPassword());
 
         InitialContext ctx = new InitialContext(env);
-        QueueConnectionFactory qcf = (QueueConnectionFactory) ctx.lookup("QueueConnectionFactory");
+        QueueConnectionFactory qcf = (QueueConnectionFactory) ctx.lookup(getQueueConnectionFactory());
         return qcf.createQueueConnection(getUsername(), getPassword());
     }
 
@@ -64,7 +82,7 @@ public class JMSConnection {
         env.setProperty(Context.SECURITY_CREDENTIALS, getPassword());
 
         InitialContext ctx = new InitialContext(env);
-        TopicConnectionFactory tcf = (TopicConnectionFactory) ctx.lookup("TopicConnectionFactory");
+        TopicConnectionFactory tcf = (TopicConnectionFactory) ctx.lookup(getTopicConnectionFactory());
         return tcf.createTopicConnection(getUsername(), getPassword());
     }
 }

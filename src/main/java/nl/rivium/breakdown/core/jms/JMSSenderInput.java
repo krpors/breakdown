@@ -1,9 +1,11 @@
-package nl.rivium.breakdown.core;
+package nl.rivium.breakdown.core.jms;
+
+import nl.rivium.breakdown.core.Input;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class JMSSenderInput extends Input {
+public class JMSSenderInput implements Input {
     private Map<String, String> properties = new HashMap<>();
     private String payload;
 
@@ -21,6 +23,6 @@ public class JMSSenderInput extends Input {
 
     @Override
     public String toString() {
-        return String.format("%s (Content: '%s')", JMSSenderInput.class.getName(), getPayload());
+        return String.format("%s (Properties: %d, Content: '%s')", JMSSenderInput.class.getName(), getProperties().size(), getPayload());
     }
 }

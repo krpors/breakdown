@@ -1,32 +1,61 @@
 package nl.rivium.breakdown;
 
 
-import nl.rivium.breakdown.core.JMSConnection;
-import nl.rivium.breakdown.core.JMSSender;
-import nl.rivium.breakdown.core.JMSSenderInput;
+import ch.qos.logback.classic.BasicConfigurator;
+import nl.rivium.breakdown.core.AssertionException;
+import nl.rivium.breakdown.core.DestinationType;
 import nl.rivium.breakdown.core.TestCase;
+import nl.rivium.breakdown.core.assertion.AssertionCollection;
+import nl.rivium.breakdown.core.assertion.StringAssertion;
+import nl.rivium.breakdown.core.jms.JMSConnection;
+import nl.rivium.breakdown.core.jms.JMSDestination;
+import nl.rivium.breakdown.core.jms.JMSRequestReply;
+import nl.rivium.breakdown.core.jms.JMSSenderInput;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Main {
+    
+    private static Logger LOG = LoggerFactory.getLogger(Main.class);
+    
     public static void main(String[] args) throws Exception {
+        LOG.info(":D");
+        System.out.println(Main.class.getClassLoader().getResource("/logback.xml"));
         JMSConnection c = new JMSConnection();
         c.setContextFactory("com.tibco.tibjms.naming.TibjmsInitialContextFactory");
         c.setConnectionUrl("tcp://localhost:7222");
         c.setUsername("admin");
         c.setPassword("");
+        c.setQueueConnectionFactory("QueueConnectionFactory");
+        c.setTopicConnectionFactory("TopicConnectionFactory");
 
         TestCase testCase = new TestCase("Hai", "Description");
         testCase.setJmsConnection(c);
 
-        JMSSender sender = new JMSSender("Sender sender", "Sends something", testCase);
-        sender.setDestination("sample.queue");
-
+        // First test step:
+        JMSRequestReply jrr = new JMSRequestReply("sample.queue sender", "Sends to the sample.queue. Reply on sample.topic");
         JMSSenderInput input = new JMSSenderInput();
-        input.setPayload("hello there!");
-        input.getProperties().put("Example property", "Value value!");
-        sender.setInput(input);
+        input.setPayload("Payload!");
+        input.getProperties().put("One", "1");
 
-        testCase.getTestSteps().add(sender);
+        jrr.setInput(input);
+        jrr.setRequestDestination(new JMSDestination(DestinationType.QUEUE, "sample.queue"));
+        jrr.setReplyDestination(new JMSDestination(DestinationType.TOPIC, "sample.topic"));
 
-        testCase.execute();
+        // Second test step:
+        StringAssertion sa = new StringAssertion("asjdh");
+
+        AssertionCollection ac = new AssertionCollection("Bunch of assertions", "String checks");
+        ac.getAssertionList().add(sa);
+
+        testCase.getTestSteps().add(jrr);
+        testCase.getTestSteps().add(ac);
+
+        try {
+            testCase.execute();
+        } catch (AssertionException ex) {
+            System.out.println("Assertions failed");
+            System.out.println("WHOOOOOOOOOOOOOOOOOPS: " + ex.getMessage());
+        }
     }
 }

@@ -1,5 +1,9 @@
 package nl.rivium.breakdown.core;
 
+/**
+ * A generic entity. Most of the things in the core have basic properties. These properties are contained within this
+ * abstract class.
+ */
 public abstract class GenericEntity {
     private String name;
     private String description;
