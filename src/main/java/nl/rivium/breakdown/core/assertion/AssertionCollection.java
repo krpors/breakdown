@@ -1,9 +1,6 @@
 package nl.rivium.breakdown.core.assertion;
 
-import nl.rivium.breakdown.core.AssertionException;
-import nl.rivium.breakdown.core.BreakdownException;
-import nl.rivium.breakdown.core.TestCase;
-import nl.rivium.breakdown.core.TestStep;
+import nl.rivium.breakdown.core.*;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -34,7 +31,7 @@ public class AssertionCollection extends TestStep {
     }
 
     @Override
-    public void execute(TestCase testCase, TestStep previous) throws AssertionException, BreakdownException {
+    public void execute(Project project, TestSuite suite, TestCase testCase, TestStep previous) throws AssertionException, BreakdownException {
         for (Assertion ass : assertionList) {
             ass.executeAssertion(testCase, previous);
         }

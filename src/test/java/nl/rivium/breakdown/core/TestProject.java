@@ -46,6 +46,7 @@ public class TestProject {
 
 
         } catch (JAXBException | BreakdownException e) {
+            e.printStackTrace();
             Assert.fail(e.getMessage());
         }
     }

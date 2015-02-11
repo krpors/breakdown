@@ -23,10 +23,5 @@ public class TestTestCase {
         c.setQueueConnectionFactory("QueueConnectionFactory");
         c.setTopicConnectionFactory("TopicConnectionFactory");
         tc.setJmsConnection(c);
-        try {
-            tc.testSetup();
-        } catch (BreakdownException e) {
-            Assert.fail("Did not expect exception");
-        }
     }
 }

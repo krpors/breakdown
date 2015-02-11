@@ -29,4 +29,13 @@ public class TestSuite extends GenericEntity {
     public void setTestCases(List<TestCase> testCases) {
         this.testCases = testCases;
     }
+
+    /**
+     * Executes the TestSuite and all the TestCases with TestSteps.
+     */
+    public void execute(Project project) throws BreakdownException, AssertionException {
+        for (TestCase tc : testCases) {
+            tc.execute(project, this);
+        }
+    }
 }

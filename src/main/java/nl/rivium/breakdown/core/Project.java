@@ -6,6 +6,8 @@ import nl.rivium.breakdown.core.assertion.StringAssertion;
 import nl.rivium.breakdown.core.jms.JMSRequestReply;
 import nl.rivium.breakdown.core.jms.JMSSenderInput;
 import nl.rivium.breakdown.core.jms.JMSSenderOutput;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -22,6 +24,11 @@ import java.util.List;
 @XmlRootElement(name = "breakdownProject", namespace = "urn:breakdown:project:1.0")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Project extends GenericEntity {
+
+    /**
+     * The logger.
+     */
+    private static Logger LOG = LoggerFactory.getLogger(Project.class);
 
     private List<TestSuite> testSuites = new ArrayList<>();
 
@@ -88,5 +95,15 @@ public class Project extends GenericEntity {
         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         m.setProperty(Marshaller.JAXB_ENCODING, "utf-8");
         m.marshal(this, System.out);
+    }
+
+    /**
+     * Runs every TestSuite, TestCase and their TestSteps in this project.
+     */
+    public void execute() throws BreakdownException, AssertionException {
+        LOG.info("Executing project '{}'", getName());
+        for (TestSuite suite : testSuites) {
+            suite.execute(this);
+        }
     }
 }

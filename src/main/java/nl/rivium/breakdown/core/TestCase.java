@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import javax.jms.Connection;
 import javax.jms.JMSException;
 import javax.naming.NamingException;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.*;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,6 +25,7 @@ public class TestCase extends GenericEntity {
     @XmlElementWrapper(name = "testSteps")
     private LinkedList<TestStep> testSteps = new LinkedList<>();
 
+    @XmlElement
     private JMSConnection jmsConnection;
 
     /**
@@ -44,7 +46,6 @@ public class TestCase extends GenericEntity {
     public TestCase(String name, String description) {
         super(name, description);
     }
-
 
     public List<TestStep> getTestSteps() {
         return testSteps;
@@ -101,7 +102,7 @@ public class TestCase extends GenericEntity {
     /**
      * Runs the testcase.
      */
-    public void execute() throws AssertionException, BreakdownException {
+    public void execute(Project project, TestSuite suite) throws AssertionException, BreakdownException {
         setUp();
 
         ListIterator<TestStep> it = testSteps.listIterator();
@@ -118,7 +119,7 @@ public class TestCase extends GenericEntity {
             TestStep current = it.next();
 
             LOG.info("TestCase '{}' -> '{}' input: {}", getName(), current.getName(), current.getInput());
-            current.execute(this, previous);
+            current.execute(project, suite, this, previous);
             LOG.info("TestCase '{}' -> '{}' output: {}", getName(), current.getName(), current.getOutput());
         }
 
@@ -141,4 +142,5 @@ public class TestCase extends GenericEntity {
             throw new BreakdownException(err, ex);
         }
     }
+
 }

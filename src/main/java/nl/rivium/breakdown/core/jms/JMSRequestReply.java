@@ -1,9 +1,6 @@
 package nl.rivium.breakdown.core.jms;
 
-import nl.rivium.breakdown.core.AssertionException;
-import nl.rivium.breakdown.core.BreakdownException;
-import nl.rivium.breakdown.core.TestCase;
-import nl.rivium.breakdown.core.TestStep;
+import nl.rivium.breakdown.core.*;
 
 import javax.jms.*;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -48,7 +45,7 @@ public class JMSRequestReply extends TestStep<JMSSenderInput, JMSReceiverOutput>
     }
 
     @Override
-    public void execute(TestCase testCase, TestStep previous) throws AssertionException, BreakdownException {
+    public void execute(Project project, TestSuite suite, TestCase testCase, TestStep previous) throws AssertionException, BreakdownException {
         // TODO: in EMS, using this connection works for queues and topics both. Why? What!
         try {
             Connection connection = testCase.getQueueConnection();
@@ -57,13 +54,14 @@ public class JMSRequestReply extends TestStep<JMSSenderInput, JMSReceiverOutput>
             Destination destRequest = requestDestination.createDestination(session);
             Destination destReply = replyDestination.createDestination(session);
 
-            // Send message
+            // Create producer and consumer:
             MessageProducer producer = session.createProducer(destRequest);
+            MessageConsumer consumer = session.createConsumer(destReply);
             TextMessage tm = session.createTextMessage();
             tm.setText(getInput().getPayload());
             producer.send(tm);
 
-            MessageConsumer consumer = session.createConsumer(destReply);
+            // Receive message, using timeout
             Message m = consumer.receive(getTimeout());
             if (m instanceof TextMessage) {
                 TextMessage replyMessage = (TextMessage) m;
@@ -72,6 +70,8 @@ public class JMSRequestReply extends TestStep<JMSSenderInput, JMSReceiverOutput>
                 output.setPayload(replyMessage.getText());
 
                 setOutput(output);
+            } else {
+                throw new AssertionException(testCase, this, TextMessage.class.getName(), null, "No message received");
             }
         } catch (JMSException ex) {
             throw new BreakdownException("Failed to execute test step", ex);

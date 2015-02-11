@@ -1,9 +1,6 @@
 package nl.rivium.breakdown.core.jms;
 
-import nl.rivium.breakdown.core.AssertionException;
-import nl.rivium.breakdown.core.BreakdownException;
-import nl.rivium.breakdown.core.TestCase;
-import nl.rivium.breakdown.core.TestStep;
+import nl.rivium.breakdown.core.*;
 
 import javax.jms.*;
 
@@ -35,7 +32,7 @@ public class JMSReceiver extends TestStep<JMSReceiverInput, JMSReceiverOutput> {
     }
 
     @Override
-    public void execute(TestCase testCase, TestStep previous) throws AssertionException, BreakdownException {
+    public void execute(Project project, TestSuite suite, TestCase testCase, TestStep previous) throws AssertionException, BreakdownException {
         try {
             Connection conn = testCase.getQueueConnection();
             Session s = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
