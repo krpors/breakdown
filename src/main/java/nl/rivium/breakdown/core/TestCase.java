@@ -3,15 +3,16 @@ package nl.rivium.breakdown.core;
 import nl.rivium.breakdown.core.jms.JMSConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.Marker;
 
 import javax.jms.Connection;
 import javax.jms.JMSException;
 import javax.naming.NamingException;
+import javax.xml.bind.annotation.*;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class TestCase extends GenericEntity {
 
     /**
@@ -19,16 +20,26 @@ public class TestCase extends GenericEntity {
      */
     private static Logger LOG = LoggerFactory.getLogger(TestCase.class);
 
+    @XmlElement(name = "testStep")
+    @XmlElementWrapper(name = "testSteps")
     private LinkedList<TestStep> testSteps = new LinkedList<>();
 
     private JMSConnection jmsConnection;
 
     /**
-     * The actual constructed JMS connection by setUp().
+     * The actual constructed JMS queue connection by setUp(), if applicable.
      */
+    @XmlTransient
     private Connection queueConnection;
 
+    /**
+     * The actual constructed JMS topic connection by setUp(), if applicable.
+     */
+    @XmlTransient
     private Connection topicConnection;
+
+    public TestCase() {
+    }
 
     public TestCase(String name, String description) {
         super(name, description);

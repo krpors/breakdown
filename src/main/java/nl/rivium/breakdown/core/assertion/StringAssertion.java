@@ -5,13 +5,20 @@ import nl.rivium.breakdown.core.TestCase;
 import nl.rivium.breakdown.core.TestStep;
 import nl.rivium.breakdown.core.jms.JMSReceiverOutput;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+
 /**
  * Simple string assertion.
  */
-public class StringAssertion implements Assertion {
+@XmlAccessorType(XmlAccessType.FIELD)
+public class StringAssertion extends Assertion {
 
     private String assertion = "";
     private boolean isRegex = false;
+
+    public StringAssertion() {
+    }
 
     public StringAssertion(String assertion) {
         setAssertion(assertion);

@@ -8,6 +8,10 @@ public abstract class GenericEntity {
     private String name;
     private String description;
 
+    public GenericEntity() {
+
+    }
+
     public GenericEntity(String name, String description) {
         setName(name);
         setDescription(description);

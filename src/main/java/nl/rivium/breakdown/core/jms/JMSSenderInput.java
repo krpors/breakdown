@@ -5,7 +5,7 @@ import nl.rivium.breakdown.core.Input;
 import java.util.HashMap;
 import java.util.Map;
 
-public class JMSSenderInput implements Input {
+public class JMSSenderInput extends Input {
     private Map<String, String> properties = new HashMap<>();
     private String payload;
 

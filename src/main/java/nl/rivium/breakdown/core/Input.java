@@ -1,4 +1,4 @@
 package nl.rivium.breakdown.core;
 
-public interface Input {
+public abstract class Input {
 }

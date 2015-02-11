@@ -5,6 +5,10 @@ package nl.rivium.breakdown.core;
  */
 public class BreakdownException extends Exception {
 
+    public BreakdownException(String message) {
+        super(message);
+    }
+
     public BreakdownException(String message, Throwable cause) {
         super(message, cause);
     }

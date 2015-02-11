@@ -11,6 +11,9 @@ public class JMSDestination {
     private DestinationType type;
     private String name;
 
+    public JMSDestination() {
+    }
+
     public JMSDestination(DestinationType type, String name) {
         setType(type);
         setName(name);

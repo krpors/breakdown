@@ -5,7 +5,7 @@ import nl.rivium.breakdown.core.Output;
 import java.util.HashMap;
 import java.util.Map;
 
-public class JMSReceiverOutput implements Output {
+public class JMSReceiverOutput extends Output {
     private String payload;
     private Map<String, String> properties = new HashMap<>();
 

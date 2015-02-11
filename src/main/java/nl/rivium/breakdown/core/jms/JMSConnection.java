@@ -1,15 +1,24 @@
 package nl.rivium.breakdown.core.jms;
 
-import javax.jms.*;
+import javax.jms.Connection;
+import javax.jms.JMSException;
+import javax.jms.QueueConnectionFactory;
+import javax.jms.TopicConnectionFactory;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import java.util.Properties;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class JMSConnection {
     private String contextFactory;
     private String connectionUrl;
     private String username;
+
+    @XmlElement(nillable = true)
     private String password;
     private String queueConnectionFactory;
     private String topicConnectionFactory;

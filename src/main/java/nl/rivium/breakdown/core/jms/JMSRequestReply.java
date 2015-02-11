@@ -6,12 +6,18 @@ import nl.rivium.breakdown.core.TestCase;
 import nl.rivium.breakdown.core.TestStep;
 
 import javax.jms.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class JMSRequestReply extends TestStep<JMSSenderInput, JMSReceiverOutput> {
 
     private long timeout = 10000;
     private JMSDestination requestDestination;
     private JMSDestination replyDestination;
+
+    public JMSRequestReply() {
+    }
 
     public JMSRequestReply(String name, String description) {
         super(name, description);
@@ -67,7 +73,7 @@ public class JMSRequestReply extends TestStep<JMSSenderInput, JMSReceiverOutput>
 
                 setOutput(output);
             }
-        }catch (JMSException ex) {
+        } catch (JMSException ex) {
             throw new BreakdownException("Failed to execute test step", ex);
         }
     }

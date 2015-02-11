@@ -2,7 +2,7 @@ package nl.rivium.breakdown.core.jms;
 
 import nl.rivium.breakdown.core.Output;
 
-public class JMSSenderOutput implements Output {
+public class JMSSenderOutput extends Output {
     private String jmsMessageId;
     private long jmsTimestamp;
 

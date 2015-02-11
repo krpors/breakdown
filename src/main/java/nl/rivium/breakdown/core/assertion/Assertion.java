@@ -4,7 +4,7 @@ import nl.rivium.breakdown.core.AssertionException;
 import nl.rivium.breakdown.core.TestCase;
 import nl.rivium.breakdown.core.TestStep;
 
-public interface Assertion {
+public abstract class Assertion {
     /**
      * Executes the assertion.
      *

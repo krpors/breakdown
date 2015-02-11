@@ -5,6 +5,9 @@ public abstract class TestStep<I extends Input, O extends Output> extends Generi
     private I input;
     private O output;
 
+    public TestStep() {
+    }
+
     public TestStep(String name, String description) {
         super(name, description);
     }
