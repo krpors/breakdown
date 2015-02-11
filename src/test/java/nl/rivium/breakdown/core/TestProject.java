@@ -38,11 +38,13 @@ public class TestProject {
             Assert.assertTrue(one instanceof JMSRequestReply);
             Assert.assertTrue(two instanceof AssertionCollection);
 
-            if (one instanceof JMSRequestReply) {
-                JMSRequestReply jmsRequestReply = (JMSRequestReply) one;
-                Assert.assertEquals("sample.queue sender", jmsRequestReply.getName());
-                Assert.assertEquals("Payload!", jmsRequestReply.getInput().getPayload());
-            }
+            JMSRequestReply jmsRequestReply = (JMSRequestReply) one;
+            Assert.assertEquals("sample.queue sender", jmsRequestReply.getName());
+            Assert.assertEquals("Payload!", jmsRequestReply.getInput().getPayload());
+            Assert.assertEquals(2, jmsRequestReply.getInput().getProperties().size());
+            Assert.assertEquals("1", jmsRequestReply.getInput().getProperties().get("One"));
+
+
         } catch (JAXBException | BreakdownException e) {
             Assert.fail(e.getMessage());
         }

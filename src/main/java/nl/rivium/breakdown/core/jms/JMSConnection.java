@@ -71,26 +71,48 @@ public class JMSConnection {
         this.queueConnectionFactory = queueConnectionFactory;
     }
 
-    public Connection createQueueConnection() throws NamingException, JMSException {
+    /**
+     * Creates an InitialContext based on the current fields.
+     *
+     * @return The InitialContext created.
+     * @throws NamingException When the context factory cannot be found or the like.
+     */
+    private InitialContext createContext() throws NamingException {
         Properties env = new Properties();
         env.setProperty(Context.PROVIDER_URL, getConnectionUrl());
         env.setProperty(Context.INITIAL_CONTEXT_FACTORY, getContextFactory());
-        env.setProperty(Context.SECURITY_PRINCIPAL, getUsername());
-        env.setProperty(Context.SECURITY_CREDENTIALS, getPassword());
+        if (getUsername() != null) {
+            env.setProperty(Context.SECURITY_PRINCIPAL, getUsername());
+        }
+        if (getPassword() != null) {
+            env.setProperty(Context.SECURITY_CREDENTIALS, getPassword());
+        }
 
-        InitialContext ctx = new InitialContext(env);
+        return new InitialContext(env);
+    }
+
+    /**
+     * Creates a queue connection.
+     *
+     * @return The queue connection.
+     * @throws NamingException
+     * @throws JMSException
+     */
+    public Connection createQueueConnection() throws NamingException, JMSException {
+        InitialContext ctx = createContext();
         QueueConnectionFactory qcf = (QueueConnectionFactory) ctx.lookup(getQueueConnectionFactory());
         return qcf.createQueueConnection(getUsername(), getPassword());
     }
 
+    /**
+     * Creates a topic connection.
+     *
+     * @return The topic connection.
+     * @throws NamingException
+     * @throws JMSException
+     */
     public Connection createTopicConnection() throws NamingException, JMSException {
-        Properties env = new Properties();
-        env.setProperty(Context.PROVIDER_URL, getConnectionUrl());
-        env.setProperty(Context.INITIAL_CONTEXT_FACTORY, getContextFactory());
-        env.setProperty(Context.SECURITY_PRINCIPAL, getUsername());
-        env.setProperty(Context.SECURITY_CREDENTIALS, getPassword());
-
-        InitialContext ctx = new InitialContext(env);
+        InitialContext ctx = createContext();
         TopicConnectionFactory tcf = (TopicConnectionFactory) ctx.lookup(getTopicConnectionFactory());
         return tcf.createTopicConnection(getUsername(), getPassword());
     }

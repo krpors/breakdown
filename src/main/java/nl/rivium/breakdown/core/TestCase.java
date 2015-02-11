@@ -71,6 +71,14 @@ public class TestCase extends GenericEntity {
     }
 
     /**
+     * Attempts to initialize the test case, see if things are working, like connections and such.
+     */
+    public void testSetup() throws BreakdownException {
+        setUp();
+        tearDown();
+    }
+
+    /**
      * Set up the test case before even beginning it.
      *
      * @throws Exception

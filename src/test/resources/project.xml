@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<project>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<ns2:breakdownProject xmlns:ns2="urn:breakdown:project:1.0">
     <description>Desc</description>
     <name>Project 1</name>
     <testSuites>
@@ -10,10 +10,14 @@
                 <description>Sample testcase</description>
                 <name>Testcase 1</name>
                 <testSteps>
-                    <testStep xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="jmsRequestReply">
+                    <testStep xsi:type="jmsRequestReply" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                         <description>Sends to the sample.queue. Reply on sample.topic</description>
                         <name>sample.queue sender</name>
                         <input xsi:type="jmsSenderInput">
+                            <properties>
+                                <property key="Some Property" value="Yarp!"/>
+                                <property key="One" value="1"/>
+                            </properties>
                             <payload>Payload!</payload>
                         </input>
                         <timeout>10000</timeout>
@@ -26,7 +30,7 @@
                             <type>TOPIC</type>
                         </replyDestination>
                     </testStep>
-                    <testStep xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="assertionCollection">
+                    <testStep xsi:type="assertionCollection" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                         <description>String checks</description>
                         <name>Bunch of assertions</name>
                         <assertionList xsi:type="stringAssertion">
@@ -39,7 +43,7 @@
                     <contextFactory>com.tibco.tibjms.naming.TibjmsInitialContextFactory</contextFactory>
                     <connectionUrl>tcp://localhost:7222</connectionUrl>
                     <username>admin</username>
-                    <password xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="true"/>
+                    <password xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
                     <queueConnectionFactory>QueueConnectionFactory</queueConnectionFactory>
                     <topicConnectionFactory>TopicConnectionFactory</topicConnectionFactory>
                 </jmsConnection>
@@ -47,4 +51,4 @@
         </testCases>
     </testSuites>
     <author>Me myself and I</author>
-</project>
+</ns2:breakdownProject>

@@ -32,8 +32,9 @@ public class Main {
         // First test step:
         JMSRequestReply jrr = new JMSRequestReply("sample.queue sender", "Sends to the sample.queue. Reply on sample.topic");
         JMSSenderInput input = new JMSSenderInput();
-        input.setPayload("Payload!");
+        input.getProperties().put("Some Property", "Yarp!");
         input.getProperties().put("One", "1");
+        input.setPayload("Payload!");
 
         jrr.setInput(input);
         jrr.setRequestDestination(new JMSDestination(DestinationType.QUEUE, "sample.queue"));
@@ -54,6 +55,7 @@ public class Main {
         Project p = new Project("Project 1", "Desc");
         p.getTestSuites().add(suite);
         p.setAuthor("Me myself and I");
+
 
         return p;
     }
