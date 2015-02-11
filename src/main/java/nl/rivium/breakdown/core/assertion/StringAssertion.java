@@ -53,6 +53,7 @@ public class StringAssertion extends Assertion {
             JMSReceiverOutput output = (JMSReceiverOutput) previous.getOutput();
             if (output.getPayload() != null) {
                 if (!output.getPayload().contains(assertion)) {
+
                     throw new AssertionException(testCase, previous, assertion, output.getPayload());
                 }
             }
