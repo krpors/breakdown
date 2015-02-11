@@ -1,15 +1,13 @@
 package nl.rivium.breakdown.ui;
 
 import nl.rivium.breakdown.Main;
-import nl.rivium.breakdown.core.BreakdownException;
-import nl.rivium.breakdown.core.Project;
-import nl.rivium.breakdown.core.TestCase;
-import nl.rivium.breakdown.core.TestSuite;
+import nl.rivium.breakdown.core.*;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.ApplicationWindow;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.*;
 import org.slf4j.Logger;
@@ -25,8 +23,12 @@ public class BreakdownUI extends ApplicationWindow {
      */
     private static Logger LOG = LoggerFactory.getLogger(BreakdownUI.class);
 
+    private ImageCache imageCache;
+
     public BreakdownUI() {
         super(null);
+
+        imageCache = new ImageCache();
     }
 
     /**
@@ -86,50 +88,35 @@ public class BreakdownUI extends ApplicationWindow {
         ui.run();
     }
 
+    /**
+     * Content provider for the TreeViewer.
+     */
     class MyContentProvider implements ITreeContentProvider {
 
         @Override
         public Object[] getElements(Object o) {
             LOG.debug("Getting elements of {}", o);
 
+            // Sneaky way to add a root, so the Project node is visible.
             if (o instanceof Root) {
                 Root root = (Root) o;
                 return new Object[] { root.getProject()} ;
             }
 
-            if (o instanceof Project) {
-                Project project = (Project) o;
-                return project.getTestSuites().toArray();
+            if (o instanceof GenericEntity) {
+                GenericEntity genericEntity = (GenericEntity) o;
+                return genericEntity.getChildren();
             }
 
-            if (o instanceof TestSuite) {
-                TestSuite testSuite = (TestSuite) o;
-                return testSuite.getTestCases().toArray();
-            }
             return null;
         }
 
         @Override
         public Object[] getChildren(Object o) {
             LOG.debug("Getting children of {}", o);
-            if (o instanceof Root) {
-                Root root = (Root) o;
-                return new Object[] {root.getProject()};
-            }
-
-            if (o instanceof Project) {
-                Project project = (Project) o;
-                return project.getTestSuites().toArray();
-            }
-
-            if (o instanceof TestSuite) {
-                TestSuite testSuite = (TestSuite) o;
-                return testSuite.getTestCases().toArray();
-            }
-
-            if (o instanceof TestCase) {
-                TestCase testCase = (TestCase) o;
-                return testCase.getTestSteps().toArray();
+            if (o instanceof GenericEntity) {
+                GenericEntity genericEntity = (GenericEntity) o;
+                return genericEntity.getChildren();
             }
 
             return null;
@@ -145,21 +132,11 @@ public class BreakdownUI extends ApplicationWindow {
         @Override
         public boolean hasChildren(Object o) {
             LOG.debug("Has children: " + o);
-            if (o instanceof Project) {
-                Project project = (Project) o;
-                System.out.println(!project.getTestSuites().isEmpty());
-                return !project.getTestSuites().isEmpty();
+            if (o instanceof GenericEntity) {
+                GenericEntity genericEntity = (GenericEntity) o;
+                return genericEntity.getChildren().length > 0;
             }
 
-            if (o instanceof TestSuite) {
-                TestSuite suite = (TestSuite) o;
-                return !suite.getTestCases().isEmpty();
-            }
-
-            if (o instanceof TestCase) {
-                TestCase testCase = (TestCase) o;
-                return !testCase.getTestSteps().isEmpty();
-            }
             return false;
         }
 
@@ -174,7 +151,31 @@ public class BreakdownUI extends ApplicationWindow {
         }
     }
 
+    /**
+     * Label provider for tree elements.
+     */
     class MyLabelProvider extends LabelProvider {
+
+        @Override
+        public Image getImage(Object element) {
+            if (element instanceof Project) {
+                return ImageCache.getImage(ImageCache.UIImage.Project);
+            }
+
+            if (element instanceof TestSuite) {
+                return ImageCache.getImage(ImageCache.UIImage.TestSuite);
+            }
+
+            if (element instanceof TestCase) {
+                return ImageCache.getImage(ImageCache.UIImage.TestCase);
+            }
+
+            if (element instanceof TestStep) {
+                return ImageCache.getImage(ImageCache.UIImage.TestStep);
+            }
+
+            return null;
+        }
 
         @Override
         public String getText(Object element) {
@@ -182,6 +183,22 @@ public class BreakdownUI extends ApplicationWindow {
                 Project project = (Project) element;
                 return "Project " + project.getName();
             }
+
+            if (element instanceof TestSuite) {
+                TestSuite testSuite = (TestSuite) element;
+                return String.format("Test Suite '%s'", testSuite.getName());
+            }
+
+            if (element instanceof TestCase) {
+                TestCase testCase = (TestCase) element;
+                return String.format("Test Case '%s'", testCase.getName());
+            }
+
+            if (element instanceof TestStep) {
+                TestStep testStep = (TestStep) element;
+                return String.format("Test Step '%s'", testStep.getName());
+            }
+
             return super.getText(element);
         }
     }

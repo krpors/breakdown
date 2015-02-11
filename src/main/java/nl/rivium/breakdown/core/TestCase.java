@@ -71,6 +71,11 @@ public class TestCase extends GenericEntity {
         return topicConnection;
     }
 
+    @Override
+    public GenericEntity[] getChildren() {
+        return testSteps.toArray(new TestStep[testSteps.size()]);
+    }
+
     /**
      * Attempts to initialize the test case, see if things are working, like connections and such.
      */

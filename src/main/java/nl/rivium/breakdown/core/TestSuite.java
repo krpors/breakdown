@@ -30,6 +30,11 @@ public class TestSuite extends GenericEntity {
         this.testCases = testCases;
     }
 
+    @Override
+    public GenericEntity[] getChildren() {
+        return testCases.toArray(new GenericEntity[testCases.size()]);
+    }
+
     /**
      * Executes the TestSuite and all the TestCases with TestSteps.
      */

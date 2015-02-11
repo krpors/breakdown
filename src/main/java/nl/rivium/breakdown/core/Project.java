@@ -58,6 +58,11 @@ public class Project extends GenericEntity {
         this.author = author;
     }
 
+    @Override
+    public GenericEntity[] getChildren() {
+        return testSuites.toArray(new TestSuite[testSuites.size()]);
+    }
+
     private static JAXBContext createContext() throws JAXBException {
         JAXBContext ctx = JAXBContext.newInstance(
                 Project.class, JMSSenderInput.class, JMSSenderOutput.class, JMSRequestReply.class,

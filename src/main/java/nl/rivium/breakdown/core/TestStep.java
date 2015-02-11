@@ -36,6 +36,16 @@ public abstract class TestStep<I extends Input, O extends Output> extends Generi
     }
 
     /**
+     * A test step does not have children elements, so always return null.
+     *
+     * @return null, because a test step cannot have and will not have any children elements.
+     */
+    @Override
+    public GenericEntity[] getChildren() {
+        return new GenericEntity[0];
+    }
+
+    /**
      * Executed the test step.
      *
      * @param project   The project this step belongs to.

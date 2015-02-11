@@ -5,7 +5,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * A generic entity. Most of the things in the core have basic properties. These properties are contained within this
- * abstract class.
+ * abstract class. It also behaves like a Node: it has a parent GenericEntity, but also children GenericEntities.
  */
 public abstract class GenericEntity {
     private String name;
@@ -49,6 +49,8 @@ public abstract class GenericEntity {
     public void setParent(GenericEntity parent) {
         this.parent = parent;
     }
+
+    public abstract GenericEntity[] getChildren();
 
     /**
      * This is automatically called by JAXB as soon as the marshaller is finished. This way we can get the parent node
