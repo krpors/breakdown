@@ -22,6 +22,8 @@ public class BreakdownUI extends ApplicationWindow {
 
     private ImageCache imageCache;
 
+    private ProjectTree projectTree;
+
     private CTabFolder tabFolder;
 
     public BreakdownUI() {
@@ -39,7 +41,7 @@ public class BreakdownUI extends ApplicationWindow {
     protected void configureShell(Shell shell) {
         super.configureShell(shell);
 
-        shell.setSize(320, 240);
+        shell.setSize(640, 480);
         shell.setText("Breakdown 0.0.1");
 
         Display display = shell.getDisplay();
@@ -61,16 +63,32 @@ public class BreakdownUI extends ApplicationWindow {
      */
     @Override
     protected Control createContents(Composite parent) {
-        SashForm sashForm = new SashForm(parent, SWT.HORIZONTAL);
+        SashForm sashForm = new SashForm(parent, SWT.HORIZONTAL | SWT.SMOOTH);
 
-        ProjectTree tree = new ProjectTree(sashForm);
+        projectTree = new ProjectTree(this, sashForm);
         tabFolder = new CTabFolder(sashForm, SWT.BORDER);
         tabFolder.setBorderVisible(true);
         tabFolder.setTabHeight(25);
 
-        ProjectTab tab = new ProjectTab(this, tabFolder, tree.getProject());
+        sashForm.setWeights(new int[]{30, 70});
 
         return super.createContents(parent);
+    }
+
+    /**
+     * Gets the tab folder for the component configuration etc.
+     * @return The tab folder.
+     */
+    public CTabFolder getTabFolder() {
+        return tabFolder;
+    }
+
+    /**
+     * Returns the project tree instance.
+     * @return The project tree.
+     */
+    public ProjectTree getProjectTree() {
+        return projectTree;
     }
 
     private void run() {

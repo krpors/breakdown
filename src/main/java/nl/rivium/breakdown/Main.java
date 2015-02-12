@@ -59,6 +59,14 @@ public class Main {
         p.getTestSuites().add(suite2);
         p.setAuthor("Me myself and I");
 
+        p.setFilename("/home/whatevs/example/filename.xml");
+
+        // set parents, for debuggin'
+        jrr.setParent(testCase);
+        ac.setParent(testCase);
+        testCase.setParent(suite);
+        suite.setParent(p);
+        suite2.setParent(p);
 
         return p;
     }

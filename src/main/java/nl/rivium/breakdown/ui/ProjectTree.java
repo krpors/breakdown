@@ -2,14 +2,16 @@ package nl.rivium.breakdown.ui;
 
 import nl.rivium.breakdown.Main;
 import nl.rivium.breakdown.core.*;
-import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.*;
+import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.xml.bind.JAXBException;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 /**
  * The ProjectTree contains the tree with the structured project hierarchy.
@@ -18,10 +20,12 @@ public class ProjectTree {
 
     private static Logger LOG = LoggerFactory.getLogger(ProjectTree.class);
 
+    private BreakdownUI ui;
     private TreeViewer treeViewer;
     private Project project;
 
-    public ProjectTree(Composite parent) {
+    public ProjectTree(BreakdownUI ui, Composite parent) {
+        this.ui = ui;
         createContents(parent);
     }
 
@@ -29,15 +33,20 @@ public class ProjectTree {
         treeViewer = new TreeViewer(parent);
         treeViewer.setContentProvider(new ProjectTreeContentProvider());
         treeViewer.setLabelProvider(new ProjectTreeLabelProvider());
+        treeViewer.addOpenListener(new ProjectTreeOpenListener(this));
 
         try {
-            Project p = Main.createProject();
-            setProject(p);
+            Project project = Main.createProject();
+            setProject(project);
         } catch (BreakdownException e) {
             e.printStackTrace();
         }
     }
 
+    /**
+     * Gets the project configuration associated with the tree. Can be null if it's not set yet.
+     * @return The project instance.
+     */
     public Project getProject() {
         return this.project;
     }
@@ -52,6 +61,57 @@ public class ProjectTree {
         this.project = p;
         treeViewer.setInput(root);
         treeViewer.expandAll();
+    }
+
+    /**
+     * Rereshes the tree.
+     */
+    public void refresh() {
+        treeViewer.refresh(true);
+    }
+
+    /**
+     * Class for listening for open events when elements on the tree are double clicked, or the Enter key was used.
+     * Will open up a new tab, or bring an existing tab to the front.
+     */
+    class ProjectTreeOpenListener implements IOpenListener {
+        /**
+         * Project tree reference.
+         */
+        private final ProjectTree tree;
+
+        public ProjectTreeOpenListener(ProjectTree tree) {
+            this.tree = tree;
+        }
+
+        @Override
+        public void open(OpenEvent openEvent) {
+            BreakdownUI ui = ProjectTree.this.ui;
+            CTabFolder folder = ui.getTabFolder();
+
+            TreeSelection selection = (TreeSelection) openEvent.getSelection();
+            Object first = selection.getFirstElement();
+            AbstractTab createdTab = null;
+            if (first instanceof Project) {
+                Project project = (Project) first;
+                createdTab = new ProjectTab(ui, folder, project);
+            } else if (first instanceof TestSuite) {
+                TestSuite testSuite = (TestSuite) first;
+                createdTab = new TestSuiteTab(ui, folder, testSuite);
+            } else if (first instanceof TestCase) {
+                TestCase testCase = (TestCase) first;
+                createdTab = new TestCaseTab(ui, folder, testCase);
+            } else if (first instanceof TestStep) {
+                TestStep testStep = (TestStep) first;
+                createdTab = new TestStepTab(ui, folder, testStep);
+
+            }
+
+            if (createdTab != null) {
+                folder.setSelection(createdTab.getTabItem());
+            }
+
+        }
     }
 
     /**

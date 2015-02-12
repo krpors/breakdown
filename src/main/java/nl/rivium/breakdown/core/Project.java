@@ -16,6 +16,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -33,6 +34,12 @@ public class Project extends GenericEntity {
     private List<TestSuite> testSuites = new ArrayList<>();
 
     private String author;
+
+    /**
+     * The filename of an unmarshalled Project file.
+     */
+    @XmlTransient
+    private String filename = "";
 
     public Project() {
         super("", "");
@@ -58,6 +65,23 @@ public class Project extends GenericEntity {
         this.author = author;
     }
 
+    /**
+     * Gets the filename associated with an unmarshalled project.
+     * TODO: nullage
+     * @return The filename. Can be null?
+     */
+    public String getFilename() {
+        return filename;
+    }
+
+    /**
+     * Sets the filename of this project. Set when a Project is unmarshaled.
+     * @param filename The filename to set.
+     */
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+
     @Override
     public GenericEntity[] getChildren() {
         return testSuites.toArray(new TestSuite[testSuites.size()]);
@@ -75,8 +99,7 @@ public class Project extends GenericEntity {
         Unmarshaller um = ctx.createUnmarshaller();
         Object o = um.unmarshal(is);
         if (o instanceof Project) {
-            Project project = (Project) o;
-            return project;
+            return (Project) o;
         }
 
         throw new BreakdownException("Can not read project properly");
@@ -87,9 +110,9 @@ public class Project extends GenericEntity {
         Unmarshaller um = ctx.createUnmarshaller();
         Object o = um.unmarshal(new File(file));
         if (o instanceof Project) {
-            Project project = (Project) o;
-            return project;
+            return (Project) o;
         }
+
 
         throw new BreakdownException("Can not read project properly");
     }

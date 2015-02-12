@@ -7,7 +7,9 @@ import javax.xml.bind.annotation.XmlTransient;
  * A generic entity. Most of the things in the core have basic properties. These properties are contained within this
  * abstract class. It also behaves like a Node: it has a parent GenericEntity, but also children GenericEntities.
  */
+// TODO: generify the parent and children?
 public abstract class GenericEntity {
+
     private String name;
     private String description;
 
