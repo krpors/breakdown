@@ -5,6 +5,12 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.*;
 import org.slf4j.Logger;
@@ -69,6 +75,29 @@ public class BreakdownUI extends ApplicationWindow {
         tabFolder = new CTabFolder(sashForm, SWT.BORDER);
         tabFolder.setBorderVisible(true);
         tabFolder.setTabHeight(25);
+        tabFolder.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseDown(MouseEvent e) {
+                CTabItem item = tabFolder.getItem(new Point(e.x, e.y));
+                if (item != null) {
+                    // TODO: ask to apply changes when closing.
+                    item.dispose();
+                }
+            }
+        });
+
+        Button btnCloseAllTabs = new Button(tabFolder, SWT.PUSH);
+        btnCloseAllTabs.setToolTipText("Close all tabs");
+        btnCloseAllTabs.setText("Close all");
+        btnCloseAllTabs.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                for(CTabItem item : tabFolder.getItems()) {
+                    item.dispose();
+                }
+            }
+        });
+        tabFolder.setTopRight(btnCloseAllTabs);
 
         sashForm.setWeights(new int[]{30, 70});
 

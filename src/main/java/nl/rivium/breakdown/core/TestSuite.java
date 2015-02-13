@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class TestSuite extends GenericEntity {
+public class TestSuite extends GenericEntity<Project, TestCase> {
 
     @XmlElement(name = "testCase")
     @XmlElementWrapper(name = "testCases")
@@ -31,8 +31,8 @@ public class TestSuite extends GenericEntity {
     }
 
     @Override
-    public GenericEntity[] getChildren() {
-        return testCases.toArray(new GenericEntity[testCases.size()]);
+    public TestCase[] getChildren() {
+        return testCases.toArray(new TestCase[testCases.size()]);
     }
 
     /**

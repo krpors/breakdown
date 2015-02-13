@@ -1,7 +1,7 @@
 package nl.rivium.breakdown.core;
 
 
-public abstract class TestStep<I extends Input, O extends Output> extends GenericEntity {
+public abstract class TestStep<I extends Input, O extends Output> extends GenericEntity<TestCase, GenericEntity> {
     private I input;
     private O output;
 
@@ -22,6 +22,16 @@ public abstract class TestStep<I extends Input, O extends Output> extends Generi
 
     public O getOutput() {
         return output;
+    }
+
+    /**
+     * Forced override to force a return type of TestCase.
+     *
+     * @return The TestCase parent.
+     */
+    @Override
+    public TestCase getParent() {
+        return super.getParent();
     }
 
     /**

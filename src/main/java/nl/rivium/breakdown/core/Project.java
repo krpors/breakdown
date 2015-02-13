@@ -131,7 +131,12 @@ public class Project extends GenericEntity {
     public void execute() throws BreakdownException, AssertionException {
         LOG.info("Executing project '{}'", getName());
         for (TestSuite suite : testSuites) {
-            suite.execute(this);
+            try {
+                suite.execute(this);
+            } catch (AssertionException ex) {
+                List<ExecutionListener> l = getExecutionListeners();
+                l.get(0).assertionFailed(this, null, ex.getTestCase(), ex.getTestStep());
+            }
         }
     }
 }

@@ -1,6 +1,9 @@
 package nl.rivium.breakdown.ui;
 
+import nl.rivium.breakdown.core.Project;
 import nl.rivium.breakdown.core.TestCase;
+import nl.rivium.breakdown.core.TestStep;
+import nl.rivium.breakdown.core.TestSuite;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.graphics.Image;
@@ -38,7 +41,6 @@ public class TestCaseTab extends AbstractTab<TestCase> {
         GridLayout gl = new GridLayout(2, false);
         compositeProperties.setLayout(gl);
 
-
         // Create labels, textfields and such.
         txtName = UITools.createTextWithLabel(compositeProperties, "Name:", TestCase.getName());
         txtDescription = UITools.createTextWithLabel(compositeProperties, "Description:", TestCase.getDescription());
@@ -49,5 +51,10 @@ public class TestCaseTab extends AbstractTab<TestCase> {
     @Override
     protected Image getImage() {
         return ImageCache.getImage(ImageCache.UIImage.TestCase);
+    }
+
+    @Override
+    public void assertionFailed(Project p, TestSuite testSuite, TestCase testCase, TestStep testStep) {
+
     }
 }

@@ -1,5 +1,6 @@
 package nl.rivium.breakdown.ui;
 
+import nl.rivium.breakdown.core.Project;
 import nl.rivium.breakdown.core.TestCase;
 import nl.rivium.breakdown.core.TestStep;
 import nl.rivium.breakdown.core.TestSuite;
@@ -28,8 +29,8 @@ public class TestStepTab extends AbstractTab<TestStep> {
     @Override
     protected Composite createContents(CTabFolder parent) {
         final TestStep step = getEntity();
-        final TestCase testCase = (TestCase) step.getParent();
-        final TestSuite testSuite = (TestSuite) testCase.getParent();
+        final TestCase testCase = step.getParent();
+        final TestSuite testSuite = testCase.getParent();
 
         Composite compositeMain = new Composite(parent, SWT.NONE);
         FillLayout l = new FillLayout();
@@ -57,5 +58,10 @@ public class TestStepTab extends AbstractTab<TestStep> {
     @Override
     protected Image getImage() {
         return ImageCache.getImage(ImageCache.UIImage.TestStep);
+    }
+
+    @Override
+    public void assertionFailed(Project p, TestSuite testSuite, TestCase testCase, TestStep testStep) {
+
     }
 }

@@ -1,6 +1,8 @@
 package nl.rivium.breakdown.ui;
 
 import nl.rivium.breakdown.core.Project;
+import nl.rivium.breakdown.core.TestCase;
+import nl.rivium.breakdown.core.TestStep;
 import nl.rivium.breakdown.core.TestSuite;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
@@ -49,5 +51,10 @@ public class TestSuiteTab extends AbstractTab<TestSuite> {
     @Override
     protected Image getImage() {
         return ImageCache.getImage(ImageCache.UIImage.TestSuite);
+    }
+
+    @Override
+    public void assertionFailed(Project p, TestSuite testSuite, TestCase testCase, TestStep testStep) {
+
     }
 }

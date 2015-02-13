@@ -2,22 +2,38 @@ package nl.rivium.breakdown.core;
 
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlTransient;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A generic entity. Most of the things in the core have basic properties. These properties are contained within this
- * abstract class. It also behaves like a Node: it has a parent GenericEntity, but also children GenericEntities.
+ * abstract class. It also behaves like a Node: it has a parent GenericEntity, but also children GenericEntities. Two
+ * generic parameters are defined: P for the Parent type, and C for the Children types. This prevents casting the parent
+ * and children types back and forth.
  */
-// TODO: generify the parent and children?
-public abstract class GenericEntity {
+public abstract class GenericEntity<P extends GenericEntity, C extends GenericEntity> {
 
+    /**
+     * The entity's name
+     */
     private String name;
+
+    /**
+     * Description
+     */
     private String description;
 
     /**
      * This is a parent 'node' of an existing entity. Can be null if there is no parent (for instance, a Project).
      */
     @XmlTransient
-    private GenericEntity parent;
+    private P parent;
+
+    /**
+     * Execution listeners for a project.
+     */
+    @XmlTransient
+    private List<ExecutionListener> executionListeners = new ArrayList<>();
 
     public GenericEntity() {
 
@@ -44,15 +60,33 @@ public abstract class GenericEntity {
         this.description = description;
     }
 
-    public GenericEntity getParent() {
+    public P getParent() {
         return parent;
     }
 
-    public void setParent(GenericEntity parent) {
+    public void setParent(P parent) {
         this.parent = parent;
     }
 
-    public abstract GenericEntity[] getChildren();
+    public abstract C[] getChildren();
+
+    /**
+     * Returns the execution listeners for this Project object.
+     *
+     * @return The execution listeners. Will never be null, but may be empty.
+     */
+    public List<ExecutionListener> getExecutionListeners() {
+        return executionListeners;
+    }
+
+    /**
+     * Adds an execution listener to the list.
+     *
+     * @param e The listener.
+     */
+    public void addExecutionListener(ExecutionListener e) {
+        executionListeners.add(e);
+    }
 
     /**
      * This is automatically called by JAXB as soon as the marshaller is finished. This way we can get the parent node
@@ -64,8 +98,7 @@ public abstract class GenericEntity {
     private void afterUnmarshal(Unmarshaller um, Object parent) {
         if (parent instanceof GenericEntity) {
             GenericEntity entity = (GenericEntity) parent;
-            System.out.println("Setting parent entity of " + this + " to " + entity);
-            setParent(entity);
+            setParent((P) entity);
         }
     }
 

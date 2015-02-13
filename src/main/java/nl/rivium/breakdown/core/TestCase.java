@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class TestCase extends GenericEntity {
+public class TestCase extends GenericEntity<TestSuite, TestStep> {
 
     /**
      * Our logger.
@@ -72,7 +72,7 @@ public class TestCase extends GenericEntity {
     }
 
     @Override
-    public GenericEntity[] getChildren() {
+    public TestStep[] getChildren() {
         return testSteps.toArray(new TestStep[testSteps.size()]);
     }
 

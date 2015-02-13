@@ -2,16 +2,14 @@ package nl.rivium.breakdown.ui;
 
 import nl.rivium.breakdown.Main;
 import nl.rivium.breakdown.core.*;
+import nl.rivium.breakdown.core.jms.JMSRequestReply;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.xml.bind.JAXBException;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 
 /**
  * The ProjectTree contains the tree with the structured project hierarchy.
@@ -45,6 +43,7 @@ public class ProjectTree {
 
     /**
      * Gets the project configuration associated with the tree. Can be null if it's not set yet.
+     *
      * @return The project instance.
      */
     public Project getProject() {
@@ -84,13 +83,37 @@ public class ProjectTree {
             this.tree = tree;
         }
 
+        /**
+         * Attempts to bring a tab with the generic entity to front, if a tab exists with that data. If it did, the
+         * tab will be brought to the front, and true is returned. Else, false is returned.
+         *
+         * @param entity The entity trying to be opened;
+         * @return true when a tab with the entity was found and brought to the front. False if otherwise.
+         */
+        public boolean bringToFront(GenericEntity entity) {
+            for (CTabItem item : tree.ui.getTabFolder().getItems()) {
+                System.out.println("Open tab: " + item.getData());
+                if (item.getData().equals(entity)) {
+                    tree.ui.getTabFolder().setSelection(item);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         @Override
         public void open(OpenEvent openEvent) {
             BreakdownUI ui = ProjectTree.this.ui;
             CTabFolder folder = ui.getTabFolder();
 
             TreeSelection selection = (TreeSelection) openEvent.getSelection();
-            Object first = selection.getFirstElement();
+            GenericEntity first = (GenericEntity) selection.getFirstElement();
+
+            if (bringToFront(first)) {
+                return;
+            }
+
             AbstractTab createdTab = null;
             if (first instanceof Project) {
                 Project project = (Project) first;
@@ -101,10 +124,9 @@ public class ProjectTree {
             } else if (first instanceof TestCase) {
                 TestCase testCase = (TestCase) first;
                 createdTab = new TestCaseTab(ui, folder, testCase);
-            } else if (first instanceof TestStep) {
-                TestStep testStep = (TestStep) first;
-                createdTab = new TestStepTab(ui, folder, testStep);
-
+            } else if (first instanceof JMSRequestReply) {
+                JMSRequestReply testStep = (JMSRequestReply) first;
+                createdTab = new TestStepJMSRequestReplyTab(ui, folder, testStep);
             }
 
             if (createdTab != null) {
@@ -171,9 +193,14 @@ public class ProjectTree {
 
         }
 
+        /**
+         * Called whenever the tree is refreshed with new data.
+         * @param viewer The viewer.
+         * @param o ?
+         * @param o1 ?
+         */
         @Override
         public void inputChanged(Viewer viewer, Object o, Object o1) {
-            LOG.debug("inputChanged called");
         }
     }
 
@@ -205,24 +232,9 @@ public class ProjectTree {
 
         @Override
         public String getText(Object element) {
-            if (element instanceof Project) {
-                Project project = (Project) element;
-                return "Project " + project.getName();
-            }
-
-            if (element instanceof TestSuite) {
-                TestSuite testSuite = (TestSuite) element;
-                return String.format("Test Suite '%s'", testSuite.getName());
-            }
-
-            if (element instanceof TestCase) {
-                TestCase testCase = (TestCase) element;
-                return String.format("Test Case '%s'", testCase.getName());
-            }
-
-            if (element instanceof TestStep) {
-                TestStep testStep = (TestStep) element;
-                return String.format("Test Step '%s'", testStep.getName());
+            if (element instanceof GenericEntity) {
+                GenericEntity genericEntity = (GenericEntity) element;
+                return genericEntity.getName();
             }
 
             return super.getText(element);
