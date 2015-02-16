@@ -4,6 +4,7 @@ import nl.rivium.breakdown.Main;
 import nl.rivium.breakdown.core.*;
 import nl.rivium.breakdown.core.jms.JMSConnection;
 import nl.rivium.breakdown.core.jms.JMSRequestReply;
+import nl.rivium.breakdown.ui.tab.*;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
@@ -11,10 +12,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * The ProjectTree contains the tree with the structured project hierarchy.

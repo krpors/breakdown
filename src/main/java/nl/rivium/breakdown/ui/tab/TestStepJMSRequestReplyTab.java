@@ -1,10 +1,13 @@
-package nl.rivium.breakdown.ui;
+package nl.rivium.breakdown.ui.tab;
 
 import nl.rivium.breakdown.core.Project;
 import nl.rivium.breakdown.core.TestCase;
 import nl.rivium.breakdown.core.TestStep;
 import nl.rivium.breakdown.core.TestSuite;
 import nl.rivium.breakdown.core.jms.JMSRequestReply;
+import nl.rivium.breakdown.ui.BreakdownUI;
+import nl.rivium.breakdown.ui.ImageCache;
+import nl.rivium.breakdown.ui.UITools;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;

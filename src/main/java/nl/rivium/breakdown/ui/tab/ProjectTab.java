@@ -1,6 +1,9 @@
-package nl.rivium.breakdown.ui;
+package nl.rivium.breakdown.ui.tab;
 
 import nl.rivium.breakdown.core.*;
+import nl.rivium.breakdown.ui.BreakdownUI;
+import nl.rivium.breakdown.ui.ImageCache;
+import nl.rivium.breakdown.ui.UITools;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;

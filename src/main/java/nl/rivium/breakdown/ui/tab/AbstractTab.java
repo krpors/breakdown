@@ -1,7 +1,8 @@
-package nl.rivium.breakdown.ui;
+package nl.rivium.breakdown.ui.tab;
 
 import nl.rivium.breakdown.core.ExecutionListener;
 import nl.rivium.breakdown.core.GenericEntity;
+import nl.rivium.breakdown.ui.BreakdownUI;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
@@ -10,8 +11,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 /**
  * Every tab added to the tabfolder has some basic properties. This class implements those.
