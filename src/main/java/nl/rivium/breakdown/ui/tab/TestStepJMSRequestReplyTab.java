@@ -1,9 +1,7 @@
 package nl.rivium.breakdown.ui.tab;
 
-import nl.rivium.breakdown.core.Project;
-import nl.rivium.breakdown.core.TestCase;
-import nl.rivium.breakdown.core.TestStep;
-import nl.rivium.breakdown.core.TestSuite;
+import nl.rivium.breakdown.core.*;
+import nl.rivium.breakdown.core.jms.JMSConnection;
 import nl.rivium.breakdown.core.jms.JMSRequestReply;
 import nl.rivium.breakdown.ui.BreakdownUI;
 import nl.rivium.breakdown.ui.ImageCache;
@@ -14,8 +12,12 @@ import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.*;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
+import sun.security.krb5.internal.crypto.Des;
 
 import java.util.Map;
 
@@ -24,11 +26,19 @@ public class TestStepJMSRequestReplyTab extends AbstractTab<JMSRequestReply> imp
     private Text txtParent;
     private Text txtName;
     private Text txtDescription;
-
+    private Combo cmbJMSConnection;
     private Text txtInputDestination;
     private Text txtReplyDestination;
     private Text txtPayload;
     private Table tblCustomProperties;
+    /**
+     * Combobox with the request type.
+     */
+    private Combo cmbRequestType;
+    /**
+     * Combobox with the response type.
+     */
+    private Combo cmbResponseType;
 
     public TestStepJMSRequestReplyTab(BreakdownUI ui, CTabFolder parent, JMSRequestReply entity) {
         super(ui, parent, entity);
@@ -80,6 +90,7 @@ public class TestStepJMSRequestReplyTab extends AbstractTab<JMSRequestReply> imp
 
     private Group createConfigurationGroup(Composite compositeMain) {
         JMSRequestReply jrr = getEntity();
+        Project parent = jrr.getParent().getParent().getParent();
 
         Group group = new Group(compositeMain, SWT.NONE);
         group.setText("JMS Request/Reply properties");
@@ -89,8 +100,37 @@ public class TestStepJMSRequestReplyTab extends AbstractTab<JMSRequestReply> imp
         Composite topStuff = new Composite(group, SWT.NONE);
         topStuff.setLayout(new GridLayout(2, false));
 
-        txtInputDestination = UITools.createTextWithLabel(topStuff, "Input destination:", jrr.getRequestDestination().getName());
+        UITools.createLabel(topStuff, "JMS connection:");
+        cmbJMSConnection = new Combo(topStuff, SWT.READ_ONLY);
+        for (int i = 0; i < parent.getJmsConnections().size(); i++) {
+            JMSConnection conn = parent.getJmsConnections().get(i);
+            cmbJMSConnection.add(conn.getName());
+            if (jrr.getJmsConnectionName() != null && jrr.getJmsConnectionName().equals(conn.getName())) {
+                cmbJMSConnection.select(i);
+            }
+        }
+
+        txtInputDestination = UITools.createTextWithLabel(topStuff, "Request destination:", jrr.getRequestDestination().getName());
+        UITools.createLabel(topStuff, "Request type:");
+        cmbRequestType = new Combo(topStuff, SWT.READ_ONLY);
+
         txtReplyDestination = UITools.createTextWithLabel(topStuff, "Reply destination:", jrr.getReplyDestination().getName());
+        UITools.createLabel(topStuff, "Response type:");
+        cmbResponseType = new Combo(topStuff, SWT.READ_ONLY);
+
+        for (int i = 0; i < DestinationType.values().length; i++) {
+            DestinationType d = DestinationType.values()[i];
+            cmbRequestType.add(d.name());
+            cmbResponseType.add(d.name());
+
+            if (jrr.getRequestDestination().getType() == d) {
+                cmbRequestType.select(i);
+            }
+
+            if (jrr.getReplyDestination().getType() == d) {
+                cmbResponseType.select(i);
+            }
+        }
 
         CTabFolder folder = new CTabFolder(group, SWT.BORDER);
 
@@ -177,7 +217,6 @@ public class TestStepJMSRequestReplyTab extends AbstractTab<JMSRequestReply> imp
         rr.setDescription(txtDescription.getText());
         rr.getInput().setPayload(txtPayload.getText());
 
-        System.out.println("yarp");
         getBreakdownUI().getProjectTree().refresh();
     }
 }

@@ -32,6 +32,7 @@ public class Main {
 
         // First test step:
         JMSRequestReply jrr = new JMSRequestReply("sample.queue sender", "Sends to the sample.queue. Reply on sample.topic");
+        jrr.setJmsConnectionName("Localhost jms connection"); // refers to the connection up top.
         JMSSenderInput input = new JMSSenderInput();
         input.getProperties().put("Some Property", "Yarp!");
         input.getProperties().put("One", "1");

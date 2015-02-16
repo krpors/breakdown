@@ -6,12 +6,34 @@ import javax.jms.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
+/**
+ * A simple JMS request reply test step. Sends a JMS Text Message to a destination, with some payload and optionally
+ * some extra properties. A response is expected on an reply destination within the configured amount of time.
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class JMSRequestReply extends TestStep<JMSSenderInput, JMSReceiverOutput> {
 
+    /**
+     * Default timeout to wait for a response.
+     */
     private long timeout = 10000;
+
+    /**
+     * The request destination (to send data to).
+     */
     private JMSDestination requestDestination;
+
+    /**
+     * The reply destination (to expect data from).
+     */
     private JMSDestination replyDestination;
+
+    /**
+     * The JMS connection ID. The connections are defined project wide in the Project class.
+     * This class refers to a connection by this ID (which is the name of the JMSConnection).
+     * The findConnection() can be used to track it down.
+     */
+    private String jmsConnectionName;
 
     public JMSRequestReply() {
     }
@@ -42,6 +64,29 @@ public class JMSRequestReply extends TestStep<JMSSenderInput, JMSReceiverOutput>
 
     public void setTimeout(long timeout) {
         this.timeout = timeout;
+    }
+
+    public String getJmsConnectionName() {
+        return jmsConnectionName;
+    }
+
+    public void setJmsConnectionName(String jmsConnectionName) {
+        this.jmsConnectionName = jmsConnectionName;
+    }
+
+    /**
+     * Checks the top most parent Project instance, and find the connection with the given name. Null will be returned
+     * if the project did not contain a connection with that name.
+     *
+     * @return The JMSConnection defined in the Project instance with that name, or null if nothing can be found.
+     */
+    public JMSConnection findConnection() {
+        if (getJmsConnectionName() == null) {
+            return null;
+        }
+
+        Project parentProject = getParent().getParent().getParent();
+        return parentProject.findJMSConnectionByName(getJmsConnectionName());
     }
 
     @Override

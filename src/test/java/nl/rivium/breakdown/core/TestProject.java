@@ -18,17 +18,25 @@ import java.util.List;
  */
 public class TestProject {
 
-    @Test
-    public void serialize() throws JAXBException {
-        JMSConnection c = new JMSConnection();
-        c.setName("Localhost jms connection");
-        c.setDescription("Bogus description");
-        c.setContextFactory("com.tibco.tibjms.naming.TibjmsInitialContextFactory");
-        c.setConnectionUrl("tcp://localhost:7222");
-        c.setUsername("admin");
-        c.setPassword(null);
-        c.setQueueConnectionFactory("QueueConnectionFactory");
-        c.setTopicConnectionFactory("TopicConnectionFactory");
+    /**
+     * Helper function to create a dummy project to test on.
+     *
+     * @return The project with suites, cases, steps etc.
+     */
+    private Project createProject() {
+        JMSConnection connection1 = new JMSConnection();
+        connection1.setName("Localhost jms connection");
+        connection1.setDescription("Bogus description");
+        connection1.setContextFactory("com.tibco.tibjms.naming.TibjmsInitialContextFactory");
+        connection1.setConnectionUrl("tcp://localhost:7222");
+        connection1.setUsername("admin");
+        connection1.setPassword(null);
+        connection1.setQueueConnectionFactory("QueueConnectionFactory");
+        connection1.setTopicConnectionFactory("TopicConnectionFactory");
+
+        JMSConnection connection2 = new JMSConnection();
+        connection2.setName("JBoss Connection");
+        connection2.setDescription("Description of the JBoss connection");
 
         TestCase testCase = new TestCase("Testcase 1", "Sample testcase");
 
@@ -70,7 +78,31 @@ public class TestProject {
         testCase.setParent(suite);
         suite.setParent(p);
         suite2.setParent(p);
-        p.getJmsConnections().add(c);
+
+        p.getJmsConnections().add(connection1);
+        p.getJmsConnections().add(connection2);
+
+        return p;
+    }
+
+    @Test
+    public void findConnection() {
+        Project p = createProject();
+        JMSConnection cnull = p.findJMSConnectionByName("not found");
+        Assert.assertNull(cnull);
+
+        JMSConnection first = p.findJMSConnectionByName("Localhost jms connection");
+        Assert.assertNotNull(first);
+        Assert.assertEquals("tcp://localhost:7222", first.getConnectionUrl());
+
+        JMSConnection second = p.findJMSConnectionByName("JBoss Connection");
+        Assert.assertNotNull(second);
+        Assert.assertEquals("Description of the JBoss connection", second.getDescription());
+    }
+
+    @Test
+    public void serialize() throws JAXBException {
+        Project p = createProject();
 
         p.write(System.out);
     }
@@ -105,7 +137,7 @@ public class TestProject {
             Assert.assertEquals(2, jmsRequestReply.getInput().getProperties().size());
             Assert.assertEquals("1", jmsRequestReply.getInput().getProperties().get("One"));
 
-
+            Assert.assertEquals(2, p.getJmsConnections().size());
 
         } catch (JAXBException | BreakdownException e) {
             e.printStackTrace();

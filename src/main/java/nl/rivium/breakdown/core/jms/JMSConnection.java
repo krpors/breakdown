@@ -16,14 +16,14 @@ import java.util.Properties;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class JMSConnection extends GenericEntity {
-    private String contextFactory;
-    private String connectionUrl;
-    private String username;
+    private String contextFactory = "";
+    private String connectionUrl = "";
+    private String username = "";
 
     @XmlElement(nillable = true)
     private String password;
-    private String queueConnectionFactory;
-    private String topicConnectionFactory;
+    private String queueConnectionFactory = "";
+    private String topicConnectionFactory = "";
 
     public String getContextFactory() {
         return contextFactory;
@@ -121,6 +121,7 @@ public class JMSConnection extends GenericEntity {
 
     /**
      * Has no children.
+     *
      * @return
      */
     @Override

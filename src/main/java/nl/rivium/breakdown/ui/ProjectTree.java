@@ -122,17 +122,15 @@ public class ProjectTree {
 
             AbstractTab createdTab = null;
             if (first instanceof Project) {
-                Project project = (Project) first;
-                createdTab = new ProjectTab(ui, folder, project);
+                createdTab = new ProjectTab(ui, folder, (Project) first);
             } else if (first instanceof TestSuite) {
-                TestSuite testSuite = (TestSuite) first;
-                createdTab = new TestSuiteTab(ui, folder, testSuite);
+                createdTab = new TestSuiteTab(ui, folder, (TestSuite) first);
             } else if (first instanceof TestCase) {
-                TestCase testCase = (TestCase) first;
-                createdTab = new TestCaseTab(ui, folder, testCase);
+                createdTab = new TestCaseTab(ui, folder, (TestCase) first);
             } else if (first instanceof JMSRequestReply) {
-                JMSRequestReply testStep = (JMSRequestReply) first;
-                createdTab = new TestStepJMSRequestReplyTab(ui, folder, testStep);
+                createdTab = new TestStepJMSRequestReplyTab(ui, folder, (JMSRequestReply)first);
+            } else if (first instanceof JMSConnection) {
+                createdTab = new JMSConnectionTab(ui, folder, (JMSConnection) first);
             }
 
             if (createdTab != null) {

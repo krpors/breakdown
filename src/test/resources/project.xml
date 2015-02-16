@@ -60,6 +60,16 @@
             <queueConnectionFactory>QueueConnectionFactory</queueConnectionFactory>
             <topicConnectionFactory>TopicConnectionFactory</topicConnectionFactory>
         </jmsConnection>
+        <jmsConnection>
+            <name>Second connection</name>
+            <description>Bogus description</description>
+            <contextFactory>org.jboss.mq.ContextFactory</contextFactory>
+            <connectionUrl>tcp://localhost:4456</connectionUrl>
+            <username>admin</username>
+            <password xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+            <queueConnectionFactory>q</queueConnectionFactory>
+            <topicConnectionFactory>t</topicConnectionFactory>
+        </jmsConnection>
     </jmsConnections>
     <author>Me myself and I</author>
 </ns2:breakdownProject>

@@ -114,6 +114,23 @@ public class Project extends GenericEntity {
         this.jmsConnections = jmsConnections;
     }
 
+    /**
+     * Iterates through the list of JMS connections and finds the first one that matches the name 'name'.
+     *
+     * @param name The name of the JMS connection.
+     * @return The JMSconnection that's found,
+     */
+    public JMSConnection findJMSConnectionByName(String name) {
+        for (JMSConnection c : getJmsConnections()) {
+            if (c.getName() != null && c.getName().equals(name)) {
+                return c;
+            }
+        }
+
+        // Not found. Should actually not happen when using the UI configuration tool.
+        return null;
+    }
+
     private static JAXBContext createContext() throws JAXBException {
         JAXBContext ctx = JAXBContext.newInstance(
                 Project.class, JMSSenderInput.class, JMSSenderOutput.class, JMSRequestReply.class,

@@ -3,6 +3,7 @@ package nl.rivium.breakdown.core;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,8 +18,9 @@ import java.util.List;
 public abstract class GenericEntity<P extends GenericEntity, C extends GenericEntity> {
 
     /**
-     * The entity's name
+     * The entity's name. Default value is empty to avoid the likely-hood of null pointers.
      */
+    @XmlElement(defaultValue = "")
     private String name;
 
     /**
