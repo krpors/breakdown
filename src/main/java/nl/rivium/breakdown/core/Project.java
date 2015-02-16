@@ -3,6 +3,7 @@ package nl.rivium.breakdown.core;
 
 import nl.rivium.breakdown.core.assertion.AssertionCollection;
 import nl.rivium.breakdown.core.assertion.StringAssertion;
+import nl.rivium.breakdown.core.jms.JMSConnection;
 import nl.rivium.breakdown.core.jms.JMSRequestReply;
 import nl.rivium.breakdown.core.jms.JMSSenderInput;
 import nl.rivium.breakdown.core.jms.JMSSenderOutput;
@@ -13,12 +14,10 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.*;
 import java.io.File;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +30,17 @@ public class Project extends GenericEntity {
      */
     private static Logger LOG = LoggerFactory.getLogger(Project.class);
 
+    @XmlElement(name = "testSuite")
+    @XmlElementWrapper(name = "testSuites")
     private List<TestSuite> testSuites = new ArrayList<>();
+
+    /**
+     * A Project can have multiple JMS connections defined. The sub entities can
+     * refer to it by name reference.
+     */
+    @XmlElement(name = "jmsConnection")
+    @XmlElementWrapper(name = "jmsConnections")
+    private List<JMSConnection> jmsConnections = new ArrayList<>();
 
     private String author;
 
@@ -68,6 +77,7 @@ public class Project extends GenericEntity {
     /**
      * Gets the filename associated with an unmarshalled project.
      * TODO: nullage
+     *
      * @return The filename. Can be null?
      */
     public String getFilename() {
@@ -76,6 +86,7 @@ public class Project extends GenericEntity {
 
     /**
      * Sets the filename of this project. Set when a Project is unmarshaled.
+     *
      * @param filename The filename to set.
      */
     public void setFilename(String filename) {
@@ -84,7 +95,23 @@ public class Project extends GenericEntity {
 
     @Override
     public GenericEntity[] getChildren() {
-        return testSuites.toArray(new TestSuite[testSuites.size()]);
+        List<GenericEntity> children = new ArrayList<>();
+        children.addAll(jmsConnections);
+        children.addAll(testSuites);
+        return children.toArray(new GenericEntity[children.size()]);
+    }
+
+    /**
+     * Returns the JMS connections.
+     *
+     * @return The JMS connections defined for the project.
+     */
+    public List<JMSConnection> getJmsConnections() {
+        return jmsConnections;
+    }
+
+    public void setJmsConnections(List<JMSConnection> jmsConnections) {
+        this.jmsConnections = jmsConnections;
     }
 
     private static JAXBContext createContext() throws JAXBException {
@@ -117,12 +144,12 @@ public class Project extends GenericEntity {
         throw new BreakdownException("Can not read project properly");
     }
 
-    public void write() throws JAXBException {
+    public void write(OutputStream os) throws JAXBException {
         JAXBContext ctx = createContext();
         Marshaller m = ctx.createMarshaller();
         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         m.setProperty(Marshaller.JAXB_ENCODING, "utf-8");
-        m.marshal(this, System.out);
+        m.marshal(this, os);
     }
 
     /**

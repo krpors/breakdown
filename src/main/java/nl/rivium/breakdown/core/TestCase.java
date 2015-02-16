@@ -25,9 +25,6 @@ public class TestCase extends GenericEntity<TestSuite, TestStep> {
     @XmlElementWrapper(name = "testSteps")
     private LinkedList<TestStep> testSteps = new LinkedList<>();
 
-    @XmlElement
-    private JMSConnection jmsConnection;
-
     /**
      * The actual constructed JMS queue connection by setUp(), if applicable.
      */
@@ -53,14 +50,6 @@ public class TestCase extends GenericEntity<TestSuite, TestStep> {
 
     public void setTestSteps(LinkedList<TestStep> testSteps) {
         this.testSteps = testSteps;
-    }
-
-    public JMSConnection getJmsConnection() {
-        return jmsConnection;
-    }
-
-    public void setJmsConnection(JMSConnection jmsConnection) {
-        this.jmsConnection = jmsConnection;
     }
 
     public Connection getQueueConnection() {
@@ -92,13 +81,16 @@ public class TestCase extends GenericEntity<TestSuite, TestStep> {
     private void setUp() throws BreakdownException {
         LOG.debug("TestCase '{}' setting up", getName());
         try {
+            // TODO: fix this. Refer to an ID or name, and look that up in the project definition.
+            // A connection doesn't necessarily need to exist. So we need to check on that too.
+            JMSConnection jmsConnection = getParent().getParent().getJmsConnections().get(0);
             queueConnection = jmsConnection.createQueueConnection();
             topicConnection = jmsConnection.createTopicConnection();
 
             queueConnection.start();
             topicConnection.start();
         } catch (JMSException | NamingException ex) {
-            String err = String.format("TestCase '{}': failed to setup");
+            String err = String.format("TestCase '%s': failed to setup", getName());
             LOG.error(err, ex);
             throw new BreakdownException(err, ex);
         }

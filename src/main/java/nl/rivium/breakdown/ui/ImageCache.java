@@ -35,13 +35,13 @@ public final class ImageCache {
      */
     private static void registerImages() {
         for (UIImage img : UIImage.values()) {
-            imageRegistry.put(img.id, new Image(display, ImageCache.class.getResourceAsStream(img.path)));
-            LOG.debug("Registered image '{}' from path '{}'", img.id, img.path);
+            imageRegistry.put(img.name(), new Image(display, ImageCache.class.getResourceAsStream(img.path)));
+            LOG.debug("Registered image '{}' from path '{}'", img.name(), img.path);
         }
     }
 
     public static Image getImage(UIImage img) {
-        return imageRegistry.get(img.id);
+        return imageRegistry.get(img.name());
     }
 
     /**
@@ -49,18 +49,16 @@ public final class ImageCache {
      */
     public enum UIImage {
 
-        Folder("folder", "/images/small/Folder.png"),
-        Project("project", "/images/small/Home.png"),
-        TestCase("testcase", "/images/small/3d bar chart.png"),
-        TestSuite("testsuite", "/images/small/Yes.png"),
-        TestStep("teststep", "/images/small/No.png");
-
-        public final String id;
+        Folder("/images/small/Folder.png"),
+        Project("/images/small/Home.png"),
+        TestCase("/images/small/3d bar chart.png"),
+        TestSuite("/images/small/Yes.png"),
+        TestStep("/images/small/No.png"),
+        JMSConnection("/images/small/Network connection.png");
 
         public final String path;
 
-        private UIImage(String id, String path) {
-            this.id = id;
+        private UIImage(String path) {
             this.path = path;
         }
     }

@@ -1,5 +1,7 @@
 package nl.rivium.breakdown.core.jms;
 
+import nl.rivium.breakdown.core.GenericEntity;
+
 import javax.jms.Connection;
 import javax.jms.JMSException;
 import javax.jms.QueueConnectionFactory;
@@ -13,7 +15,7 @@ import javax.xml.bind.annotation.XmlElement;
 import java.util.Properties;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class JMSConnection {
+public class JMSConnection extends GenericEntity {
     private String contextFactory;
     private String connectionUrl;
     private String username;
@@ -115,5 +117,14 @@ public class JMSConnection {
         InitialContext ctx = createContext();
         TopicConnectionFactory tcf = (TopicConnectionFactory) ctx.lookup(getTopicConnectionFactory());
         return tcf.createTopicConnection(getUsername(), getPassword());
+    }
+
+    /**
+     * Has no children.
+     * @return
+     */
+    @Override
+    public GenericEntity[] getChildren() {
+        return new GenericEntity[0];
     }
 }

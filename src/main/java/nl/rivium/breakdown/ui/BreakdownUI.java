@@ -75,29 +75,6 @@ public class BreakdownUI extends ApplicationWindow {
         tabFolder = new CTabFolder(sashForm, SWT.BORDER);
         tabFolder.setBorderVisible(true);
         tabFolder.setTabHeight(25);
-        tabFolder.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseDown(MouseEvent e) {
-                CTabItem item = tabFolder.getItem(new Point(e.x, e.y));
-                if (item != null) {
-                    // TODO: ask to apply changes when closing.
-                    item.dispose();
-                }
-            }
-        });
-
-        Button btnCloseAllTabs = new Button(tabFolder, SWT.PUSH);
-        btnCloseAllTabs.setToolTipText("Close all tabs");
-        btnCloseAllTabs.setText("Close all");
-        btnCloseAllTabs.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                for(CTabItem item : tabFolder.getItems()) {
-                    item.dispose();
-                }
-            }
-        });
-        tabFolder.setTopRight(btnCloseAllTabs);
 
         sashForm.setWeights(new int[]{30, 70});
 

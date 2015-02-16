@@ -19,6 +19,8 @@ public class Main {
 
     public static Project createProject() throws BreakdownException {
         JMSConnection c = new JMSConnection();
+        c.setName("Localhost jms connection");
+        c.setDescription("Bogus description");
         c.setContextFactory("com.tibco.tibjms.naming.TibjmsInitialContextFactory");
         c.setConnectionUrl("tcp://localhost:7222");
         c.setUsername("admin");
@@ -27,7 +29,6 @@ public class Main {
         c.setTopicConnectionFactory("TopicConnectionFactory");
 
         TestCase testCase = new TestCase("Testcase 1", "Sample testcase");
-        testCase.setJmsConnection(c);
 
         // First test step:
         JMSRequestReply jrr = new JMSRequestReply("sample.queue sender", "Sends to the sample.queue. Reply on sample.topic");
@@ -58,6 +59,7 @@ public class Main {
         p.getTestSuites().add(suite);
         p.getTestSuites().add(suite2);
         p.setAuthor("Me myself and I");
+        p.getJmsConnections().add(c);
 
         p.setFilename("/home/whatevs/example/filename.xml");
 
@@ -73,7 +75,7 @@ public class Main {
 
     private static void jaxbStuff() throws JAXBException, BreakdownException {
         Project p = createProject();
-        p.write();
+        p.write(System.out);
     }
 
     private static void runProject() throws BreakdownException, AssertionException {

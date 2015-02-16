@@ -63,11 +63,16 @@ public class ProjectTab extends AbstractTab<Project> implements ExecutionListene
                 try {
                     p.execute();
                 } catch (BreakdownException e1) {
+                    MessageBox box = new MessageBox(getBreakdownUI().getShell(), SWT.ICON_ERROR);
+                    box.setText("Error!");
+                    box.setMessage(e1.getMessage());
+                    box.open();
                 } catch (AssertionException e1) {
                     MessageBox box = new MessageBox(getBreakdownUI().getShell(), SWT.ICON_WARNING);
                     box.setText("Welp!");
                     box.setText("Assertions failed!");
                     LOG.warn("Something failed {}", e1.getMessage());
+                    box.open();
                 }
             }
         });

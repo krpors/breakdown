@@ -1,6 +1,8 @@
 package nl.rivium.breakdown.core;
 
 import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +13,7 @@ import java.util.List;
  * generic parameters are defined: P for the Parent type, and C for the Children types. This prevents casting the parent
  * and children types back and forth.
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public abstract class GenericEntity<P extends GenericEntity, C extends GenericEntity> {
 
     /**

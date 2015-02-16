@@ -22,6 +22,5 @@ public class TestTestCase {
         c.setPassword(null);
         c.setQueueConnectionFactory("QueueConnectionFactory");
         c.setTopicConnectionFactory("TopicConnectionFactory");
-        tc.setJmsConnection(c);
     }
 }

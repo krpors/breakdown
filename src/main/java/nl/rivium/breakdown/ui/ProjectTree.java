@@ -2,6 +2,7 @@ package nl.rivium.breakdown.ui;
 
 import nl.rivium.breakdown.Main;
 import nl.rivium.breakdown.core.*;
+import nl.rivium.breakdown.core.jms.JMSConnection;
 import nl.rivium.breakdown.core.jms.JMSRequestReply;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.custom.CTabFolder;
@@ -10,6 +11,10 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * The ProjectTree contains the tree with the structured project hierarchy.
@@ -108,6 +113,10 @@ public class ProjectTree {
             CTabFolder folder = ui.getTabFolder();
 
             TreeSelection selection = (TreeSelection) openEvent.getSelection();
+            if (!(selection.getFirstElement() instanceof GenericEntity)) {
+                return;
+            }
+
             GenericEntity first = (GenericEntity) selection.getFirstElement();
 
             if (bringToFront(first)) {
@@ -143,8 +152,6 @@ public class ProjectTree {
 
         @Override
         public Object[] getElements(Object o) {
-            LOG.debug("Getting elements of {}", o);
-
             // Sneaky way to add a root, so the Project node is visible.
             if (o instanceof Root) {
                 Root root = (Root) o;
@@ -161,7 +168,6 @@ public class ProjectTree {
 
         @Override
         public Object[] getChildren(Object o) {
-            LOG.debug("Getting children of {}", o);
             if (o instanceof GenericEntity) {
                 GenericEntity genericEntity = (GenericEntity) o;
                 return genericEntity.getChildren();
@@ -179,7 +185,6 @@ public class ProjectTree {
 
         @Override
         public boolean hasChildren(Object o) {
-            LOG.debug("Has children: " + o);
             if (o instanceof GenericEntity) {
                 GenericEntity genericEntity = (GenericEntity) o;
                 return genericEntity.getChildren().length > 0;
@@ -227,7 +232,11 @@ public class ProjectTree {
                 return ImageCache.getImage(ImageCache.UIImage.TestStep);
             }
 
-            return null;
+            if (element instanceof JMSConnection) {
+                return ImageCache.getImage(ImageCache.UIImage.JMSConnection);
+            }
+
+            return ImageCache.getImage(ImageCache.UIImage.Folder);
         }
 
         @Override
