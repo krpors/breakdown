@@ -1,6 +1,7 @@
 package nl.rivium.breakdown.ui;
 
 import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.jface.resource.JFaceColors;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.slf4j.Logger;
@@ -28,6 +29,7 @@ public final class ImageCache {
 
         registerImages();
     }
+
 
     /**
      * Registers all the images which are currently (manually) configured in the

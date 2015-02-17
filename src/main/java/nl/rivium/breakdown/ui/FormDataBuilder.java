@@ -24,18 +24,13 @@ public final class FormDataBuilder {
         return this;
     }
 
-    public FormDataBuilder left(Control control, int offset) {
-        data.left = new FormAttachment(control, offset);
-        return this;
-    }
-
     public FormDataBuilder right(int numerator) {
         data.right = new FormAttachment(numerator);
         return this;
     }
 
-    public FormDataBuilder right(Control control, int offset) {
-        data.right = new FormAttachment(control, offset);
+    public FormDataBuilder right(Control control) {
+        data.right = new FormAttachment(control);
         return this;
     }
 
@@ -44,8 +39,8 @@ public final class FormDataBuilder {
         return this;
     }
 
-    public FormDataBuilder top(Control control, int offset) {
-        data.top = new FormAttachment(control, offset);
+    public FormDataBuilder top(Control control) {
+        data.top = new FormAttachment(control);
         return this;
     }
 
@@ -54,8 +49,8 @@ public final class FormDataBuilder {
         return this;
     }
 
-    public FormDataBuilder bottom(Control control, int offset) {
-        data.bottom = new FormAttachment(control, offset);
+    public FormDataBuilder bottom(Control control) {
+        data.bottom = new FormAttachment(control);
         return this;
     }
 

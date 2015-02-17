@@ -83,7 +83,7 @@ public class JMSConnectionTab extends AbstractTab<JMSConnection> implements Focu
         FormData data = FormDataBuilder.newBuilder().left(0).right(100).top(0).create();
         groupTop.setLayoutData(data);
 
-        groupProperties.setLayoutData(FormDataBuilder.newBuilder().left(0).right(100).bottom(100).top(groupTop, 0).create());
+        groupProperties.setLayoutData(FormDataBuilder.newBuilder().left(0).right(100).bottom(100).top(groupTop).create());
 
         registerFocusListeners();
 
@@ -180,11 +180,6 @@ public class JMSConnectionTab extends AbstractTab<JMSConnection> implements Focu
 
     @Override
     public void assertionFailed(Project p, TestSuite testSuite, TestCase testCase, TestStep testStep) {
-        LOG.warn("Assertion failed lol!!!");
-        MessageBox box = new MessageBox(getBreakdownUI().getShell(), SWT.ICON_WARNING);
-        box.setText("Whoops!");
-        box.setMessage("An assertion has failed in " + testStep.getName());
-        box.open();
     }
 
     @Override

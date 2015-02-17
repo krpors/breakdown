@@ -18,15 +18,25 @@ public class Main {
     private static Logger LOG = LoggerFactory.getLogger(Main.class);
 
     public static Project createProject() throws BreakdownException {
-        JMSConnection c = new JMSConnection();
-        c.setName("Localhost jms connection");
-        c.setDescription("Bogus description");
-        c.setContextFactory("com.tibco.tibjms.naming.TibjmsInitialContextFactory");
-        c.setConnectionUrl("tcp://localhost:7222");
-        c.setUsername("admin");
-        c.setPassword(null);
-        c.setQueueConnectionFactory("QueueConnectionFactory");
-        c.setTopicConnectionFactory("TopicConnectionFactory");
+        JMSConnection conn1 = new JMSConnection();
+        conn1.setName("Localhost jms connection");
+        conn1.setDescription("Bogus description");
+        conn1.setContextFactory("com.tibco.tibjms.naming.TibjmsInitialContextFactory");
+        conn1.setConnectionUrl("tcp://localhost:7222");
+        conn1.setUsername("admin");
+        conn1.setPassword(null);
+        conn1.setQueueConnectionFactory("QueueConnectionFactory");
+        conn1.setTopicConnectionFactory("TopicConnectionFactory");
+
+        JMSConnection conn2 = new JMSConnection();
+        conn2.setName("Other connection");
+        conn2.setDescription("This is another connection.");
+        conn2.setContextFactory("com.tibco.tibjms.naming.TibjmsInitialContextFactory");
+        conn2.setConnectionUrl("tcp://localhost:7222");
+        conn2.setUsername("admin");
+        conn2.setPassword("nimda");
+        conn2.setQueueConnectionFactory("QueueConnectionFactory");
+        conn2.setTopicConnectionFactory("TopicConnectionFactory");
 
         TestCase testCase = new TestCase("Testcase 1", "Sample testcase");
 
@@ -36,6 +46,9 @@ public class Main {
         JMSSenderInput input = new JMSSenderInput();
         input.getProperties().put("Some Property", "Yarp!");
         input.getProperties().put("One", "1");
+        input.getProperties().put("Two", "2");
+        input.getProperties().put("Three", "3");
+        input.getProperties().put("PRCorrelationID", "Hi thar");
         input.setPayload("Payload!");
 
         jrr.setInput(input);
@@ -60,7 +73,8 @@ public class Main {
         p.getTestSuites().add(suite);
         p.getTestSuites().add(suite2);
         p.setAuthor("Me myself and I");
-        p.getJmsConnections().add(c);
+        p.getJmsConnections().add(conn1);
+        p.getJmsConnections().add(conn2);
 
         p.setFilename("/home/whatevs/example/filename.xml");
 
