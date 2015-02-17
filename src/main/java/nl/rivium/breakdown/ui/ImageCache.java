@@ -1,7 +1,7 @@
 package nl.rivium.breakdown.ui;
 
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
-import org.eclipse.jface.resource.JFaceColors;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.slf4j.Logger;
@@ -42,8 +42,24 @@ public final class ImageCache {
         }
     }
 
+    /**
+     * Gets an image from the image registry.
+     *
+     * @param img The image from the enum to get.
+     * @return The Image.
+     */
     public static Image getImage(UIImage img) {
         return imageRegistry.get(img.name());
+    }
+
+    /**
+     * Gets an image descriptor from an image. Descriptors are frequently used in JFace actions.
+     *
+     * @param img The image from the enum.
+     * @return The ImageDescriptor.
+     */
+    public static ImageDescriptor getDescriptor(UIImage img) {
+        return imageRegistry.getDescriptor(img.name());
     }
 
     /**

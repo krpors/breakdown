@@ -35,7 +35,13 @@ public final class UITools {
             statusses.add(new Status(Status.ERROR, "plz", ste.toString()));
         }
         IStatus[] array = statusses.toArray(new IStatus[statusses.size()]);
-        MultiStatus status = new MultiStatus("plg", Status.ERROR, array, ex.getLocalizedMessage(), ex);
+
+        String exmsg = ex.getMessage();
+        if (exmsg == null || exmsg.trim().equals("")) {
+            exmsg = "Please inspect the details for further information.";
+        }
+
+        MultiStatus status = new MultiStatus("plg", Status.ERROR, array, exmsg, ex);
 
         ErrorDialog.openError(parent, title, message, status);
     }

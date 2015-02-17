@@ -1,6 +1,9 @@
 package nl.rivium.breakdown.ui;
 
-import nl.rivium.breakdown.ui.dlg.HeaderPropertyDialog;
+import nl.rivium.breakdown.ui.actions.ActionNewProject;
+import nl.rivium.breakdown.ui.actions.ActionOpenProject;
+import nl.rivium.breakdown.ui.actions.ActionSaveProject;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
@@ -21,16 +24,36 @@ public class BreakdownUI extends ApplicationWindow {
      */
     private static Logger LOG = LoggerFactory.getLogger(BreakdownUI.class);
 
+    /**
+     * Image
+     */
     private ImageCache imageCache;
 
+    /**
+     * The project tree.
+     */
     private ProjectTree projectTree;
 
+    /**
+     * The tab folder containing open configurations.
+     */
     private CTabFolder tabFolder;
 
-    public BreakdownUI() {
-        super(null);
+    /**
+     * Action to create a new project.
+     */
+    private Action actionNewProject;
+    private ActionSaveProject actionSaveProject;
+    private ActionOpenProject actionOpenProject;
 
-        imageCache = new ImageCache();
+    public BreakdownUI() {
+        super(null); // no parent shell; this is the parent.
+
+        // Initialize images.
+        new ImageCache();
+
+        // Add menu bar (see createMenuManager()). This will also invoke createActions().
+        addMenuBar();
     }
 
     /**
@@ -67,13 +90,33 @@ public class BreakdownUI extends ApplicationWindow {
         shell.setLocation(x, y);
     }
 
+    /**
+     * Creates the top menu bar.
+     *
+     * @return The menu.
+     */
     @Override
     protected MenuManager createMenuManager() {
+        createActions();
+
         MenuManager mgr = new MenuManager();
 
         MenuManager menuFile = new MenuManager("File");
+        menuFile.add(actionNewProject);
+        menuFile.add(actionOpenProject);
+        menuFile.add(actionSaveProject);
+        mgr.add(menuFile);
 
         return mgr;
+    }
+
+    /**
+     * Creates the menu actions and such.
+     */
+    private void createActions() {
+        actionNewProject = new ActionNewProject(this);
+        actionOpenProject = new ActionOpenProject(this);
+        actionSaveProject = new ActionSaveProject(this);
     }
 
     /**

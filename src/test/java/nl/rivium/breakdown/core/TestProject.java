@@ -144,4 +144,15 @@ public class TestProject {
             Assert.fail(e.getMessage());
         }
     }
+
+    /**
+     * Should end in an exception due to faulty XML.
+     *
+     * @throws JAXBException      The JAXBException
+     * @throws BreakdownException The BreakdownException
+     */
+    @Test(expected = JAXBException.class)
+    public void unmarshalFaultyXML() throws JAXBException, BreakdownException {
+        Project.read(TestProject.class.getResourceAsStream("/project-err.xml"));
+    }
 }

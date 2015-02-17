@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- project file with some formatting failures -->
+<ns2:breakdownProject xmlns:ns2="urn:breakdown:project:1.0">
+    <err
+    <name>Project 1</name>
+    <description>Desc</description>
+    <testSuites>
+        <testSuite>
+            <name>Suite 1</name>
+            <description>Desc</description>
+            <testCases>
+                <testCase>
+                    <name>Testcase 1</name>
+                    <description>Sample testcase</description>
+                    <testSteps>
+                        <testStep xsi:type="jmsRequestReply" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                            <name>sample.queue sender</name>
+                            <description>Sends to the sample.queue. Reply on sample.topic</description>
+                            <input xsi:type="jmsSenderInput">
+                                <properties>
+                                    <property key="Some Property" value="Yarp!"/>
+                                    <property key="One" value="1"/>
+                                </properties>
+                                <payload>Payload!</payload>
+                            </input>
+                            <timeout>10000</timeout>
+                            <requestDestination>
+                                <name>sample.queue</name>
+                                <type>QUEUE</type>
+                            </requestDestination>
+                            <replyDestination>
+                                <name>sample.topic</name>
+                                <type>TOPIC</type>
+                            </replyDestination>
+                        </testStep>
+                        <testStep xsi:type="assertionCollection" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                            <name>Bunch of assertions</name>
+                            <description>String checks</description>
+                            <assertionList xsi:type="stringAssertion">
+                                <assertion>Some response</assertion>
+                                <isRegex>false</isRegex>
+                            </assertionList>
+                        </testStep>
+                    </testSteps>
+                </testCase>
+            </testCases>
+        </testSuite>
+        <testSuite>
+            <name>Suite 2</name>
+            <description>Descirpiotasjd</description>
+            <testCases/>
+        </testSuite>
+    </testSuites>
+    <jmsConnections>
+        <jmsConnection>
+            <name>Localhost jms connection</name>
+            <description>Bogus description</description>
+            <contextFactory>com.tibco.tibjms.naming.TibjmsInitialContextFactory</contextFactory>
+            <connectionUrl>tcp://localhost:7222</connectionUrl>
+            <username>admin</username>
+            <password xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+            <queueConnectionFactory>QueueConnectionFactory</queueConnectionFactory>
+            <topicConnectionFactory>TopicConnectionFactory</topicConnectionFactory>
+        </jmsConnection>
+        <jmsConnection>
+            <name>Second connection</name>
+            <description>Bogus description</description>
+            <contextFactory>org.jboss.mq.ContextFactory</contextFactory>
+            <connectionUrl>tcp://localhost:4456</connectionUrl>
+            <username>admin</username>
+            <password xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+            <queueConnectionFactory>q</queueConnectionFactory>
+            <topicConnectionFactory>t</topicConnectionFactory>
+        </jmsConnection>
+    </jmsConnections>
+    <author>Me myself and I</author>
+</ns2:breakdownProject>

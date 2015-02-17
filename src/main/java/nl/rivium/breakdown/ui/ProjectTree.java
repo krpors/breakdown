@@ -35,12 +35,12 @@ public class ProjectTree {
         treeViewer.setLabelProvider(new ProjectTreeLabelProvider());
         treeViewer.addOpenListener(new ProjectTreeOpenListener(this));
 
-        try {
-            Project project = Main.createProject();
-            setProject(project);
-        } catch (BreakdownException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Project project = Main.createProject();
+//            setProject(project);
+//        } catch (BreakdownException e) {
+//            e.printStackTrace();
+//        }
     }
 
     /**
