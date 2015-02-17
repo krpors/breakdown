@@ -62,7 +62,40 @@ public class TestStepJMSRequestReplyTab extends AbstractTab<JMSRequestReply> imp
 
         Composite compositeMain = new Composite(parent, SWT.NONE);
         FormLayout layout = new FormLayout();
+        layout.marginWidth = 5;
+        layout.marginHeight = 5;
         compositeMain.setLayout(layout);
+
+        Group groupProperties = createDefaultGroup(compositeMain);
+        Group groupConfiguration = createConfigurationGroup(compositeMain);
+
+        FormData data = new FormData();
+        data.left = new FormAttachment(0);
+        data.right = new FormAttachment(100);
+        data.top = new FormAttachment(0);
+        groupProperties.setLayoutData(data);
+
+        data = new FormData();
+        data.left = new FormAttachment(0);
+        data.right = new FormAttachment(100);
+        data.top = new FormAttachment(groupProperties, 5);
+        data.bottom = new FormAttachment(100);
+        groupConfiguration.setLayoutData(data);
+
+        registerFocusListeners();
+
+        return compositeMain;
+    }
+
+    /**
+     * Creates the default group up top (name and description);
+     * @param compositeMain The main composite parent.
+     * @return The group created.
+     */
+    private Group createDefaultGroup(Composite compositeMain) {
+        final TestStep step = getEntity();
+        final TestCase testCase = step.getParent();
+        final TestSuite testSuite = testCase.getParent();
 
         Group groupProperties = new Group(compositeMain, SWT.NONE);
         groupProperties.setText("Test step");
@@ -78,24 +111,7 @@ public class TestStepJMSRequestReplyTab extends AbstractTab<JMSRequestReply> imp
         txtName = UITools.createTextWithLabel(groupProperties, "Name:", step.getName());
         txtDescription = UITools.createTextWithLabel(groupProperties, "Description:", step.getDescription());
 
-        Group groupConfiguration = createConfigurationGroup(compositeMain);
-
-        FormData data = new FormData();
-        data.left = new FormAttachment(0);
-        data.right = new FormAttachment(100);
-        data.top = new FormAttachment(0);
-        groupProperties.setLayoutData(data);
-
-        data = new FormData();
-        data.left = new FormAttachment(0);
-        data.right = new FormAttachment(100);
-        data.top = new FormAttachment(groupProperties);
-        data.bottom = new FormAttachment(100);
-        groupConfiguration.setLayoutData(data);
-
-        registerFocusListeners();
-
-        return compositeMain;
+        return groupProperties;
     }
 
     /**
@@ -321,7 +337,7 @@ public class TestStepJMSRequestReplyTab extends AbstractTab<JMSRequestReply> imp
         rr.getInput().setPayload(txtPayload.getText());
         rr.setJmsConnectionName(cmbJMSConnection.getItem(cmbJMSConnection.getSelectionIndex()));
         for (TableItem props : tblCustomProperties.getItems()) {
-            System.out.println(props.getText(0) + " = " + props.getText(1));
+            getEntity().getInput().getProperties().put(props.getText(0), props.getText(1));
         }
 
         getBreakdownUI().getProjectTree().refresh();

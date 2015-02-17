@@ -1,6 +1,7 @@
 package nl.rivium.breakdown.ui;
 
 import nl.rivium.breakdown.ui.dlg.HeaderPropertyDialog;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
@@ -64,6 +65,15 @@ public class BreakdownUI extends ApplicationWindow {
         int x = bounds.x + (bounds.width - rect.width) / 2;
         int y = bounds.y + (bounds.height - rect.height) / 2;
         shell.setLocation(x, y);
+    }
+
+    @Override
+    protected MenuManager createMenuManager() {
+        MenuManager mgr = new MenuManager();
+
+        MenuManager menuFile = new MenuManager("File");
+
+        return mgr;
     }
 
     /**
