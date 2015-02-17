@@ -2,6 +2,7 @@ package nl.rivium.breakdown.ui.tab;
 
 import nl.rivium.breakdown.core.*;
 import nl.rivium.breakdown.ui.BreakdownUI;
+import nl.rivium.breakdown.ui.FormDataBuilder;
 import nl.rivium.breakdown.ui.ImageCache;
 import nl.rivium.breakdown.ui.UITools;
 import org.eclipse.swt.SWT;
@@ -14,7 +15,10 @@ import org.eclipse.swt.widgets.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ProjectTab extends AbstractTab<Project> implements ExecutionListener {
+import java.util.Observable;
+import java.util.Observer;
+
+public class ProjectTab extends AbstractTab<Project> {
 
     /**
      * The logz0r.
@@ -54,44 +58,7 @@ public class ProjectTab extends AbstractTab<Project> implements ExecutionListene
         txtDescription = UITools.createTextWithLabel(groupProperties, "Description:", project.getDescription());
         txtFilename.setEditable(false);
 
-        Group groupActions = new Group(compositeMain, SWT.NONE);
-        groupActions.setText("Actions");
-        groupActions.setLayout(new FillLayout());
-        Button button = new Button(groupActions, SWT.PUSH);
-        button.setText("RUN THIS DAMN PROJECT");
-        button.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                Project p = getEntity();
-                try {
-                    p.execute();
-                } catch (BreakdownException e1) {
-                    MessageBox box = new MessageBox(getBreakdownUI().getShell(), SWT.ICON_ERROR);
-                    box.setText("Error!");
-                    box.setMessage(e1.getMessage());
-                    box.open();
-                } catch (AssertionException e1) {
-                    MessageBox box = new MessageBox(getBreakdownUI().getShell(), SWT.ICON_WARNING);
-                    box.setText("Welp!");
-                    box.setText("Assertions failed!");
-                    LOG.warn("Something failed {}", e1.getMessage());
-                    box.open();
-                }
-            }
-        });
-
-        FormData data = new FormData();
-        data.left = new FormAttachment(0);
-        data.right = new FormAttachment(100);
-        data.top = new FormAttachment(0);
-        groupProperties.setLayoutData(data);
-
-        data = new FormData();
-        data.left = new FormAttachment(0);
-        data.right = new FormAttachment(100);
-        data.top = new FormAttachment(groupProperties);
-        data.bottom = new FormAttachment(100);
-        groupActions.setLayoutData(data);
+        groupProperties.setLayoutData(FormDataBuilder.newBuilder().left(0).right(100).top(0).bottom(100).create());
 
         return compositeMain;
     }
@@ -101,12 +68,18 @@ public class ProjectTab extends AbstractTab<Project> implements ExecutionListene
         return ImageCache.getImage(ImageCache.UIImage.Project);
     }
 
+    /**
+     * Updates widgets based on the model.
+     */
     @Override
-    public void assertionFailed(Project p, TestSuite testSuite, TestCase testCase, TestStep testStep) {
-        LOG.warn("Assertion failed lol!!!");
-        MessageBox box = new MessageBox(getBreakdownUI().getShell(), SWT.ICON_WARNING);
-        box.setText("Whoops!");
-        box.setMessage("An assertion has failed in " + testStep.getName());
-        box.open();
+    protected void updateWidgets() {
+        Project p = getEntity();
+        txtFilename.setText(p.getFilename());
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        updateWidgets();
     }
 }
+

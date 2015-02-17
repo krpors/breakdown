@@ -56,8 +56,9 @@ public class TestSuiteTab extends AbstractTab<TestSuite> {
         return ImageCache.getImage(ImageCache.UIImage.TestSuite);
     }
 
+
     @Override
-    public void assertionFailed(Project p, TestSuite testSuite, TestCase testCase, TestStep testStep) {
+    protected void updateWidgets() {
 
     }
 }

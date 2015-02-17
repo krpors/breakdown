@@ -149,6 +149,13 @@ public class BreakdownUI extends ApplicationWindow {
     }
 
     /**
+     * Prototype function to update widgets on a model change.
+     */
+    public void updateWidgets() {
+
+    }
+
+    /**
      * Returns the project tree instance.
      *
      * @return The project tree.

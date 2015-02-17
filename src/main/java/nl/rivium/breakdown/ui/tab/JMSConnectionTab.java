@@ -1,9 +1,5 @@
 package nl.rivium.breakdown.ui.tab;
 
-import nl.rivium.breakdown.core.Project;
-import nl.rivium.breakdown.core.TestCase;
-import nl.rivium.breakdown.core.TestStep;
-import nl.rivium.breakdown.core.TestSuite;
 import nl.rivium.breakdown.core.jms.JMSConnection;
 import nl.rivium.breakdown.ui.BreakdownUI;
 import nl.rivium.breakdown.ui.FormDataBuilder;
@@ -20,7 +16,10 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -181,10 +180,6 @@ public class JMSConnectionTab extends AbstractTab<JMSConnection> implements Focu
     }
 
     @Override
-    public void assertionFailed(Project p, TestSuite testSuite, TestCase testCase, TestStep testStep) {
-    }
-
-    @Override
     public void focusGained(FocusEvent e) {
         // no-op
     }
@@ -208,5 +203,10 @@ public class JMSConnectionTab extends AbstractTab<JMSConnection> implements Focu
         getBreakdownUI().getProjectTree().refresh();
 
         // TODO: refactor references automatically to jms connections.
+    }
+
+    @Override
+    protected void updateWidgets() {
+
     }
 }

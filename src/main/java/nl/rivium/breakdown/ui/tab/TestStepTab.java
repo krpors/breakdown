@@ -64,7 +64,8 @@ public class TestStepTab extends AbstractTab<TestStep> {
     }
 
     @Override
-    public void assertionFailed(Project p, TestSuite testSuite, TestCase testCase, TestStep testStep) {
+    protected void updateWidgets() {
 
     }
+
 }

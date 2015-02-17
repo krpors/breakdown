@@ -14,6 +14,7 @@
                         <testStep xsi:type="jmsRequestReply" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                             <name>sample.queue sender</name>
                             <description>Sends to the sample.queue. Reply on sample.topic</description>
+                            <jmsConnectionName>Localhost jms connection</jmsConnectionName>
                             <input xsi:type="jmsSenderInput">
                                 <properties>
                                     <property key="Some Property" value="Yarp!"/>

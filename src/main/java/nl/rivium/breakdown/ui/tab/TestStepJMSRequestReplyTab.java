@@ -315,11 +315,6 @@ public class TestStepJMSRequestReplyTab extends AbstractTab<JMSRequestReply> imp
     }
 
     @Override
-    public void assertionFailed(Project p, TestSuite testSuite, TestCase testCase, TestStep testStep) {
-
-    }
-
-    @Override
     public void focusGained(FocusEvent e) {
     }
 
@@ -335,11 +330,18 @@ public class TestStepJMSRequestReplyTab extends AbstractTab<JMSRequestReply> imp
         rr.setName(txtName.getText());
         rr.setDescription(txtDescription.getText());
         rr.getInput().setPayload(txtPayload.getText());
-        rr.setJmsConnectionName(cmbJMSConnection.getItem(cmbJMSConnection.getSelectionIndex()));
+        if (cmbJMSConnection.getSelectionIndex() >= 0) {
+            rr.setJmsConnectionName(cmbJMSConnection.getItem(cmbJMSConnection.getSelectionIndex()));
+        }
         for (TableItem props : tblCustomProperties.getItems()) {
             getEntity().getInput().getProperties().put(props.getText(0), props.getText(1));
         }
 
         getBreakdownUI().getProjectTree().refresh();
+    }
+
+    @Override
+    protected void updateWidgets() {
+
     }
 }

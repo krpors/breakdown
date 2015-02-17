@@ -7,15 +7,19 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 
 /**
  * A generic entity. Most of the things in the core have basic properties. These properties are contained within this
  * abstract class. It also behaves like a Node: it has a parent GenericEntity, but also children GenericEntities. Two
  * generic parameters are defined: P for the Parent type, and C for the Children types. This prevents casting the parent
  * and children types back and forth.
+ * <p/>
+ * A generic entity is an Observable class. Whenever a class's properties change, it may decide to notify the observers
+ * of this class.
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public abstract class GenericEntity<P extends GenericEntity, C extends GenericEntity> {
+public abstract class GenericEntity<P extends GenericEntity, C extends GenericEntity> extends Observable {
 
     /**
      * The entity's name. Default value is empty to avoid the likely-hood of null pointers.
@@ -105,6 +109,14 @@ public abstract class GenericEntity<P extends GenericEntity, C extends GenericEn
             GenericEntity entity = (GenericEntity) parent;
             setParent((P) entity);
         }
+    }
+
+    /**
+     * Method to set the observable to changed, then notify observers immediately.
+     */
+    public void forceNotifyObservers() {
+        setChanged();
+        super.notifyObservers();
     }
 
     @Override

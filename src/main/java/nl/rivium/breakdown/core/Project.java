@@ -91,6 +91,7 @@ public class Project extends GenericEntity {
      */
     public void setFilename(String filename) {
         this.filename = filename;
+        forceNotifyObservers();
     }
 
     @Override
@@ -161,12 +162,30 @@ public class Project extends GenericEntity {
         throw new BreakdownException("Can not read project properly");
     }
 
+    /**
+     * Marshals the project to the given outputstream.
+     *
+     * @param os The output stream to write the project to.
+     * @throws JAXBException When exceptions arise while attempting to marshal to file.
+     */
     public void write(OutputStream os) throws JAXBException {
         JAXBContext ctx = createContext();
         Marshaller m = ctx.createMarshaller();
         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         m.setProperty(Marshaller.JAXB_ENCODING, "utf-8");
         m.marshal(this, os);
+    }
+
+    /**
+     * Writes the project to the filename.
+     */
+    public void write() throws JAXBException {
+        JAXBContext ctx = createContext();
+        Marshaller m = ctx.createMarshaller();
+        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        m.setProperty(Marshaller.JAXB_ENCODING, "utf-8");
+        m.marshal(this, new File(getFilename()));
+
     }
 
     /**

@@ -76,8 +76,6 @@ public class Main {
         p.getJmsConnections().add(conn1);
         p.getJmsConnections().add(conn2);
 
-        p.setFilename("/home/whatevs/example/filename.xml");
-
         // set parents, for debuggin'
         jrr.setParent(testCase);
         ac.setParent(testCase);
