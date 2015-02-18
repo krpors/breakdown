@@ -1,24 +1,26 @@
 package nl.rivium.breakdown.ui.tab;
 
-import nl.rivium.breakdown.core.*;
+import nl.rivium.breakdown.core.Project;
 import nl.rivium.breakdown.ui.BreakdownUI;
 import nl.rivium.breakdown.ui.FormDataBuilder;
 import nl.rivium.breakdown.ui.ImageCache;
 import nl.rivium.breakdown.ui.UITools;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Observable;
-import java.util.Observer;
 
-public class ProjectTab extends AbstractTab<Project> {
+public class ProjectTab extends AbstractTab<Project> implements FocusListener {
 
     /**
      * The logz0r.
@@ -58,6 +60,10 @@ public class ProjectTab extends AbstractTab<Project> {
         txtDescription = UITools.createTextWithLabel(groupProperties, "Description:", project.getDescription());
         txtFilename.setEditable(false);
 
+        txtProjectName.addFocusListener(this);
+        txtAuthorName.addFocusListener(this);
+        txtDescription.addFocusListener(this);
+
         groupProperties.setLayoutData(FormDataBuilder.newBuilder().left(0).right(100).top(0).bottom(100).create());
 
         return compositeMain;
@@ -80,6 +86,20 @@ public class ProjectTab extends AbstractTab<Project> {
     @Override
     public void update(Observable o, Object arg) {
         updateWidgets();
+    }
+
+    @Override
+    public void focusGained(FocusEvent e) {
+        // no-op
+    }
+
+    @Override
+    public void focusLost(FocusEvent e) {
+        Project p = getEntity();
+        p.setAuthor(txtAuthorName.getText());
+        p.setDescription(txtDescription.getText());
+        p.setName(txtProjectName.getText());
+        getBreakdownUI().getProjectTree().refresh();
     }
 }
 

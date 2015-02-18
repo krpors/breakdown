@@ -18,34 +18,38 @@ public class ActionSaveProject extends BreakdownAction {
     private static Logger LOG = LoggerFactory.getLogger(ActionSaveProject.class);
 
     public ActionSaveProject(BreakdownUI ui) {
-        super(ui, "&Save");
+        super(ui, "&Save Project");
+        setAccelerator(SWT.CTRL | 'S');
     }
 
     @Override
     public void run() {
         Project project = getBreakdownUI().getProjectTree().getProject();
         if (project == null) {
-            LOG.warn("No project to save. How is this possible?");
+            LOG.warn("No project to save. The save action should be disabled at this point.");
             return;
         }
 
         LOG.debug("Observers: {}", project.countObservers());
 
         try {
-            if (project.getFilename() == null || project.getFilename().equals("")) {
+            String file = project.getFilename();
+            if (file == null || file.equals("")) {
                 // ask for filename to save to.
                 FileDialog dlg = new FileDialog(getBreakdownUI().getShell(), SWT.SAVE);
                 dlg.setFilterExtensions(new String[]{"*.xml"});
                 dlg.setText("Specify file to save the Breakdown project to");
-                String file = dlg.open();
+                file = dlg.open();
                 if (file == null) {
                     // cancel has been hit, bail out.
                     return;
                 }
-                LOG.info("Saving project to {}", file);
                 project.setFilename(file);
-                project.write();
             }
+
+
+            LOG.info("Saving project to {}", file);
+            project.write();
         } catch (JAXBException e) {
             UITools.showException(getBreakdownUI().getShell(),
                     "Unable to write to file",

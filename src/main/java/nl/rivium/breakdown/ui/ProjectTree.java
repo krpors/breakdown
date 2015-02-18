@@ -5,6 +5,7 @@ import nl.rivium.breakdown.core.*;
 import nl.rivium.breakdown.core.jms.JMSConnection;
 import nl.rivium.breakdown.core.jms.JMSRequestReply;
 import nl.rivium.breakdown.ui.tab.*;
+import org.eclipse.jface.resource.JFaceColors;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
@@ -35,12 +36,12 @@ public class ProjectTree {
         treeViewer.setLabelProvider(new ProjectTreeLabelProvider());
         treeViewer.addOpenListener(new ProjectTreeOpenListener(this));
 
-        try {
-            Project project = Main.createProject();
-            setProject(project);
-        } catch (BreakdownException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Project project = Main.createProject();
+//            setProject(project);
+//        } catch (BreakdownException e) {
+//            e.printStackTrace();
+//        }
     }
 
     /**

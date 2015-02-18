@@ -115,6 +115,7 @@ public class BreakdownUI extends ApplicationWindow {
         actionNewProject = new ActionNewProject(this);
         actionOpenProject = new ActionOpenProject(this);
         actionSaveProject = new ActionSaveProject(this);
+        actionSaveProject.setEnabled(false);
     }
 
     /**
@@ -148,7 +149,9 @@ public class BreakdownUI extends ApplicationWindow {
      * Prototype function to update widgets on a model change.
      */
     public void updateWidgets() {
-
+        if (projectTree.getProject() != null) {
+            actionSaveProject.setEnabled(true);
+        }
     }
 
     /**

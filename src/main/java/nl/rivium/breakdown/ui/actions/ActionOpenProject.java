@@ -21,7 +21,8 @@ public class ActionOpenProject extends BreakdownAction {
     private static Logger LOG = LoggerFactory.getLogger(ActionOpenProject.class);
 
     public ActionOpenProject(BreakdownUI ui) {
-        super(ui, "&Open...");
+        super(ui, "&Open Project...");
+        setAccelerator(SWT.CTRL | 'O');
     }
 
     @Override
@@ -33,7 +34,9 @@ public class ActionOpenProject extends BreakdownAction {
             LOG.info("Opening project '{}'", path);
             try {
                 Project p = Project.read(path);
+                getBreakdownUI().getTabFolder().disposeAllTabs();
                 getBreakdownUI().getProjectTree().setProject(p);
+                getBreakdownUI().updateWidgets();
             } catch (JAXBException | BreakdownException e) {
                 String s = String.format("Unable to open file '%s'", path);
                 UITools.showException(getBreakdownUI().getShell(), "Unable to open file", s, e);

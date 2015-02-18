@@ -150,12 +150,22 @@ public class Project extends GenericEntity {
         throw new BreakdownException("Can not read project properly");
     }
 
+    /**
+     * Reads the specified file, attempts to parse it and unmarshal it to a Project instance.
+     *
+     * @param file The file to read.
+     * @return The Project instance.
+     * @throws JAXBException      Parsing failed.
+     * @throws BreakdownException Something else.
+     */
     public static Project read(String file) throws JAXBException, BreakdownException {
         JAXBContext ctx = createContext();
         Unmarshaller um = ctx.createUnmarshaller();
         Object o = um.unmarshal(new File(file));
         if (o instanceof Project) {
-            return (Project) o;
+            Project p = (Project) o;
+            p.setFilename(file);
+            return p;
         }
 
 
