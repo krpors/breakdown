@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import javax.jms.Connection;
 import javax.jms.JMSException;
 import javax.naming.NamingException;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.*;
 import java.util.LinkedList;
 import java.util.List;

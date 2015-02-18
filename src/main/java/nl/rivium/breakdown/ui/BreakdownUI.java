@@ -9,9 +9,9 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -132,12 +132,17 @@ public class BreakdownUI extends ApplicationWindow {
      */
     @Override
     protected Control createContents(Composite parent) {
-        SashForm sashForm = new SashForm(parent, SWT.HORIZONTAL | SWT.SMOOTH);
+        SashForm lol = new SashForm(parent, SWT.VERTICAL | SWT.SMOOTH);
+
+        SashForm sashForm = new SashForm(lol, SWT.HORIZONTAL | SWT.SMOOTH);
 
         projectTree = new ProjectTree(this, sashForm);
         tabFolder = new ComponentTabFolder(this, sashForm);
 
         sashForm.setWeights(new int[]{30, 70});
+
+        Button b = new Button(lol, SWT.PUSH);
+        b.setText(" :D ");
 
         return super.createContents(parent);
     }

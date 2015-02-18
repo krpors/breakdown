@@ -1,8 +1,5 @@
 package nl.rivium.breakdown.ui.tab;
 
-import nl.rivium.breakdown.core.Project;
-import nl.rivium.breakdown.core.TestCase;
-import nl.rivium.breakdown.core.TestStep;
 import nl.rivium.breakdown.core.TestSuite;
 import nl.rivium.breakdown.ui.BreakdownUI;
 import nl.rivium.breakdown.ui.ImageCache;
@@ -18,7 +15,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 
-public class TestSuiteTab extends AbstractTab<TestSuite> implements FocusListener{
+public class TestSuiteTab extends AbstractTab<TestSuite> implements FocusListener {
 
     private Text txtName;
     private Text txtDescription;

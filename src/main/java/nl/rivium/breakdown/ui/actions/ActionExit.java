@@ -1,14 +1,9 @@
 package nl.rivium.breakdown.ui.actions;
 
-import nl.rivium.breakdown.core.Project;
 import nl.rivium.breakdown.ui.BreakdownUI;
-import nl.rivium.breakdown.ui.UITools;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.FileDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.xml.bind.JAXBException;
 
 /**
  * Action to exit the application.

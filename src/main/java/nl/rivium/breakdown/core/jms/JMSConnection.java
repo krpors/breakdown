@@ -2,11 +2,10 @@ package nl.rivium.breakdown.core.jms;
 
 import nl.rivium.breakdown.core.GenericEntity;
 import nl.rivium.breakdown.core.Project;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.jms.Connection;
-import javax.jms.JMSException;
-import javax.jms.QueueConnectionFactory;
-import javax.jms.TopicConnectionFactory;
+import javax.jms.*;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -17,6 +16,12 @@ import java.util.Properties;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class JMSConnection extends GenericEntity {
+
+    /**
+     * Static loggah.
+     */
+    private static Logger LOG = LoggerFactory.getLogger(JMSConnection.class);
+
     private String contextFactory = "";
     private String connectionUrl = "";
     private String username = "";
@@ -111,8 +116,15 @@ public class JMSConnection extends GenericEntity {
      */
     public Connection createQueueConnection() throws NamingException, JMSException {
         InitialContext ctx = createContext();
-        QueueConnectionFactory qcf = (QueueConnectionFactory) ctx.lookup(getQueueConnectionFactory());
-        return qcf.createQueueConnection(getUsername(), getPassword());
+        Object o = ctx.lookup(getQueueConnectionFactory());
+        if (o != null && o instanceof QueueConnectionFactory) {
+            QueueConnectionFactory qcf = (QueueConnectionFactory) o;
+            return qcf.createQueueConnection(getUsername(), getPassword());
+        }
+        String expl = String.format("Object lookup returned '%s', but an " +
+                "instance of java.jms.QueueConnectionFactory was expected", o.getClass().getName());
+        LOG.warn(expl);
+        throw new NamingException(expl);
     }
 
     /**
@@ -124,8 +136,16 @@ public class JMSConnection extends GenericEntity {
      */
     public Connection createTopicConnection() throws NamingException, JMSException {
         InitialContext ctx = createContext();
-        TopicConnectionFactory tcf = (TopicConnectionFactory) ctx.lookup(getTopicConnectionFactory());
-        return tcf.createTopicConnection(getUsername(), getPassword());
+        Object o = ctx.lookup(getTopicConnectionFactory());
+        if (o != null && o instanceof TopicConnectionFactory) {
+            TopicConnectionFactory tcf = (TopicConnectionFactory) o;
+            return tcf.createTopicConnection(getUsername(), getPassword());
+        }
+
+        String expl = String.format("Object lookup returned '%s', but an " +
+                "instance of java.jms.TopicConnectionFactory was expected", o.getClass().getName());
+        LOG.warn(expl);
+        throw new NamingException(expl);
     }
 
     /**

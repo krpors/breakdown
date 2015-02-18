@@ -9,13 +9,11 @@ import org.eclipse.swt.events.MenuEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.internal.win32.MENUITEMINFO;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.awt.image.ImageAccessException;
 
 /**
  * The ProjectTree contains the tree with the structured project hierarchy.
@@ -79,8 +77,6 @@ public class ProjectTree {
     private void createMenuItemsForProject(Menu menu) {
         MenuItem itemAddSuite = UITools.createMenuItem(menu, "Add test suite", ImageCache.getImage(ImageCache.UIImage.Create));
         MenuItem itemAddConnection = UITools.createMenuItem(menu, "Add JMS connection", ImageCache.getImage(ImageCache.UIImage.JMSConnection));
-
-        new MenuItem(menu, SWT.SEPARATOR);
 
         itemAddSuite.addSelectionListener(new SelectionAdapter() {
             @Override

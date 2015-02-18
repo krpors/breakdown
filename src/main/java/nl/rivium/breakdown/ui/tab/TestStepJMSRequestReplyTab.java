@@ -89,6 +89,7 @@ public class TestStepJMSRequestReplyTab extends AbstractTab<JMSRequestReply> imp
 
     /**
      * Creates the default group up top (name and description);
+     *
      * @param compositeMain The main composite parent.
      * @return The group created.
      */
