@@ -44,6 +44,11 @@ public class TestCase extends GenericEntity<TestSuite, TestStep> {
         super(name, description);
     }
 
+    public TestCase(String name, TestSuite parent) {
+        super(name, "");
+        setParent(parent);
+    }
+
     public List<TestStep> getTestSteps() {
         return testSteps;
     }

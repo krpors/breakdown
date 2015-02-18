@@ -54,7 +54,6 @@ public abstract class AbstractTab<E extends GenericEntity> implements Observer {
      */
     private void createComponents() {
         // register ourselves as an observer.
-        LOG.debug("Adding observer {} to {}", getEntity(), this);
         getEntity().addObserver(this);
 
         tabItem = new CTabItem(tabFolder, SWT.CLOSE);
@@ -67,7 +66,6 @@ public abstract class AbstractTab<E extends GenericEntity> implements Observer {
         tabItem.addDisposeListener(new DisposeListener() {
             @Override
             public void widgetDisposed(DisposeEvent e) {
-                LOG.debug("Removing observer {} from {}", AbstractTab.this, getEntity());
                 saveChanges(); // force to save changes to prevent loss of data.
                 // make sure to REMOVE ourselves as an observer, when the tabitem is disposed.
                 getEntity().deleteObserver(AbstractTab.this);

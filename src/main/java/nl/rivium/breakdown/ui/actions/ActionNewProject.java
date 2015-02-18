@@ -23,5 +23,6 @@ public class ActionNewProject extends BreakdownAction {
         getBreakdownUI().getTabFolder().disposeAllTabs();
         getBreakdownUI().getProjectTree().setProject(p);
         getBreakdownUI().updateWidgets();
+        getBreakdownUI().getTabFolder().openTabItem(p);
     }
 }

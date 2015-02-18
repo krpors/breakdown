@@ -102,7 +102,7 @@ public class BreakdownUI extends ApplicationWindow {
 
         MenuManager mgr = new MenuManager();
 
-        MenuManager menuFile = new MenuManager("File");
+        MenuManager menuFile = new MenuManager("&File");
         menuFile.add(actionNewProject);
         menuFile.add(actionOpenProject);
         menuFile.add(actionSaveProject);

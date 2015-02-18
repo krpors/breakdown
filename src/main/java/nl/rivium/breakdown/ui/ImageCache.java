@@ -72,7 +72,10 @@ public final class ImageCache {
         TestCase("/images/small/3d bar chart.png"),
         TestSuite("/images/small/Yes.png"),
         TestStep("/images/small/No.png"),
-        JMSConnection("/images/small/Network connection.png");
+        JMSConnection("/images/small/Network connection.png"),
+        Delete("/images/small/Delete.png"),
+        Create("/images/small/Create.png"),
+        Save("/images/small/Save.png");
 
         public final String path;
 

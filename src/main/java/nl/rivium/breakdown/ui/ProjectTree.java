@@ -9,11 +9,13 @@ import org.eclipse.swt.events.MenuEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.internal.win32.MENUITEMINFO;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sun.awt.image.ImageAccessException;
 
 /**
  * The ProjectTree contains the tree with the structured project hierarchy.
@@ -22,17 +24,17 @@ public class ProjectTree {
 
     private static Logger LOG = LoggerFactory.getLogger(ProjectTree.class);
 
-    private BreakdownUI ui;
+    private BreakdownUI breakdownUI;
     private TreeViewer treeViewer;
     private Project project;
 
-    public ProjectTree(BreakdownUI ui, Composite parent) {
-        this.ui = ui;
+    public ProjectTree(BreakdownUI breakdownUI, Composite parent) {
+        this.breakdownUI = breakdownUI;
         createContents(parent);
     }
 
     private void createContents(Composite parent) {
-        treeViewer = new TreeViewer(parent);
+        treeViewer = new TreeViewer(parent, SWT.SINGLE);
         treeViewer.setContentProvider(new ProjectTreeContentProvider());
         treeViewer.setLabelProvider(new ProjectTreeLabelProvider());
         treeViewer.addOpenListener(new ProjectTreeOpenListener(this));
@@ -75,8 +77,10 @@ public class ProjectTree {
      * @param menu The menu to add the items to.
      */
     private void createMenuItemsForProject(Menu menu) {
-        MenuItem itemAddSuite = new MenuItem(menu, SWT.NONE);
-        itemAddSuite.setText("Add Test Suite");
+        MenuItem itemAddSuite = UITools.createMenuItem(menu, "Add test suite", ImageCache.getImage(ImageCache.UIImage.Create));
+        MenuItem itemAddConnection = UITools.createMenuItem(menu, "Add JMS connection", ImageCache.getImage(ImageCache.UIImage.JMSConnection));
+
+        new MenuItem(menu, SWT.SEPARATOR);
 
         itemAddSuite.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -84,6 +88,18 @@ public class ProjectTree {
                 TestSuite s = new TestSuite("Test suite", getProject());
                 getProject().getTestSuites().add(s);
                 refresh();
+
+                breakdownUI.getTabFolder().openTabItem(s);
+            }
+        });
+
+        itemAddConnection.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                JMSConnection c = new JMSConnection("JMS connection", getProject());
+                getProject().getJmsConnections().add(c);
+                refresh();
+                breakdownUI.getTabFolder().openTabItem(c);
             }
         });
     }
@@ -94,24 +110,30 @@ public class ProjectTree {
      * @param menu The menu to add items to.
      */
     private void createMenuItemsForTestSuite(Menu menu) {
-        MenuItem itemAddSuite = new MenuItem(menu, SWT.NONE);
-        itemAddSuite.setText("Add Test Case");
-        MenuItem itemDelete = new MenuItem(menu, SWT.NONE);
-        itemDelete.setText("Delete Test Suite");
+        MenuItem itemAddCase = UITools.createMenuItem(menu, "Add test case", ImageCache.getImage(ImageCache.UIImage.Create));
+
+        MenuItem sep = new MenuItem(menu, SWT.SEPARATOR);
+
+        MenuItem itemDelete = UITools.createMenuItem(menu, "Delete", ImageCache.getImage(ImageCache.UIImage.Delete));
+
         itemDelete.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 TestSuite selected = (TestSuite) getFirstSelection();
                 selected.getParent().getTestSuites().remove(selected);
+
                 refresh();
             }
         });
-        itemAddSuite.addSelectionListener(new SelectionAdapter() {
+        itemAddCase.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                TestSuite selectedTreeItem = (TestSuite) getFirstSelection();
-                selectedTreeItem.getTestCases().add(new TestCase("Test case", ""));
+                TestSuite item = (TestSuite) getFirstSelection();
+                TestCase c = new TestCase("Test case", item);
+                item.getTestCases().add(new TestCase("Test case", ""));
                 refresh();
+
+                breakdownUI.getTabFolder().openTabItem(c);
             }
         });
     }
@@ -141,7 +163,9 @@ public class ProjectTree {
      * Rereshes the tree.
      */
     public void refresh() {
-        treeViewer.refresh(true);
+        if (!treeViewer.getTree().isDisposed()) {
+            treeViewer.refresh(true);
+        }
     }
 
     /**
@@ -160,7 +184,7 @@ public class ProjectTree {
 
         @Override
         public void open(OpenEvent openEvent) {
-            BreakdownUI ui = ProjectTree.this.ui;
+            BreakdownUI ui = ProjectTree.this.breakdownUI;
 
             TreeSelection selection = (TreeSelection) openEvent.getSelection();
             if (!(selection.getFirstElement() instanceof GenericEntity)) {

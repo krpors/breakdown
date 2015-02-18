@@ -9,6 +9,8 @@ import nl.rivium.breakdown.ui.ImageCache;
 import nl.rivium.breakdown.ui.UITools;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
@@ -16,7 +18,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 
-public class TestSuiteTab extends AbstractTab<TestSuite> {
+public class TestSuiteTab extends AbstractTab<TestSuite> implements FocusListener{
 
     private Text txtName;
     private Text txtDescription;
@@ -48,6 +50,9 @@ public class TestSuiteTab extends AbstractTab<TestSuite> {
         txtName = UITools.createTextWithLabel(compositeProperties, "Name:", testSuite.getName());
         txtDescription = UITools.createTextWithLabel(compositeProperties, "Description:", testSuite.getDescription());
 
+        txtName.addFocusListener(this);
+        txtDescription.addFocusListener(this);
+
         return compositeMain;
     }
 
@@ -58,7 +63,18 @@ public class TestSuiteTab extends AbstractTab<TestSuite> {
 
     @Override
     public void saveChanges() {
-        // TODO save changes, focus listener etc.
+        getEntity().setName(txtName.getText());
+        getEntity().setDescription(txtDescription.getText());
+        getBreakdownUI().getProjectTree().refresh();
     }
 
+    @Override
+    public void focusGained(FocusEvent e) {
+        // no-op
+    }
+
+    @Override
+    public void focusLost(FocusEvent e) {
+        saveChanges();
+    }
 }

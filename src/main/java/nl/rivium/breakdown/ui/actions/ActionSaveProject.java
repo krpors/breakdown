@@ -2,6 +2,7 @@ package nl.rivium.breakdown.ui.actions;
 
 import nl.rivium.breakdown.core.Project;
 import nl.rivium.breakdown.ui.BreakdownUI;
+import nl.rivium.breakdown.ui.ImageCache;
 import nl.rivium.breakdown.ui.UITools;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
@@ -19,6 +20,7 @@ public class ActionSaveProject extends BreakdownAction {
 
     public ActionSaveProject(BreakdownUI ui) {
         super(ui, "&Save Project");
+        setImageDescriptor(ImageCache.getDescriptor(ImageCache.UIImage.Save));
         setAccelerator(SWT.CTRL | 'S');
     }
 

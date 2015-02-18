@@ -1,6 +1,7 @@
 package nl.rivium.breakdown.core.jms;
 
 import nl.rivium.breakdown.core.GenericEntity;
+import nl.rivium.breakdown.core.Project;
 
 import javax.jms.Connection;
 import javax.jms.JMSException;
@@ -24,6 +25,14 @@ public class JMSConnection extends GenericEntity {
     private String password;
     private String queueConnectionFactory = "";
     private String topicConnectionFactory = "";
+
+    public JMSConnection() {
+    }
+
+    public JMSConnection(String name, Project parent) {
+        super(name, "");
+        setParent(parent);
+    }
 
     public String getContextFactory() {
         return contextFactory;

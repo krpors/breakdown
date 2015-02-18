@@ -1,18 +1,14 @@
 package nl.rivium.breakdown.ui;
 
-import ch.qos.logback.core.helpers.ThrowableToStringArray;
-import org.eclipse.core.internal.runtime.Activator;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +20,9 @@ public final class UITools {
 
     /**
      * Shows an exception with stacktrace elements.
-     * @param parent The parent shell.
-     * @param title Title of the dialog.
+     *
+     * @param parent  The parent shell.
+     * @param title   Title of the dialog.
      * @param message
      * @param ex
      */
@@ -48,7 +45,8 @@ public final class UITools {
 
     /**
      * Simplifies creating a label, because we don't need a reference to it.
-     * @param parent The parent composite.
+     *
+     * @param parent    The parent composite.
      * @param labelText The text for the label itself.
      * @return The created label.
      */
@@ -81,4 +79,18 @@ public final class UITools {
         return txt;
     }
 
+    /**
+     * Single line menu item creation.
+     *
+     * @param parent The parent menu.
+     * @param text   The text for the item.
+     * @param image  The image for the item, or null for none.
+     * @return The MenuItem.
+     */
+    public static MenuItem createMenuItem(Menu parent, String text, Image image) {
+        MenuItem item = new MenuItem(parent, SWT.NONE);
+        item.setText(text);
+        item.setImage(image);
+        return item;
+    }
 }
