@@ -37,7 +37,7 @@ public class BreakdownUI extends ApplicationWindow {
     /**
      * The tab folder containing open configurations.
      */
-    private CTabFolder tabFolder;
+    private ComponentTabFolder tabFolder;
 
     /**
      * Action to create a new project.
@@ -74,9 +74,7 @@ public class BreakdownUI extends ApplicationWindow {
             @Override
             public void handleEvent(Event event) {
                 if (event.stateMask == SWT.CTRL && event.keyCode == SWT.F4) {
-                    if (getTabFolder().getSelection() != null) {
-                        getTabFolder().getSelection().dispose();
-                    }
+                    tabFolder.disposeSelectedTab();
                 }
             }
         });
@@ -130,9 +128,7 @@ public class BreakdownUI extends ApplicationWindow {
         SashForm sashForm = new SashForm(parent, SWT.HORIZONTAL | SWT.SMOOTH);
 
         projectTree = new ProjectTree(this, sashForm);
-        tabFolder = new CTabFolder(sashForm, SWT.BORDER);
-        tabFolder.setBorderVisible(true);
-        tabFolder.setTabHeight(25);
+        tabFolder = new ComponentTabFolder(this, sashForm);
 
         sashForm.setWeights(new int[]{30, 70});
 
@@ -140,11 +136,11 @@ public class BreakdownUI extends ApplicationWindow {
     }
 
     /**
-     * Gets the tab folder for the component configuration etc.
+     * Gets the component tab folder for the component configuration etc.
      *
-     * @return The tab folder.
+     * @return The component tab folder.
      */
-    public CTabFolder getTabFolder() {
+    public ComponentTabFolder getTabFolder() {
         return tabFolder;
     }
 

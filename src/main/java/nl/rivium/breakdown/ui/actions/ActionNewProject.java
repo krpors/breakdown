@@ -1,8 +1,10 @@
 package nl.rivium.breakdown.ui.actions;
 
+import nl.rivium.breakdown.core.Project;
 import nl.rivium.breakdown.ui.BreakdownUI;
 import nl.rivium.breakdown.ui.ImageCache;
 import org.eclipse.jface.action.Action;
+import org.eclipse.swt.custom.CTabItem;
 
 /**
  * Created by Kevin on 2/17/2015.
@@ -15,6 +17,10 @@ public class ActionNewProject extends BreakdownAction {
 
     @Override
     public void run() {
-        System.out.println("Action is run");
+        Project p = new Project();
+        p.setName("New project");
+
+        getBreakdownUI().getTabFolder().disposeAllTabs();
+        getBreakdownUI().getProjectTree().setProject(p);
     }
 }

@@ -85,29 +85,9 @@ public class ProjectTree {
             this.tree = tree;
         }
 
-        /**
-         * Attempts to bring a tab with the generic entity to front, if a tab exists with that data. If it did, the
-         * tab will be brought to the front, and true is returned. Else, false is returned.
-         *
-         * @param entity The entity trying to be opened;
-         * @return true when a tab with the entity was found and brought to the front. False if otherwise.
-         */
-        public boolean bringToFront(GenericEntity entity) {
-            for (CTabItem item : tree.ui.getTabFolder().getItems()) {
-                System.out.println("Open tab: " + item.getData());
-                if (item.getData().equals(entity)) {
-                    tree.ui.getTabFolder().setSelection(item);
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
         @Override
         public void open(OpenEvent openEvent) {
             BreakdownUI ui = ProjectTree.this.ui;
-            CTabFolder folder = ui.getTabFolder();
 
             TreeSelection selection = (TreeSelection) openEvent.getSelection();
             if (!(selection.getFirstElement() instanceof GenericEntity)) {
@@ -115,28 +95,7 @@ public class ProjectTree {
             }
 
             GenericEntity first = (GenericEntity) selection.getFirstElement();
-
-            if (bringToFront(first)) {
-                return;
-            }
-
-            AbstractTab createdTab = null;
-            if (first instanceof Project) {
-                createdTab = new ProjectTab(ui, folder, (Project) first);
-            } else if (first instanceof TestSuite) {
-                createdTab = new TestSuiteTab(ui, folder, (TestSuite) first);
-            } else if (first instanceof TestCase) {
-                createdTab = new TestCaseTab(ui, folder, (TestCase) first);
-            } else if (first instanceof JMSRequestReply) {
-                createdTab = new TestStepJMSRequestReplyTab(ui, folder, (JMSRequestReply)first);
-            } else if (first instanceof JMSConnection) {
-                createdTab = new JMSConnectionTab(ui, folder, (JMSConnection) first);
-            }
-
-            if (createdTab != null) {
-                folder.setSelection(createdTab.getTabItem());
-            }
-
+            ui.getTabFolder().openTabItem(first);
         }
     }
 
@@ -173,9 +132,8 @@ public class ProjectTree {
 
         @Override
         public Object getParent(Object o) {
-            // TODO get parent, but when is it called?
-            LOG.debug("getParent called... now what");
-            return o;
+            LOG.debug("getParent: no-op");
+            return null;
         }
 
         @Override
