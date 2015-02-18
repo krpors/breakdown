@@ -315,17 +315,7 @@ public class TestStepJMSRequestReplyTab extends AbstractTab<JMSRequestReply> imp
     }
 
     @Override
-    public void focusGained(FocusEvent e) {
-    }
-
-    /**
-     * Whenever focus is lost on components, update the object values using the text fields and whatnot.
-     * TODO: is this a workable solution for User Experience?
-     *
-     * @param e
-     */
-    @Override
-    public void focusLost(FocusEvent e) {
+    public void saveChanges() {
         JMSRequestReply rr = getEntity();
         rr.setName(txtName.getText());
         rr.setDescription(txtDescription.getText());
@@ -341,7 +331,18 @@ public class TestStepJMSRequestReplyTab extends AbstractTab<JMSRequestReply> imp
     }
 
     @Override
-    protected void updateWidgets() {
-
+    public void focusGained(FocusEvent e) {
     }
+
+    /**
+     * Whenever focus is lost on components, update the object values using the text fields and whatnot.
+     * TODO: is this a workable solution for User Experience?
+     *
+     * @param e
+     */
+    @Override
+    public void focusLost(FocusEvent e) {
+        saveChanges();
+    }
+
 }

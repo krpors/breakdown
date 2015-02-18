@@ -65,19 +65,20 @@ public class TestCaseTab extends AbstractTab<TestCase> implements FocusListener 
     }
 
     @Override
-    public void focusGained(FocusEvent e) {
-        // no-op
-    }
-
-    @Override
-    public void focusLost(FocusEvent e) {
+    public void saveChanges() {
         getEntity().setName(txtName.getText());
         getEntity().setDescription(txtDescription.getText());
         getBreakdownUI().getProjectTree().refresh();
     }
 
     @Override
-    protected void updateWidgets() {
-
+    public void focusGained(FocusEvent e) {
+        // no-op
     }
+
+    @Override
+    public void focusLost(FocusEvent e) {
+        saveChanges();
+    }
+
 }

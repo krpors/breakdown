@@ -1,10 +1,12 @@
 package nl.rivium.breakdown.ui;
 
+import nl.rivium.breakdown.ui.actions.ActionExit;
 import nl.rivium.breakdown.ui.actions.ActionNewProject;
 import nl.rivium.breakdown.ui.actions.ActionOpenProject;
 import nl.rivium.breakdown.ui.actions.ActionSaveProject;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
@@ -45,6 +47,7 @@ public class BreakdownUI extends ApplicationWindow {
     private Action actionNewProject;
     private ActionSaveProject actionSaveProject;
     private ActionOpenProject actionOpenProject;
+    private ActionExit actionExit;
 
     public BreakdownUI() {
         super(null); // no parent shell; this is the parent.
@@ -103,6 +106,8 @@ public class BreakdownUI extends ApplicationWindow {
         menuFile.add(actionNewProject);
         menuFile.add(actionOpenProject);
         menuFile.add(actionSaveProject);
+        menuFile.add(new Separator());
+        menuFile.add(actionExit);
         mgr.add(menuFile);
 
         return mgr;
@@ -115,6 +120,7 @@ public class BreakdownUI extends ApplicationWindow {
         actionNewProject = new ActionNewProject(this);
         actionOpenProject = new ActionOpenProject(this);
         actionSaveProject = new ActionSaveProject(this);
+        actionExit = new ActionExit(this);
         actionSaveProject.setEnabled(false);
     }
 

@@ -105,6 +105,9 @@ public class ComponentTabFolder {
         }
     }
 
+    private void blha() {
+    }
+
     /**
      * Disposes a tab item which exists at the given point.
      *

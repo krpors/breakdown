@@ -180,17 +180,7 @@ public class JMSConnectionTab extends AbstractTab<JMSConnection> implements Focu
     }
 
     @Override
-    public void focusGained(FocusEvent e) {
-        // no-op
-    }
-
-    /**
-     * Updates internal values when focus is lost on elements.
-     *
-     * @param e
-     */
-    @Override
-    public void focusLost(FocusEvent e) {
+    public void saveChanges() {
         JMSConnection c = getEntity();
         c.setName(txtName.getText());
         c.setDescription(txtDescription.getText());
@@ -206,7 +196,17 @@ public class JMSConnectionTab extends AbstractTab<JMSConnection> implements Focu
     }
 
     @Override
-    protected void updateWidgets() {
-
+    public void focusGained(FocusEvent e) {
     }
+
+    /**
+     * Updates internal values when focus is lost on elements.
+     *
+     * @param e
+     */
+    @Override
+    public void focusLost(FocusEvent e) {
+        saveChanges();
+    }
+
 }

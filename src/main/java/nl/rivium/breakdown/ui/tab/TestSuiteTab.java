@@ -56,9 +56,9 @@ public class TestSuiteTab extends AbstractTab<TestSuite> {
         return ImageCache.getImage(ImageCache.UIImage.TestSuite);
     }
 
-
     @Override
-    protected void updateWidgets() {
-
+    public void saveChanges() {
+        // TODO save changes, focus listener etc.
     }
+
 }

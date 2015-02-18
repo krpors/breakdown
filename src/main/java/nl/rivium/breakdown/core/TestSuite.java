@@ -22,6 +22,11 @@ public class TestSuite extends GenericEntity<Project, TestCase> {
         super(name, description);
     }
 
+    public TestSuite(String name, Project parent) {
+        super(name, "");
+        setParent(parent);
+    }
+
     public List<TestCase> getTestCases() {
         return testCases;
     }

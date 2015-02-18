@@ -74,18 +74,19 @@ public class ProjectTab extends AbstractTab<Project> implements FocusListener {
         return ImageCache.getImage(ImageCache.UIImage.Project);
     }
 
-    /**
-     * Updates widgets based on the model.
-     */
     @Override
-    protected void updateWidgets() {
+    public void saveChanges() {
         Project p = getEntity();
-        txtFilename.setText(p.getFilename());
+        p.setAuthor(txtAuthorName.getText());
+        p.setDescription(txtDescription.getText());
+        p.setName(txtProjectName.getText());
+        getBreakdownUI().getProjectTree().refresh();
     }
 
     @Override
     public void update(Observable o, Object arg) {
-        updateWidgets();
+        Project p = getEntity();
+        txtFilename.setText(p.getFilename());
     }
 
     @Override
@@ -95,11 +96,7 @@ public class ProjectTab extends AbstractTab<Project> implements FocusListener {
 
     @Override
     public void focusLost(FocusEvent e) {
-        Project p = getEntity();
-        p.setAuthor(txtAuthorName.getText());
-        p.setDescription(txtDescription.getText());
-        p.setName(txtProjectName.getText());
-        getBreakdownUI().getProjectTree().refresh();
+        saveChanges();
     }
 }
 

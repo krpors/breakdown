@@ -68,6 +68,7 @@ public abstract class AbstractTab<E extends GenericEntity> implements Observer {
             @Override
             public void widgetDisposed(DisposeEvent e) {
                 LOG.debug("Removing observer {} from {}", AbstractTab.this, getEntity());
+                saveChanges(); // force to save changes to prevent loss of data.
                 // make sure to REMOVE ourselves as an observer, when the tabitem is disposed.
                 getEntity().deleteObserver(AbstractTab.this);
             }
@@ -104,7 +105,7 @@ public abstract class AbstractTab<E extends GenericEntity> implements Observer {
      * Will be invoked when the widgets needs content updating. This can mainly happen when the core model is updated
      * outside of the tab's influence. It should generally set textfield contents etc.
      */
-    protected abstract void updateWidgets();
+//    protected abstract void updateWidgets();
 
     /**
      * Subclasses must override this function to create the tab's contents.
@@ -120,6 +121,11 @@ public abstract class AbstractTab<E extends GenericEntity> implements Observer {
      * @return The image for the tab type.
      */
     protected abstract Image getImage();
+
+    /**
+     * Should be invoked to save changes to the model.
+     */
+    public abstract void saveChanges();
 
     /**
      * Notified from observers. Subclasses may need to override this to get notified.

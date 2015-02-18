@@ -1,16 +1,17 @@
 package nl.rivium.breakdown.ui;
 
-import nl.rivium.breakdown.Main;
 import nl.rivium.breakdown.core.*;
 import nl.rivium.breakdown.core.jms.JMSConnection;
-import nl.rivium.breakdown.core.jms.JMSRequestReply;
-import nl.rivium.breakdown.ui.tab.*;
-import org.eclipse.jface.resource.JFaceColors;
 import org.eclipse.jface.viewers.*;
-import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MenuAdapter;
+import org.eclipse.swt.events.MenuEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,13 +36,84 @@ public class ProjectTree {
         treeViewer.setContentProvider(new ProjectTreeContentProvider());
         treeViewer.setLabelProvider(new ProjectTreeLabelProvider());
         treeViewer.addOpenListener(new ProjectTreeOpenListener(this));
+        treeViewer.getTree().setMenu(createProjectMenu(treeViewer.getTree()));
+    }
 
-//        try {
-//            Project project = Main.createProject();
-//            setProject(project);
-//        } catch (BreakdownException e) {
-//            e.printStackTrace();
-//        }
+    private Menu createProjectMenu(Composite parent) {
+        final Menu menu = new Menu(parent);
+
+        // This is a tricky way to add context sensitive menu to the tree.
+        menu.addMenuListener(new MenuAdapter() {
+            @Override
+            public void menuShown(MenuEvent e) {
+                // Remove all
+                for (MenuItem item : menu.getItems()) {
+                    item.dispose();
+                }
+                Object first = getFirstSelection();
+                if (first instanceof Project) {
+                    createMenuItemsForProject(menu);
+                } else if (first instanceof TestSuite) {
+                    createMenuItemsForTestSuite(menu);
+                }
+            }
+        });
+        return menu;
+    }
+
+    public Object getFirstSelection() {
+        TreeSelection s = (TreeSelection) treeViewer.getSelection();
+        if (s == null) {
+            return null;
+        }
+        return s.getFirstElement();
+    }
+
+    /**
+     * Creates context sensitive menu items for a Project entity.
+     *
+     * @param menu The menu to add the items to.
+     */
+    private void createMenuItemsForProject(Menu menu) {
+        MenuItem itemAddSuite = new MenuItem(menu, SWT.NONE);
+        itemAddSuite.setText("Add Test Suite");
+
+        itemAddSuite.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                TestSuite s = new TestSuite("Test suite", getProject());
+                getProject().getTestSuites().add(s);
+                refresh();
+            }
+        });
+    }
+
+    /**
+     * Creates context sensitive menu items for a TestSuite entity.
+     *
+     * @param menu The menu to add items to.
+     */
+    private void createMenuItemsForTestSuite(Menu menu) {
+        MenuItem itemAddSuite = new MenuItem(menu, SWT.NONE);
+        itemAddSuite.setText("Add Test Case");
+        MenuItem itemDelete = new MenuItem(menu, SWT.NONE);
+        itemDelete.setText("Delete Test Suite");
+        itemDelete.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                TestSuite selected = (TestSuite) getFirstSelection();
+                selected.getParent().getTestSuites().remove(selected);
+                refresh();
+            }
+        });
+        itemAddSuite.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                TestSuite selectedTreeItem = (TestSuite) getFirstSelection();
+                selectedTreeItem.getTestCases().add(new TestCase("Test case", ""));
+                refresh();
+            }
+        });
     }
 
     /**
@@ -154,9 +226,10 @@ public class ProjectTree {
 
         /**
          * Called whenever the tree is refreshed with new data.
+         *
          * @param viewer The viewer.
-         * @param o ?
-         * @param o1 ?
+         * @param o      ?
+         * @param o1     ?
          */
         @Override
         public void inputChanged(Viewer viewer, Object o, Object o1) {

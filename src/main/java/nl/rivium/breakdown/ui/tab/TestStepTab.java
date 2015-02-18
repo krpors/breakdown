@@ -64,8 +64,6 @@ public class TestStepTab extends AbstractTab<TestStep> {
     }
 
     @Override
-    protected void updateWidgets() {
-
+    public void saveChanges() {
     }
-
 }
