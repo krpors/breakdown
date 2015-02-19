@@ -15,7 +15,7 @@ import javax.xml.bind.annotation.XmlElement;
 import java.util.Properties;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class JMSConnection extends GenericEntity {
+public class JMSConnection extends GenericEntity<Project, GenericEntity> {
 
     /**
      * Static loggah.
@@ -36,7 +36,11 @@ public class JMSConnection extends GenericEntity {
 
     public JMSConnection(String name, Project parent) {
         super(name, "");
+        if (parent == null ) {
+            throw new IllegalArgumentException("Parent Project cannot be null");
+        }
         setParent(parent);
+        parent.getJmsConnections().add(this);
     }
 
     public String getContextFactory() {
@@ -146,6 +150,16 @@ public class JMSConnection extends GenericEntity {
                 "instance of java.jms.TopicConnectionFactory was expected", o.getClass().getName());
         LOG.warn(expl);
         throw new NamingException(expl);
+    }
+
+    /**
+     * Removes ourselves from our parent Project.
+     */
+    @Override
+    public void removeFromParent() {
+        if (getParent() != null) {
+            getParent().getJmsConnections().remove(this);
+        }
     }
 
     /**

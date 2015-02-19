@@ -31,6 +31,9 @@ public final class UITools {
         for (StackTraceElement ste : ex.getStackTrace()) {
             statusses.add(new Status(Status.ERROR, "plz", ste.toString()));
         }
+
+        // TODO: probably add all the causes too?
+
         IStatus[] array = statusses.toArray(new IStatus[statusses.size()]);
 
         String exmsg = ex.getMessage();

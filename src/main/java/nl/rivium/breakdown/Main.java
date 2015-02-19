@@ -12,6 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.JAXBException;
+import java.util.ArrayDeque;
+import java.util.Queue;
 
 public class Main {
 
@@ -89,6 +91,18 @@ public class Main {
     private static void jaxbStuff() throws JAXBException, BreakdownException {
         Project p = createProject();
         p.write(System.out);
+            }
+
+    private static void dispose(GenericEntity entity) {
+        Queue<GenericEntity> q = new ArrayDeque<>();
+        q.add(entity);
+        while(q.peek() != null) {
+            GenericEntity ge = q.remove();
+            System.out.println("Got " + ge);
+            for (GenericEntity child : ge.getChildren()) {
+                q.add(child);
+            }
+        }
     }
 
     private static void runProject() throws BreakdownException, AssertionException {

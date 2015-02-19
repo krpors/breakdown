@@ -25,6 +25,7 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Project extends GenericEntity {
 
+    private static final long serialVersionUID = -2600956139969094067L;
     /**
      * The logger.
      */

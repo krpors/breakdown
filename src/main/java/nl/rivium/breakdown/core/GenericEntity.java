@@ -5,6 +5,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
@@ -21,6 +22,7 @@ import java.util.Observable;
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class GenericEntity<P extends GenericEntity, C extends GenericEntity> extends Observable {
 
+    private static final long serialVersionUID = -3412144850376073380L;
     /**
      * The entity's name. Default value is empty to avoid the likely-hood of null pointers.
      */
@@ -78,6 +80,13 @@ public abstract class GenericEntity<P extends GenericEntity, C extends GenericEn
     }
 
     public abstract C[] getChildren();
+
+    /**
+     * Removes this entity from a parent entity. This may be a no-op. Subclasses may decide to override this to
+     * provide custom functionality.
+     */
+    public void removeFromParent() {
+    }
 
     /**
      * Returns the execution listeners for this Project object.

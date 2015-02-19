@@ -43,9 +43,22 @@ public class TestCase extends GenericEntity<TestSuite, TestStep> {
         super(name, description);
     }
 
+    /**
+     * Creates a testcase with a name, and a parent TestSuite. The parent must not be null, will throw an
+     * IllegalArgumentException if so.
+     *
+     * @param name   The name of the test suite.
+     * @param parent The parent test suite.
+     */
     public TestCase(String name, TestSuite parent) {
         super(name, "");
+
+        if (parent == null) {
+            throw new IllegalArgumentException("Parent TestSuite cannot be null");
+        }
+
         setParent(parent);
+        parent.getTestCases().add(this);
     }
 
     public List<TestStep> getTestSteps() {
@@ -67,6 +80,14 @@ public class TestCase extends GenericEntity<TestSuite, TestStep> {
     @Override
     public TestStep[] getChildren() {
         return testSteps.toArray(new TestStep[testSteps.size()]);
+    }
+
+    /**
+     * Removes this testcase from the parent test suite.
+     */
+    @Override
+    public void removeFromParent() {
+        getParent().getTestCases().remove(this);
     }
 
     /**

@@ -1,5 +1,6 @@
 package nl.rivium.breakdown.ui;
 
+import nl.rivium.breakdown.core.Project;
 import nl.rivium.breakdown.ui.actions.ActionExit;
 import nl.rivium.breakdown.ui.actions.ActionNewProject;
 import nl.rivium.breakdown.ui.actions.ActionOpenProject;
@@ -10,6 +11,8 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.*;
@@ -143,6 +146,12 @@ public class BreakdownUI extends ApplicationWindow {
 
         Button b = new Button(lol, SWT.PUSH);
         b.setText(" :D ");
+        b.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                Project p = projectTree.getProject();
+            }
+        });
 
         return super.createContents(parent);
     }

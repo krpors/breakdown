@@ -60,6 +60,8 @@ public class TestSuiteTab extends AbstractTab<TestSuite> implements FocusListene
 
     @Override
     public void saveChanges() {
+        getTabItem().setText(txtName.getText());
+
         getEntity().setName(txtName.getText());
         getEntity().setDescription(txtDescription.getText());
         getBreakdownUI().getProjectTree().refresh();

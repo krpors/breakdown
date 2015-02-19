@@ -2,6 +2,11 @@ package nl.rivium.breakdown.ui;
 
 import nl.rivium.breakdown.core.*;
 import nl.rivium.breakdown.core.jms.JMSConnection;
+import nl.rivium.breakdown.ui.actions.*;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MenuAdapter;
@@ -36,29 +41,30 @@ public class ProjectTree {
         treeViewer.setContentProvider(new ProjectTreeContentProvider());
         treeViewer.setLabelProvider(new ProjectTreeLabelProvider());
         treeViewer.addOpenListener(new ProjectTreeOpenListener(this));
-        treeViewer.getTree().setMenu(createProjectMenu(treeViewer.getTree()));
-    }
-
-    private Menu createProjectMenu(Composite parent) {
-        final Menu menu = new Menu(parent);
-
-        // This is a tricky way to add context sensitive menu to the tree.
-        menu.addMenuListener(new MenuAdapter() {
+//        treeViewer.getTree().setMenu(createProjectMenu(treeViewer.getTree()));
+        final MenuManager mgr = new MenuManager("YO!");
+        mgr.setRemoveAllWhenShown(true);
+        mgr.addMenuListener(new IMenuListener() {
             @Override
-            public void menuShown(MenuEvent e) {
-                // Remove all
-                for (MenuItem item : menu.getItems()) {
-                    item.dispose();
-                }
-                Object first = getFirstSelection();
-                if (first instanceof Project) {
-                    createMenuItemsForProject(menu);
-                } else if (first instanceof TestSuite) {
-                    createMenuItemsForTestSuite(menu);
+            public void menuAboutToShow(IMenuManager iMenuManager) {
+                if (getFirstSelection() instanceof JMSConnection) {
+                    mgr.add(new ActionDeleteEntity(ProjectTree.this));
+                } else if (getFirstSelection() instanceof TestSuite){
+                    mgr.add(new ActionNewTestCase(ProjectTree.this));
+                    mgr.add(new Separator());
+                    mgr.add(new ActionDeleteEntity(ProjectTree.this));
+                } else if (getFirstSelection() instanceof TestCase) {
+                    mgr.add(new ActionDeleteEntity(ProjectTree.this));
+                } else if (getFirstSelection() instanceof Project) {
+                    mgr.add(new ActionNewJMSConnection(ProjectTree.this));
+                    mgr.add(new ActionNewTestSuite(ProjectTree.this));
                 }
             }
         });
-        return menu;
+        Menu menu = mgr.createContextMenu(treeViewer.getTree());
+
+        treeViewer.getTree().setMenu(menu);
+
     }
 
     public Object getFirstSelection() {
@@ -70,68 +76,19 @@ public class ProjectTree {
     }
 
     /**
-     * Creates context sensitive menu items for a Project entity.
-     *
-     * @param menu The menu to add the items to.
+     * Quick hack to expand to a level after an item is added.
+     * @param level The level.
      */
-    private void createMenuItemsForProject(Menu menu) {
-        MenuItem itemAddSuite = UITools.createMenuItem(menu, "Add test suite", ImageCache.getImage(ImageCache.UIImage.Create));
-        MenuItem itemAddConnection = UITools.createMenuItem(menu, "Add JMS connection", ImageCache.getImage(ImageCache.UIImage.JMSConnection));
-
-        itemAddSuite.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                TestSuite s = new TestSuite("Test suite", getProject());
-                getProject().getTestSuites().add(s);
-                refresh();
-
-                breakdownUI.getTabFolder().openTabItem(s);
-            }
-        });
-
-        itemAddConnection.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                JMSConnection c = new JMSConnection("JMS connection", getProject());
-                getProject().getJmsConnections().add(c);
-                refresh();
-                breakdownUI.getTabFolder().openTabItem(c);
-            }
-        });
+    public void expandToLevel(int level) {
+        treeViewer.expandToLevel(level);
     }
 
     /**
-     * Creates context sensitive menu items for a TestSuite entity.
-     *
-     * @param menu The menu to add items to.
+     * Gets the breakdown UI.
+     * @return The BreakdownUI.
      */
-    private void createMenuItemsForTestSuite(Menu menu) {
-        MenuItem itemAddCase = UITools.createMenuItem(menu, "Add test case", ImageCache.getImage(ImageCache.UIImage.Create));
-
-        MenuItem sep = new MenuItem(menu, SWT.SEPARATOR);
-
-        MenuItem itemDelete = UITools.createMenuItem(menu, "Delete", ImageCache.getImage(ImageCache.UIImage.Delete));
-
-        itemDelete.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                TestSuite selected = (TestSuite) getFirstSelection();
-                selected.getParent().getTestSuites().remove(selected);
-
-                refresh();
-            }
-        });
-        itemAddCase.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                TestSuite item = (TestSuite) getFirstSelection();
-                TestCase c = new TestCase("Test case", item);
-                item.getTestCases().add(new TestCase("Test case", ""));
-                refresh();
-
-                breakdownUI.getTabFolder().openTabItem(c);
-            }
-        });
+    public BreakdownUI getBreakdownUI() {
+        return breakdownUI;
     }
 
     /**

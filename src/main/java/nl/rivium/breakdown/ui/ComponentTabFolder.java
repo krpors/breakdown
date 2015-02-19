@@ -14,11 +14,21 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayDeque;
+import java.util.Queue;
 
 /**
  * Class where the component configuration tab folder is created.
  */
 public class ComponentTabFolder {
+
+    /**
+     * Our logger.
+     */
+    private static Logger LOG = LoggerFactory.getLogger(ComponentTabFolder.class);
 
     /**
      * The BreakdownUI main.
@@ -105,9 +115,6 @@ public class ComponentTabFolder {
         }
     }
 
-    private void blha() {
-    }
-
     /**
      * Disposes a tab item which exists at the given point.
      *
@@ -117,6 +124,33 @@ public class ComponentTabFolder {
         CTabItem item = tabFolder.getItem(p);
         if (item != null) {
             item.dispose();
+        }
+    }
+
+    /**
+     * Disposes a tab with the given GenericEntity. This will also traverse through the children of the entity, and
+     * closes possible open tabs of those children as well. In other words, it recurses through the children, except
+     * it's not done with recursion but with a deque.
+     *
+     * @param entity The entity.
+     */
+    public void disposeTabEntity(GenericEntity entity) {
+        // First, get all children of the given entity in the argument (no recursion, simple deque).
+        Queue<GenericEntity> q = new ArrayDeque<>();
+        q.add(entity);
+        while (q.peek() != null) {
+            GenericEntity ge = q.remove();
+            for (GenericEntity child : ge.getChildren()) {
+                q.add(child);
+            }
+
+            // now iterate through all the open tab items, and see if their getData() returns
+            // the entity found as a child.
+            for (CTabItem item : tabFolder.getItems()) {
+                if (item.getData().equals(ge)) {
+                    item.dispose();
+                }
+            }
         }
     }
 

@@ -24,7 +24,13 @@ public class TestSuite extends GenericEntity<Project, TestCase> {
 
     public TestSuite(String name, Project parent) {
         super(name, "");
+
+        if (parent == null) {
+            throw new IllegalArgumentException("Parent Project cannot be null");
+        }
+
         setParent(parent);
+        parent.getTestSuites().add(this);
     }
 
     public List<TestCase> getTestCases() {
@@ -38,6 +44,16 @@ public class TestSuite extends GenericEntity<Project, TestCase> {
     @Override
     public TestCase[] getChildren() {
         return testCases.toArray(new TestCase[testCases.size()]);
+    }
+
+    /**
+     * Removes the test suite from the parent project.
+     */
+    @Override
+    public void removeFromParent() {
+        if (getParent() != null) {
+            getParent().getTestSuites().remove(this);
+        }
     }
 
     /**
