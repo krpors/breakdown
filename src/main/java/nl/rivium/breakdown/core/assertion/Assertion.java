@@ -8,9 +8,8 @@ public abstract class Assertion {
     /**
      * Executes the assertion.
      *
-     * @param testCase The test case where the test step resides in.
      * @param testStep The test step where assertions should be applied on.
      * @throws AssertionException When an assertion has failed.
      */
-    public abstract void executeAssertion(TestCase testCase, TestStep testStep) throws AssertionException;
+    public abstract void executeAssertion(TestStep testStep) throws AssertionException;
 }

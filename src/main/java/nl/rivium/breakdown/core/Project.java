@@ -52,11 +52,11 @@ public class Project extends GenericEntity {
     private String filename = "";
 
     public Project() {
-        super("", "");
+        super("Project 1");
     }
 
-    public Project(String name, String description) {
-        super(name, description);
+    public Project(String name) {
+        super(name);
     }
 
     public List<TestSuite> getTestSuites() {
@@ -206,10 +206,9 @@ public class Project extends GenericEntity {
         LOG.info("Executing project '{}'", getName());
         for (TestSuite suite : testSuites) {
             try {
-                suite.execute(this);
+                suite.execute();
             } catch (AssertionException ex) {
-                List<ExecutionListener> l = getExecutionListeners();
-                l.get(0).assertionFailed(this, null, ex.getTestCase(), ex.getTestStep());
+                // TODO what?
             }
         }
     }

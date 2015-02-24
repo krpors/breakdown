@@ -12,8 +12,13 @@ public class JMSSender extends TestStep<JMSSenderInput, JMSSenderOutput> {
     private Map<String, String> properties = new HashMap<>();
     private TestCase testCase;
 
-    public JMSSender(String name, String description) {
-        super(name, description);
+    public JMSSender() {
+    }
+
+    public JMSSender(String name, TestCase parent) {
+        super(name);
+        setParent(parent);
+        getParent().getTestSteps().add(this);
     }
 
     public String getDestination() {
@@ -33,7 +38,7 @@ public class JMSSender extends TestStep<JMSSenderInput, JMSSenderOutput> {
     }
 
     @Override
-    public void execute(Project project, TestSuite suite, TestCase testCase, TestStep previous) throws AssertionException, BreakdownException {
+    public void execute(TestStep previous) throws AssertionException, BreakdownException {
         try {
             Connection c = testCase.getQueueConnection();
             Session session = c.createSession(false, Session.AUTO_ACKNOWLEDGE);

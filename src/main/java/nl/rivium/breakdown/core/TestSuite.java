@@ -18,17 +18,14 @@ public class TestSuite extends GenericEntity<Project, TestCase> {
     public TestSuite() {
     }
 
-    public TestSuite(String name, String description) {
-        super(name, description);
-    }
-
+    /**
+     * Creates a test suite with a given name. The test suite will automatically be added to the list of test suites
+     * in the parent project.
+     * @param name The test suite name.
+     * @param parent The parent project.
+     */
     public TestSuite(String name, Project parent) {
-        super(name, "");
-
-        if (parent == null) {
-            throw new IllegalArgumentException("Parent Project cannot be null");
-        }
-
+        super(name);
         setParent(parent);
         parent.getTestSuites().add(this);
     }
@@ -59,9 +56,9 @@ public class TestSuite extends GenericEntity<Project, TestCase> {
     /**
      * Executes the TestSuite and all the TestCases with TestSteps.
      */
-    public void execute(Project project) throws BreakdownException, AssertionException {
+    public void execute() throws BreakdownException, AssertionException {
         for (TestCase tc : testCases) {
-            tc.execute(project, this);
+            tc.execute();
         }
     }
 }

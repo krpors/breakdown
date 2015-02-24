@@ -39,10 +39,6 @@ public class TestCase extends GenericEntity<TestSuite, TestStep> {
     public TestCase() {
     }
 
-    public TestCase(String name, String description) {
-        super(name, description);
-    }
-
     /**
      * Creates a testcase with a name, and a parent TestSuite. The parent must not be null, will throw an
      * IllegalArgumentException if so.
@@ -51,12 +47,7 @@ public class TestCase extends GenericEntity<TestSuite, TestStep> {
      * @param parent The parent test suite.
      */
     public TestCase(String name, TestSuite parent) {
-        super(name, "");
-
-        if (parent == null) {
-            throw new IllegalArgumentException("Parent TestSuite cannot be null");
-        }
-
+        super(name);
         setParent(parent);
         parent.getTestCases().add(this);
     }
@@ -124,7 +115,7 @@ public class TestCase extends GenericEntity<TestSuite, TestStep> {
     /**
      * Runs the testcase.
      */
-    public void execute(Project project, TestSuite suite) throws AssertionException, BreakdownException {
+    public void execute() throws AssertionException, BreakdownException {
         setUp();
 
         ListIterator<TestStep> it = testSteps.listIterator();
@@ -141,7 +132,7 @@ public class TestCase extends GenericEntity<TestSuite, TestStep> {
             TestStep current = it.next();
 
             LOG.info("TestCase '{}' -> '{}' input: {}", getName(), current.getName(), current.getInput());
-            current.execute(project, suite, this, previous);
+            current.execute(previous);
             LOG.info("TestCase '{}' -> '{}' output: {}", getName(), current.getName(), current.getOutput());
         }
 

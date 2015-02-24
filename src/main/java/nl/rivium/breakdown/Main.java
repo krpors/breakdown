@@ -20,8 +20,9 @@ public class Main {
     private static Logger LOG = LoggerFactory.getLogger(Main.class);
 
     public static Project createProject() throws BreakdownException {
-        JMSConnection conn1 = new JMSConnection();
-        conn1.setName("Localhost jms connection");
+        Project p = new Project("Project 1");
+
+        JMSConnection conn1 = new JMSConnection("Localhost jms connection", p);
         conn1.setDescription("Bogus description");
         conn1.setContextFactory("com.tibco.tibjms.naming.TibjmsInitialContextFactory");
         conn1.setConnectionUrl("tcp://localhost:7222");
@@ -30,8 +31,7 @@ public class Main {
         conn1.setQueueConnectionFactory("QueueConnectionFactory");
         conn1.setTopicConnectionFactory("TopicConnectionFactory");
 
-        JMSConnection conn2 = new JMSConnection();
-        conn2.setName("Other connection");
+        JMSConnection conn2 = new JMSConnection("Other connection", p);
         conn2.setDescription("This is another connection.");
         conn2.setContextFactory("com.tibco.tibjms.naming.TibjmsInitialContextFactory");
         conn2.setConnectionUrl("tcp://localhost:7222");
@@ -40,10 +40,14 @@ public class Main {
         conn2.setQueueConnectionFactory("QueueConnectionFactory");
         conn2.setTopicConnectionFactory("TopicConnectionFactory");
 
-        TestCase testCase = new TestCase("Testcase 1", "Sample testcase");
+        TestSuite suite = new TestSuite("Suite 1", p);
+        TestSuite suite2 = new TestSuite("Suite 2", p);
+
+        TestCase testCase = new TestCase("Testcase 1", suite);
 
         // First test step:
-        JMSRequestReply jrr = new JMSRequestReply("sample.queue sender", "Sends to the sample.queue. Reply on sample.topic");
+        JMSRequestReply jrr = new JMSRequestReply("sample.queue sender", testCase);
+
         jrr.setJmsConnectionName("Localhost jms connection"); // refers to the connection up top.
         JMSSenderInput input = new JMSSenderInput();
         input.getProperties().put("Some Property", "Yarp!");
@@ -60,30 +64,10 @@ public class Main {
         // Second test step:
         StringAssertion sa = new StringAssertion("Some response");
 
-        AssertionCollection ac = new AssertionCollection("Bunch of assertions", "String checks");
+        AssertionCollection ac = new AssertionCollection("Bunch of assertions", testCase);
         ac.getAssertionList().add(sa);
 
-        testCase.getTestSteps().add(jrr);
-        testCase.getTestSteps().add(ac);
-
-        TestSuite suite = new TestSuite("Suite 1", "Desc");
-        suite.getTestCases().add(testCase);
-
-        TestSuite suite2 = new TestSuite("Suite 2", "Descirpiotasjd");
-
-        Project p = new Project("Project 1", "Desc");
-        p.getTestSuites().add(suite);
-        p.getTestSuites().add(suite2);
         p.setAuthor("Me myself and I");
-        p.getJmsConnections().add(conn1);
-        p.getJmsConnections().add(conn2);
-
-        // set parents, for debuggin'
-        jrr.setParent(testCase);
-        ac.setParent(testCase);
-        testCase.setParent(suite);
-        suite.setParent(p);
-        suite2.setParent(p);
 
         return p;
     }

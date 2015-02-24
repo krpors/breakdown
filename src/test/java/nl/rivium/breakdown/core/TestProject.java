@@ -24,8 +24,10 @@ public class TestProject {
      * @return The project with suites, cases, steps etc.
      */
     private Project createProject() {
-        JMSConnection connection1 = new JMSConnection();
-        connection1.setName("Localhost jms connection");
+        Project p = new Project("Project 1");
+        p.setAuthor("Me myself and I");
+
+        JMSConnection connection1 = new JMSConnection("Localhost jms connection", p);
         connection1.setDescription("Bogus description");
         connection1.setContextFactory("com.tibco.tibjms.naming.TibjmsInitialContextFactory");
         connection1.setConnectionUrl("tcp://localhost:7222");
@@ -34,14 +36,16 @@ public class TestProject {
         connection1.setQueueConnectionFactory("QueueConnectionFactory");
         connection1.setTopicConnectionFactory("TopicConnectionFactory");
 
-        JMSConnection connection2 = new JMSConnection();
-        connection2.setName("JBoss Connection");
+        JMSConnection connection2 = new JMSConnection("JBoss Connection", p);
         connection2.setDescription("Description of the JBoss connection");
 
-        TestCase testCase = new TestCase("Testcase 1", "Sample testcase");
+        TestSuite suite = new TestSuite("Suite 1", p);
+        TestSuite suite2 = new TestSuite("Suite 2", p);
+
+        TestCase testCase = new TestCase("Testcase 1", suite);
 
         // First test step:
-        JMSRequestReply jrr = new JMSRequestReply("sample.queue sender", "Sends to the sample.queue. Reply on sample.topic");
+        JMSRequestReply jrr = new JMSRequestReply("sample.queue sender", testCase);
         JMSSenderInput input = new JMSSenderInput();
         input.getProperties().put("Some Property", "Yarp!");
         input.getProperties().put("One", "1");
@@ -54,33 +58,10 @@ public class TestProject {
         // Second test step:
         StringAssertion sa = new StringAssertion("Some response");
 
-        AssertionCollection ac = new AssertionCollection("Bunch of assertions", "String checks");
+        AssertionCollection ac = new AssertionCollection("Bunch of assertions", testCase);
         ac.getAssertionList().add(sa);
 
-        testCase.getTestSteps().add(jrr);
-        testCase.getTestSteps().add(ac);
-
-        TestSuite suite = new TestSuite("Suite 1", "Desc");
-        suite.getTestCases().add(testCase);
-
-        TestSuite suite2 = new TestSuite("Suite 2", "Descirpiotasjd");
-
-        Project p = new Project("Project 1", "Desc");
-        p.getTestSuites().add(suite);
-        p.getTestSuites().add(suite2);
-        p.setAuthor("Me myself and I");
-
         p.setFilename("/home/whatevs/example/filename.xml");
-
-        // set parents, for debuggin'
-        jrr.setParent(testCase);
-        ac.setParent(testCase);
-        testCase.setParent(suite);
-        suite.setParent(p);
-        suite2.setParent(p);
-
-        p.getJmsConnections().add(connection1);
-        p.getJmsConnections().add(connection2);
 
         return p;
     }

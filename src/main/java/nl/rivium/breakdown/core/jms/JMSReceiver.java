@@ -11,8 +11,9 @@ public class JMSReceiver extends TestStep<JMSReceiverInput, JMSReceiverOutput> {
     private String destination;
     private long timeout = TIMEOUT_DEFAULT;
 
-    public JMSReceiver(String name, String description) {
-        super(name, description);
+    public JMSReceiver(String name, TestCase parent) {
+        super(name);
+        setParent(parent);
     }
 
     public String getDestination() {
@@ -31,10 +32,17 @@ public class JMSReceiver extends TestStep<JMSReceiverInput, JMSReceiverOutput> {
         this.timeout = timeout;
     }
 
+    /**
+     * Execute this JMSReceiver test step
+     *
+     * @param previous  The previous test step. Useful to check the output of the previous step.
+     * @throws AssertionException
+     * @throws BreakdownException
+     */
     @Override
-    public void execute(Project project, TestSuite suite, TestCase testCase, TestStep previous) throws AssertionException, BreakdownException {
+    public void execute(TestStep previous) throws AssertionException, BreakdownException {
         try {
-            Connection conn = testCase.getQueueConnection();
+            Connection conn = getParent().getQueueConnection();
             Session s = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
             Queue q = s.createQueue(getDestination());
             MessageConsumer cons = s.createConsumer(q);

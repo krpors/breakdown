@@ -46,12 +46,10 @@ public abstract class GenericEntity<P extends GenericEntity, C extends GenericEn
     private List<ExecutionListener> executionListeners = new ArrayList<>();
 
     public GenericEntity() {
-
     }
 
-    public GenericEntity(String name, String description) {
+    public GenericEntity(String name) {
         setName(name);
-        setDescription(description);
     }
 
     public String getName() {
@@ -74,7 +72,15 @@ public abstract class GenericEntity<P extends GenericEntity, C extends GenericEn
         return parent;
     }
 
+    /**
+     * Sets the parent.
+     *
+     * @param parent The parent of the entity.
+     */
     public void setParent(P parent) {
+        if (parent == null) {
+            throw new IllegalArgumentException("Parent cannot be null");
+        }
         this.parent = parent;
     }
 

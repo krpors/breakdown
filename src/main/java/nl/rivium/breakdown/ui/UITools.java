@@ -10,8 +10,10 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 
 /**
  * Class with utilities regarding user interface creation etc.
@@ -28,11 +30,15 @@ public final class UITools {
      */
     public static void showException(Shell parent, String title, String message, Throwable ex) {
         List<IStatus> statusses = new ArrayList<>();
-        for (StackTraceElement ste : ex.getStackTrace()) {
-            statusses.add(new Status(Status.ERROR, "plz", ste.toString()));
+        Queue<Throwable> causes = new ArrayDeque<>();
+        causes.add(ex.getCause());
+        while(causes.peek() != null) {
+            Throwable cause = causes.remove();
+            statusses.add(new Status(SWT.ERROR, "pluginid", "Caused by: " + cause.toString()));
+            if (cause.getCause() != null) {
+                causes.add(cause.getCause());
+            }
         }
-
-        // TODO: probably add all the causes too?
 
         IStatus[] array = statusses.toArray(new IStatus[statusses.size()]);
 

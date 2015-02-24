@@ -41,7 +41,7 @@ public class StringAssertion extends Assertion {
     }
 
     @Override
-    public void executeAssertion(TestCase testCase, TestStep previous) throws AssertionException {
+    public void executeAssertion(TestStep previous) throws AssertionException {
         if (previous == null) {
             return;
         }
@@ -53,8 +53,7 @@ public class StringAssertion extends Assertion {
             JMSReceiverOutput output = (JMSReceiverOutput) previous.getOutput();
             if (output.getPayload() != null) {
                 if (!output.getPayload().contains(assertion)) {
-
-                    throw new AssertionException(testCase, previous, assertion, output.getPayload());
+                    throw new AssertionException(previous, assertion, output.getPayload());
                 }
             }
         }

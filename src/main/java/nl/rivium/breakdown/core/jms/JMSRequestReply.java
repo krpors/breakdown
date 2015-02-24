@@ -38,8 +38,14 @@ public class JMSRequestReply extends TestStep<JMSSenderInput, JMSReceiverOutput>
     public JMSRequestReply() {
     }
 
-    public JMSRequestReply(String name, String description) {
-        super(name, description);
+    /**
+     * Creates a new JMSRequestReply test step.
+     * @param name The name of the step.
+     * @param parent The TestCase parent.
+     */
+    public JMSRequestReply(String name, TestCase parent) {
+        super(name);
+        setParent(parent);
     }
 
     public JMSDestination getRequestDestination() {
@@ -90,10 +96,10 @@ public class JMSRequestReply extends TestStep<JMSSenderInput, JMSReceiverOutput>
     }
 
     @Override
-    public void execute(Project project, TestSuite suite, TestCase testCase, TestStep previous) throws AssertionException, BreakdownException {
+    public void execute(TestStep previous) throws AssertionException, BreakdownException {
         // TODO: in EMS, using this connection works for queues and topics both. Why? What!
         try {
-            Connection connection = testCase.getQueueConnection();
+            Connection connection = getParent().getQueueConnection();
             Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
             Destination destRequest = requestDestination.createDestination(session);
@@ -116,7 +122,7 @@ public class JMSRequestReply extends TestStep<JMSSenderInput, JMSReceiverOutput>
 
                 setOutput(output);
             } else {
-                throw new AssertionException(testCase, this, TextMessage.class.getName(), null, "No message received");
+                throw new AssertionException(this, TextMessage.class.getName(), null, "No message received");
             }
         } catch (JMSException ex) {
             throw new BreakdownException("Failed to execute test step", ex);

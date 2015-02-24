@@ -35,10 +35,7 @@ public class JMSConnection extends GenericEntity<Project, GenericEntity> {
     }
 
     public JMSConnection(String name, Project parent) {
-        super(name, "");
-        if (parent == null ) {
-            throw new IllegalArgumentException("Parent Project cannot be null");
-        }
+        super(name);
         setParent(parent);
         parent.getJmsConnections().add(this);
     }

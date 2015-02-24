@@ -18,8 +18,10 @@ public class AssertionCollection extends TestStep {
     public AssertionCollection() {
     }
 
-    public AssertionCollection(String name, String description) {
-        super(name, description);
+    public AssertionCollection(String name, TestCase parent) {
+        super(name);
+        setParent(parent);
+        parent.getTestSteps().add(this);
     }
 
     public List<Assertion> getAssertionList() {
@@ -31,9 +33,9 @@ public class AssertionCollection extends TestStep {
     }
 
     @Override
-    public void execute(Project project, TestSuite suite, TestCase testCase, TestStep previous) throws AssertionException, BreakdownException {
+    public void execute(TestStep previous) throws AssertionException, BreakdownException {
         for (Assertion ass : assertionList) {
-            ass.executeAssertion(testCase, previous);
+            ass.executeAssertion(previous);
         }
     }
 }

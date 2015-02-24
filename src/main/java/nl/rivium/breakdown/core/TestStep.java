@@ -8,8 +8,8 @@ public abstract class TestStep<I extends Input, O extends Output> extends Generi
     public TestStep() {
     }
 
-    public TestStep(String name, String description) {
-        super(name, description);
+    public TestStep(String name) {
+        super(name);
     }
 
     public I getInput() {
@@ -58,12 +58,9 @@ public abstract class TestStep<I extends Input, O extends Output> extends Generi
     /**
      * Executed the test step.
      *
-     * @param project   The project this step belongs to.
-     * @param testSuite The test suite this step belongs to.
-     * @param testCase  The test case that this step belongs to.
      * @param previous  The previous test step. Useful to check the output of the previous step.
      * @throws AssertionException Whenever an assertion has failed in this step.
      * @throws BreakdownException Whenever something goes wrong in executing the test step, like connection errors etc.
      */
-    public abstract void execute(Project project, TestSuite testSuite, TestCase testCase, TestStep previous) throws AssertionException, BreakdownException;
+    public abstract void execute(TestStep previous) throws AssertionException, BreakdownException;
 }
