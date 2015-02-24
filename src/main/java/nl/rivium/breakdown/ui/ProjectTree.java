@@ -9,14 +9,9 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.MenuAdapter;
-import org.eclipse.swt.events.MenuEvent;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +36,6 @@ public class ProjectTree {
         treeViewer.setContentProvider(new ProjectTreeContentProvider());
         treeViewer.setLabelProvider(new ProjectTreeLabelProvider());
         treeViewer.addOpenListener(new ProjectTreeOpenListener(this));
-//        treeViewer.getTree().setMenu(createProjectMenu(treeViewer.getTree()));
         final MenuManager mgr = new MenuManager("YO!");
         mgr.setRemoveAllWhenShown(true);
         mgr.addMenuListener(new IMenuListener() {
@@ -49,13 +43,19 @@ public class ProjectTree {
             public void menuAboutToShow(IMenuManager iMenuManager) {
                 if (getFirstSelection() instanceof JMSConnection) {
                     mgr.add(new ActionDeleteEntity(ProjectTree.this));
-                } else if (getFirstSelection() instanceof TestSuite){
+                } else if (getFirstSelection() instanceof TestSuite) {
+                    mgr.add(new ActionExecuteEntity(ProjectTree.this));
+                    mgr.add(new Separator());
                     mgr.add(new ActionNewTestCase(ProjectTree.this));
                     mgr.add(new Separator());
                     mgr.add(new ActionDeleteEntity(ProjectTree.this));
                 } else if (getFirstSelection() instanceof TestCase) {
+                    mgr.add(new ActionExecuteEntity(ProjectTree.this));
+                    mgr.add(new Separator());
                     mgr.add(new ActionDeleteEntity(ProjectTree.this));
                 } else if (getFirstSelection() instanceof Project) {
+                    mgr.add(new ActionExecuteEntity(ProjectTree.this));
+                    mgr.add(new Separator());
                     mgr.add(new ActionNewJMSConnection(ProjectTree.this));
                     mgr.add(new ActionNewTestSuite(ProjectTree.this));
                 }
@@ -77,6 +77,7 @@ public class ProjectTree {
 
     /**
      * Quick hack to expand to a level after an item is added.
+     *
      * @param level The level.
      */
     public void expandToLevel(int level) {
@@ -85,6 +86,7 @@ public class ProjectTree {
 
     /**
      * Gets the breakdown UI.
+     *
      * @return The BreakdownUI.
      */
     public BreakdownUI getBreakdownUI() {

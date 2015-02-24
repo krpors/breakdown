@@ -77,7 +77,8 @@ public final class ImageCache {
         Create("/images/small/Create.png"),
         Save("/images/small/Save.png"),
         Preferences("/images/small/Application.png"),
-        Exit("/images/small/Exit.png");
+        Exit("/images/small/Exit.png"),
+        Play("/images/small/Play.png");
 
         public final String path;
 
