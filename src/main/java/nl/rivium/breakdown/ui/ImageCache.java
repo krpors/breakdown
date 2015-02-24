@@ -75,7 +75,9 @@ public final class ImageCache {
         JMSConnection("/images/small/Network connection.png"),
         Delete("/images/small/Delete.png"),
         Create("/images/small/Create.png"),
-        Save("/images/small/Save.png");
+        Save("/images/small/Save.png"),
+        Preferences("/images/small/Application.png"),
+        Exit("/images/small/Exit.png");
 
         public final String path;
 

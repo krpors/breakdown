@@ -1,6 +1,7 @@
 package nl.rivium.breakdown.ui.actions;
 
 import nl.rivium.breakdown.ui.BreakdownUI;
+import nl.rivium.breakdown.ui.ImageCache;
 import org.eclipse.swt.SWT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,7 @@ public class ActionExit extends BreakdownAction {
     public ActionExit(BreakdownUI ui) {
         super(ui, "&Exit");
         setAccelerator(SWT.ALT | SWT.F4);
+        setImageDescriptor(ImageCache.getDescriptor(ImageCache.UIImage.Exit));
     }
 
     @Override

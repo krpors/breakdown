@@ -5,16 +5,13 @@ import nl.rivium.breakdown.ui.actions.ActionExit;
 import nl.rivium.breakdown.ui.actions.ActionNewProject;
 import nl.rivium.breakdown.ui.actions.ActionOpenProject;
 import nl.rivium.breakdown.ui.actions.ActionSaveProject;
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.action.*;
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,6 +57,7 @@ public class BreakdownUI extends ApplicationWindow {
 
         // Add menu bar (see createMenuManager()). This will also invoke createActions().
         addMenuBar();
+        addCoolBar(SWT.HORIZONTAL);
     }
 
     /**
@@ -128,6 +126,23 @@ public class BreakdownUI extends ApplicationWindow {
     }
 
     /**
+     * Creates a Coolbar (toolbar).
+     *
+     * @param style The style. See constructor.
+     * @return The coolbar manager with the actions.
+     */
+    @Override
+    protected CoolBarManager createCoolBarManager(int style) {
+        CoolBarManager cbm = new CoolBarManager(style);
+        IToolBarManager itbm = new ToolBarManager(style);
+        itbm.add(actionNewProject);
+        itbm.add(actionOpenProject);
+        itbm.add(actionSaveProject);
+        cbm.add(itbm);
+        return cbm;
+    }
+
+    /**
      * Creates the main application window's contents.
      *
      * @param parent
@@ -152,6 +167,8 @@ public class BreakdownUI extends ApplicationWindow {
                 Project p = projectTree.getProject();
             }
         });
+
+        lol.setWeights(new int[]{80, 20});
 
         return super.createContents(parent);
     }

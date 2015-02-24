@@ -3,6 +3,7 @@ package nl.rivium.breakdown.ui.actions;
 import nl.rivium.breakdown.core.BreakdownException;
 import nl.rivium.breakdown.core.Project;
 import nl.rivium.breakdown.ui.BreakdownUI;
+import nl.rivium.breakdown.ui.ImageCache;
 import nl.rivium.breakdown.ui.UITools;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
@@ -20,6 +21,7 @@ public class ActionOpenProject extends BreakdownAction {
 
     public ActionOpenProject(BreakdownUI ui) {
         super(ui, "&Open Project...");
+        setImageDescriptor(ImageCache.getDescriptor(ImageCache.UIImage.Folder));
         setAccelerator(SWT.CTRL | 'O');
     }
 
