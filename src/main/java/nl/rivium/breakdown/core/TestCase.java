@@ -132,8 +132,8 @@ public class TestCase extends GenericEntity<TestSuite, TestStep> {
             TestStep current = it.next();
 
             LOG.info("TestCase '{}' -> '{}' input: {}", getName(), current.getName(), current.getInput());
-            current.execute(previous);
-            LOG.info("TestCase '{}' -> '{}' output: {}", getName(), current.getName(), current.getOutput());
+            current.execute();
+            LOG.info("TestCase '{}' -> '{}' output: {}", getName(), current.getName());
         }
 
         tearDown();
@@ -143,6 +143,7 @@ public class TestCase extends GenericEntity<TestSuite, TestStep> {
      * Shut down resources, connections etc.
      */
     private void tearDown() throws BreakdownException {
+        LOG.debug("TestCase '{}' tearing down", getName());
         try {
             queueConnection.stop();
             topicConnection.stop();

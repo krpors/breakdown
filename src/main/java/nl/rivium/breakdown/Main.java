@@ -2,12 +2,8 @@ package nl.rivium.breakdown;
 
 
 import nl.rivium.breakdown.core.*;
-import nl.rivium.breakdown.core.assertion.AssertionCollection;
-import nl.rivium.breakdown.core.assertion.StringAssertion;
-import nl.rivium.breakdown.core.jms.JMSConnection;
-import nl.rivium.breakdown.core.jms.JMSDestination;
-import nl.rivium.breakdown.core.jms.JMSRequestReply;
-import nl.rivium.breakdown.core.jms.JMSSenderInput;
+import nl.rivium.breakdown.core.assertion.PayloadAssertion;
+import nl.rivium.breakdown.core.jms.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,10 +58,7 @@ public class Main {
         jrr.setReplyDestination(new JMSDestination(DestinationType.TOPIC, "sample.topic"));
 
         // Second test step:
-        StringAssertion sa = new StringAssertion("Some response");
-
-        AssertionCollection ac = new AssertionCollection("Bunch of assertions", testCase);
-        ac.getAssertionList().add(sa);
+        PayloadAssertion sa = new PayloadAssertion("Some response");
 
         p.setAuthor("Me myself and I");
 

@@ -1,10 +1,13 @@
 package nl.rivium.breakdown.core.jms;
 
-import nl.rivium.breakdown.core.*;
+import nl.rivium.breakdown.core.AssertionException;
+import nl.rivium.breakdown.core.BreakdownException;
+import nl.rivium.breakdown.core.TestCase;
+import nl.rivium.breakdown.core.TestStep;
 
 import javax.jms.*;
 
-public class JMSReceiver extends TestStep<JMSReceiverInput, JMSReceiverOutput> {
+public class JMSReceiver extends TestStep<JMSReceiverInput> {
 
     public static final long TIMEOUT_DEFAULT = 10000;
 
@@ -35,12 +38,11 @@ public class JMSReceiver extends TestStep<JMSReceiverInput, JMSReceiverOutput> {
     /**
      * Execute this JMSReceiver test step
      *
-     * @param previous  The previous test step. Useful to check the output of the previous step.
      * @throws AssertionException
      * @throws BreakdownException
      */
     @Override
-    public void execute(TestStep previous) throws AssertionException, BreakdownException {
+    public void execute() throws AssertionException, BreakdownException {
         try {
             Connection conn = getParent().getQueueConnection();
             Session s = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
@@ -49,10 +51,6 @@ public class JMSReceiver extends TestStep<JMSReceiverInput, JMSReceiverOutput> {
             Message m = cons.receive(getTimeout());
             if (m instanceof TextMessage) {
                 TextMessage tm = (TextMessage) m;
-                JMSReceiverOutput output = new JMSReceiverOutput();
-                output.setPayload(tm.getText());
-                // TODO set properties
-                setOutput(output);
 
                 System.out.println(tm.getText());
             }

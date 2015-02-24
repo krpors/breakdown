@@ -1,7 +1,5 @@
 package nl.rivium.breakdown.core.jms;
 
-import nl.rivium.breakdown.core.DestinationType;
-
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Session;

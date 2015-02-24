@@ -1,12 +1,10 @@
 package nl.rivium.breakdown.core;
 
 
-import nl.rivium.breakdown.core.assertion.AssertionCollection;
-import nl.rivium.breakdown.core.assertion.StringAssertion;
+import nl.rivium.breakdown.core.assertion.PayloadAssertion;
 import nl.rivium.breakdown.core.jms.JMSConnection;
 import nl.rivium.breakdown.core.jms.JMSRequestReply;
 import nl.rivium.breakdown.core.jms.JMSSenderInput;
-import nl.rivium.breakdown.core.jms.JMSSenderOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -135,8 +133,8 @@ public class Project extends GenericEntity {
 
     private static JAXBContext createContext() throws JAXBException {
         JAXBContext ctx = JAXBContext.newInstance(
-                Project.class, JMSSenderInput.class, JMSSenderOutput.class, JMSRequestReply.class,
-                AssertionCollection.class, StringAssertion.class);
+                Project.class, JMSSenderInput.class, JMSRequestReply.class,
+                PayloadAssertion.class);
         return ctx;
     }
 

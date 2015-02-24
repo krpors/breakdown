@@ -39,6 +39,7 @@ public class ActionOpenProject extends BreakdownAction {
                 getBreakdownUI().updateWidgets();
             } catch (JAXBException | BreakdownException e) {
                 String s = String.format("Unable to open file '%s'", path);
+                LOG.error(s, e);
                 UITools.showException(getBreakdownUI().getShell(), "Unable to open file", s, e);
             }
         }

@@ -1,6 +1,7 @@
 package nl.rivium.breakdown.ui.tab;
 
 import nl.rivium.breakdown.core.*;
+import nl.rivium.breakdown.core.jms.DestinationType;
 import nl.rivium.breakdown.core.jms.JMSConnection;
 import nl.rivium.breakdown.core.jms.JMSRequestReply;
 import nl.rivium.breakdown.ui.BreakdownUI;

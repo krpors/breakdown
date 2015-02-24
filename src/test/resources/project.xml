@@ -32,14 +32,6 @@
                                 <type>TOPIC</type>
                             </replyDestination>
                         </testStep>
-                        <testStep xsi:type="assertionCollection" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-                            <name>Bunch of assertions</name>
-                            <description>String checks</description>
-                            <assertionList xsi:type="stringAssertion">
-                                <assertion>Some response</assertion>
-                                <isRegex>false</isRegex>
-                            </assertionList>
-                        </testStep>
                     </testSteps>
                 </testCase>
             </testCases>

@@ -1,11 +1,6 @@
 package nl.rivium.breakdown.core;
 
-import nl.rivium.breakdown.core.assertion.AssertionCollection;
-import nl.rivium.breakdown.core.assertion.StringAssertion;
-import nl.rivium.breakdown.core.jms.JMSConnection;
-import nl.rivium.breakdown.core.jms.JMSDestination;
-import nl.rivium.breakdown.core.jms.JMSRequestReply;
-import nl.rivium.breakdown.core.jms.JMSSenderInput;
+import nl.rivium.breakdown.core.jms.*;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -55,12 +50,6 @@ public class TestProject {
         jrr.setRequestDestination(new JMSDestination(DestinationType.QUEUE, "sample.queue"));
         jrr.setReplyDestination(new JMSDestination(DestinationType.TOPIC, "sample.topic"));
 
-        // Second test step:
-        StringAssertion sa = new StringAssertion("Some response");
-
-        AssertionCollection ac = new AssertionCollection("Bunch of assertions", testCase);
-        ac.getAssertionList().add(sa);
-
         p.setFilename("/home/whatevs/example/filename.xml");
 
         return p;
@@ -104,13 +93,11 @@ public class TestProject {
             Assert.assertEquals(1, testCases.size());
 
             List<TestStep> testSteps = testCases.get(0).getTestSteps();
-            Assert.assertEquals(2, testSteps.size());
+            Assert.assertEquals(1, testSteps.size());
 
             TestStep one = testSteps.get(0);
-            TestStep two = testSteps.get(1);
 
             Assert.assertTrue(one instanceof JMSRequestReply);
-            Assert.assertTrue(two instanceof AssertionCollection);
 
             JMSRequestReply jmsRequestReply = (JMSRequestReply) one;
             Assert.assertEquals("sample.queue sender", jmsRequestReply.getName());

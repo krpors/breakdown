@@ -1,4 +1,4 @@
-package nl.rivium.breakdown.core;
+package nl.rivium.breakdown.core.jms;
 
 public enum DestinationType {
     QUEUE,

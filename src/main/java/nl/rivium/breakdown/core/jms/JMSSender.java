@@ -6,7 +6,7 @@ import javax.jms.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class JMSSender extends TestStep<JMSSenderInput, JMSSenderOutput> {
+public class JMSSender extends TestStep<JMSSenderInput> {
 
     private String destination;
     private Map<String, String> properties = new HashMap<>();
@@ -38,7 +38,7 @@ public class JMSSender extends TestStep<JMSSenderInput, JMSSenderOutput> {
     }
 
     @Override
-    public void execute(TestStep previous) throws AssertionException, BreakdownException {
+    public void execute() throws AssertionException, BreakdownException {
         try {
             Connection c = testCase.getQueueConnection();
             Session session = c.createSession(false, Session.AUTO_ACKNOWLEDGE);
@@ -51,11 +51,6 @@ public class JMSSender extends TestStep<JMSSenderInput, JMSSenderOutput> {
             }
             MessageProducer producer = session.createProducer(queue);
             producer.send(msg);
-
-            JMSSenderOutput output = new JMSSenderOutput();
-            output.setJmsMessageId(msg.getJMSMessageID());
-            output.setJmsTimestamp(msg.getJMSTimestamp());
-            setOutput(output);
 
             session.close();
         } catch (JMSException ex) {
