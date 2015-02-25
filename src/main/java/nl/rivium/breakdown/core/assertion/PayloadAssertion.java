@@ -1,7 +1,6 @@
 package nl.rivium.breakdown.core.assertion;
 
 import nl.rivium.breakdown.core.AssertionException;
-import nl.rivium.breakdown.core.TestStep;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,7 +65,18 @@ public class PayloadAssertion {
     }
 
     public void execute(String payload) throws AssertionException {
-        // TODO lol here
+        if (payload == null) {
+            return; // TODO: what if null?
+        }
         LOG.debug("Executing payload assertion on payload {}", payload);
+        if (isRegex()) {
+            if (!payload.matches(getAssertion())) {
+                throw new AssertionException(null, null, "regex mismatch");
+            }
+        } else {
+            if (!payload.contains(getAssertion())) {
+                throw new AssertionException(getAssertion(), payload, "does not  contain");
+            }
+        }
     }
 }

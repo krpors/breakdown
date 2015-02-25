@@ -1,6 +1,9 @@
 package nl.rivium.breakdown.ui.tab;
 
-import nl.rivium.breakdown.core.*;
+import nl.rivium.breakdown.core.Project;
+import nl.rivium.breakdown.core.TestCase;
+import nl.rivium.breakdown.core.TestStep;
+import nl.rivium.breakdown.core.TestSuite;
 import nl.rivium.breakdown.core.jms.DestinationType;
 import nl.rivium.breakdown.core.jms.JMSConnection;
 import nl.rivium.breakdown.core.jms.JMSRequestReply;
@@ -19,7 +22,10 @@ import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.*;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
 import java.util.Map;
@@ -36,10 +42,12 @@ public class TestStepJMSRequestReplyTab extends AbstractTab<JMSRequestReply> imp
     private Text txtReplyDestination;
     private Text txtPayload;
     private Table tblCustomProperties;
+
     /**
      * Combobox with the request type.
      */
     private Combo cmbRequestType;
+
     /**
      * Combobox with the response type.
      */
@@ -57,10 +65,6 @@ public class TestStepJMSRequestReplyTab extends AbstractTab<JMSRequestReply> imp
      */
     @Override
     protected Composite createContents(CTabFolder parent) {
-        final TestStep step = getEntity();
-        final TestCase testCase = step.getParent();
-        final TestSuite testSuite = testCase.getParent();
-
         Composite compositeMain = new Composite(parent, SWT.NONE);
         FormLayout layout = new FormLayout();
         layout.marginWidth = 5;
@@ -68,20 +72,10 @@ public class TestStepJMSRequestReplyTab extends AbstractTab<JMSRequestReply> imp
         compositeMain.setLayout(layout);
 
         Group groupProperties = createDefaultGroup(compositeMain);
-        Group groupConfiguration = createConfigurationGroup(compositeMain);
+        Composite groupConfiguration = createCompositeConfiguration(compositeMain);
 
-        FormData data = new FormData();
-        data.left = new FormAttachment(0);
-        data.right = new FormAttachment(100);
-        data.top = new FormAttachment(0);
-        groupProperties.setLayoutData(data);
-
-        data = new FormData();
-        data.left = new FormAttachment(0);
-        data.right = new FormAttachment(100);
-        data.top = new FormAttachment(groupProperties, 5);
-        data.bottom = new FormAttachment(100);
-        groupConfiguration.setLayoutData(data);
+        groupProperties.setLayoutData(FormDataBuilder.newBuilder().left(0).right(100).create());
+        groupConfiguration.setLayoutData(FormDataBuilder.newBuilder().left(0).right(100).top(groupProperties).bottom(100).create());
 
         registerFocusListeners();
 
@@ -122,21 +116,46 @@ public class TestStepJMSRequestReplyTab extends AbstractTab<JMSRequestReply> imp
      * @param compositeMain The composite main parent.
      * @return The Group with JMS request reply properties.
      */
-    private Group createConfigurationGroup(Composite compositeMain) {
+    private Composite createCompositeConfiguration(Composite compositeMain) {
         JMSRequestReply jrr = getEntity();
         Project parent = jrr.getParent().getParent().getParent();
 
-        Group group = new Group(compositeMain, SWT.NONE);
-        group.setText("JMS Request/Reply properties");
-        group.setLayout(new FormLayout());
+        Composite c = new Composite(compositeMain, SWT.NONE);
+        c.setLayout(new FillLayout());
 
-        // Top part, with the general properties of the JMSRequestReply.
-        Composite topStuff = new Composite(group, SWT.NONE);
-        topStuff.setLayout(new GridLayout(2, false));
+        CTabFolder tabFolder = new CTabFolder(c, SWT.BORDER);
+
+        // creation of tab items:
+        CTabItem tabItemConnSettings = new CTabItem(tabFolder, SWT.NONE);
+        tabItemConnSettings.setText("Connection settings");
+        CTabItem tabItemPayload = new CTabItem(tabFolder, SWT.NONE);
+        tabItemPayload.setText("Payload data");
+        CTabItem tabItemProperties = new CTabItem(tabFolder, SWT.NONE);
+        tabItemProperties.setText("JMS Properties");
+
+        Composite conf = createCompositeGenericProperties(tabFolder);
+        Composite payload = createCompositePayload(tabFolder);
+        Composite zz = createCompositeProperties(tabFolder);
+
+        tabItemConnSettings.setControl(conf);
+        tabItemPayload.setControl(payload);
+        tabItemProperties.setControl(zz);
+
+        tabFolder.setSelection(tabItemConnSettings);
+
+        return c;
+    }
+
+    public Composite createCompositeGenericProperties(Composite compositeParent) {
+        JMSRequestReply jrr = getEntity();
+        Project parent = jrr.getParent().getParent().getParent();
+
+        Composite c = new Composite(compositeParent, SWT.NONE);
+        c.setLayout(new GridLayout(2, false));
 
         // Combobox to choose from existing JMS connections.
-        UITools.createLabel(topStuff, "JMS connection:");
-        cmbJMSConnection = new Combo(topStuff, SWT.READ_ONLY);
+        UITools.createLabel(c, "JMS connection:");
+        cmbJMSConnection = new Combo(c, SWT.READ_ONLY);
         for (int i = 0; i < parent.getJmsConnections().size(); i++) {
             JMSConnection conn = parent.getJmsConnections().get(i);
             cmbJMSConnection.add(conn.getName());
@@ -146,8 +165,8 @@ public class TestStepJMSRequestReplyTab extends AbstractTab<JMSRequestReply> imp
         }
 
         // Request destination, with the combo right next to it
-        UITools.createLabel(topStuff, "Request destination:");
-        Composite compositeRequestDest = new Composite(topStuff, SWT.NONE);
+        UITools.createLabel(c, "Request destination:");
+        Composite compositeRequestDest = new Composite(c, SWT.NONE);
         compositeRequestDest.setLayout(new GridLayout(2, false));
         txtRequestDestination = new Text(compositeRequestDest, SWT.BORDER);
         txtRequestDestination.setText(jrr.getRequestDestination().getName());
@@ -156,8 +175,8 @@ public class TestStepJMSRequestReplyTab extends AbstractTab<JMSRequestReply> imp
         compositeRequestDest.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
         // Reply destination, with the combo right next to it
-        UITools.createLabel(topStuff, "Reply destination:");
-        Composite compositeReplyDest = new Composite(topStuff, SWT.NONE);
+        UITools.createLabel(c, "Reply destination:");
+        Composite compositeReplyDest = new Composite(c, SWT.NONE);
         compositeReplyDest.setLayout(new GridLayout(2, false));
         txtReplyDestination = new Text(compositeReplyDest, SWT.BORDER);
         txtReplyDestination.setText(jrr.getReplyDestination().getName());
@@ -180,37 +199,15 @@ public class TestStepJMSRequestReplyTab extends AbstractTab<JMSRequestReply> imp
             }
         }
 
-        // Tabfolder with payload and settable properties
-        CTabFolder folder = new CTabFolder(group, SWT.BORDER);
+        return c;
+    }
 
-        txtPayload = new Text(folder, SWT.MULTI | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+    private Composite createCompositePayload(Composite parent) {
+        Composite c = new Composite(parent, SWT.NONE);
+        c.setLayout(new FillLayout());
+        txtPayload = new Text(c, SWT.MULTI | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
         txtPayload.setText(getEntity().getInput().getPayload());
-
-        CTabItem tabItemPayload = new CTabItem(folder, SWT.NONE);
-        tabItemPayload.setText("Payload");
-        tabItemPayload.setControl(txtPayload);
-
-        Composite compositeProperties = createPropertyTab(folder);
-        CTabItem tabItemProperties = new CTabItem(folder, SWT.NONE);
-        tabItemProperties.setText("JMS custom properties");
-        tabItemProperties.setControl(compositeProperties);
-
-        folder.setSelection(tabItemPayload);
-
-        FormData data = new FormData();
-        data.left = new FormAttachment(0);
-        data.right = new FormAttachment(100);
-        data.top = new FormAttachment(0);
-        topStuff.setLayoutData(data);
-
-        data = new FormData();
-        data.left = new FormAttachment(0);
-        data.right = new FormAttachment(100);
-        data.top = new FormAttachment(topStuff);
-        data.bottom = new FormAttachment(100);
-        folder.setLayoutData(data);
-
-        return group;
+        return c;
     }
 
     /**
@@ -219,7 +216,7 @@ public class TestStepJMSRequestReplyTab extends AbstractTab<JMSRequestReply> imp
      * @param parent The parent tab.
      * @return The composite containing the tab and such.
      */
-    private Composite createPropertyTab(Composite parent) {
+    private Composite createCompositeProperties(Composite parent) {
         Composite c = new Composite(parent, SWT.NONE);
         c.setLayout(new FormLayout());
 

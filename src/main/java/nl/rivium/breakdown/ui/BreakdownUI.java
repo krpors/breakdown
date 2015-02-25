@@ -1,6 +1,8 @@
 package nl.rivium.breakdown.ui;
 
-import nl.rivium.breakdown.core.Project;
+import nl.rivium.breakdown.Main;
+import nl.rivium.breakdown.core.*;
+import nl.rivium.breakdown.core.jms.JMSRequestReply;
 import nl.rivium.breakdown.ui.actions.ActionExit;
 import nl.rivium.breakdown.ui.actions.ActionNewProject;
 import nl.rivium.breakdown.ui.actions.ActionOpenProject;
@@ -15,6 +17,8 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.xml.bind.JAXBException;
 
 /**
  * Main entrypoint for the configuration user interface.
@@ -164,11 +168,34 @@ public class BreakdownUI extends ApplicationWindow {
         b.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                Project p = projectTree.getProject();
+                Object o = tabFolder.getVisibleEntity();
+                if (o != null && o instanceof GenericEntity) {
+                    GenericEntity genericEntity = (GenericEntity) o;
+                    System.out.println("open is " + genericEntity);
+                    if (genericEntity instanceof TestCase) {
+                        TestCase testCase = (TestCase) genericEntity;
+                        try {
+                            testCase.execute();
+                            MessageBox box = new MessageBox(getShell(), SWT.ICON_INFORMATION);
+                            box.setMessage("OKAY");
+                            box.open();
+                        } catch (AssertionException | BreakdownException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+                }
             }
         });
 
         lol.setWeights(new int[]{80, 20});
+
+        try {
+            Project p = Main.createProject();
+            projectTree.setProject(Main.createProject());
+            tabFolder.openTabItem(p.getTestSuites().get(0).getTestCases().get(0).getTestSteps().get(0));
+        } catch (BreakdownException e) {
+            e.printStackTrace();
+        }
 
         return super.createContents(parent);
     }

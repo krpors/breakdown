@@ -10,6 +10,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * A simple JMS request reply test step. Sends a JMS Text Message to a destination, with some payload and optionally
@@ -149,6 +151,10 @@ public class JMSRequestReply extends TestStep<JMSSenderInput> {
             MessageProducer producer = session.createProducer(destRequest);
             MessageConsumer consumer = session.createConsumer(destReply);
             TextMessage tm = session.createTextMessage();
+            for (String key : getInput().getProperties().keySet()) {
+                System.out.printf("%s -> %s\n", key, getInput().getProperties().get(key));
+                tm.setStringProperty(key, getInput().getProperties().get(key));
+            }
             tm.setText(getInput().getPayload());
             producer.send(tm);
 
@@ -158,7 +164,7 @@ public class JMSRequestReply extends TestStep<JMSSenderInput> {
                 TextMessage replyMessage = (TextMessage) m;
                 assertPayload(replyMessage.getText());
             } else {
-                throw new AssertionException(this, TextMessage.class.getName(), null, "No message received");
+                throw new AssertionException(TextMessage.class.getName(), null, "No message received");
             }
         } catch (JMSException ex) {
             throw new BreakdownException("Failed to execute test step", ex);

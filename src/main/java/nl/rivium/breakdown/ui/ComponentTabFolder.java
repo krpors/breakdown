@@ -85,6 +85,19 @@ public class ComponentTabFolder {
     }
 
     /**
+     * Gets the current open entity (tab), or null when none are open.
+     *
+     * @return The currently visible/open entity.
+     */
+    public GenericEntity getVisibleEntity() {
+        CTabItem item = tabFolder.getSelection();
+        if (item != null) {
+            return (GenericEntity) item.getData();
+        }
+        return null;
+    }
+
+    /**
      * Opens a new tab item of the specified entity.
      *
      * @param entity The entity to create a new tab item for.
