@@ -4,6 +4,7 @@ import nl.rivium.breakdown.core.Project;
 import nl.rivium.breakdown.core.TestCase;
 import nl.rivium.breakdown.core.TestStep;
 import nl.rivium.breakdown.core.TestSuite;
+import nl.rivium.breakdown.core.assertion.PayloadAssertion;
 import nl.rivium.breakdown.core.jms.DestinationType;
 import nl.rivium.breakdown.core.jms.JMSConnection;
 import nl.rivium.breakdown.core.jms.JMSRequestReply;
@@ -17,16 +18,16 @@ import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.FocusListener;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
@@ -34,6 +35,11 @@ import java.util.Map;
  * Configuration unit for a JMS request reply step.
  */
 public class TestStepJMSRequestReplyTab extends AbstractTab<JMSRequestReply> implements FocusListener {
+
+    /**
+     * Logger for this tab.
+     */
+    private static Logger LOG = LoggerFactory.getLogger(TestStepJMSRequestReplyTab.class);
 
     private Text txtName;
     private Text txtDescription;
@@ -62,7 +68,7 @@ public class TestStepJMSRequestReplyTab extends AbstractTab<JMSRequestReply> imp
      * Creates contents.
      *
      * @param parent The parent folder.
-     * @return
+     * @return The composite with the main contents.
      */
     @Override
     protected Composite createContents(CTabFolder parent) {
@@ -117,9 +123,6 @@ public class TestStepJMSRequestReplyTab extends AbstractTab<JMSRequestReply> imp
      * @return The Group with JMS request reply properties.
      */
     private Composite createCompositeConfiguration(Composite compositeMain) {
-        JMSRequestReply jrr = getEntity();
-        Project parent = jrr.getParent().getParent().getParent();
-
         Composite c = new Composite(compositeMain, SWT.NONE);
         c.setLayout(new FillLayout());
 
@@ -132,14 +135,18 @@ public class TestStepJMSRequestReplyTab extends AbstractTab<JMSRequestReply> imp
         tabItemPayload.setText("Payload data");
         CTabItem tabItemProperties = new CTabItem(tabFolder, SWT.NONE);
         tabItemProperties.setText("JMS Properties");
+        CTabItem tabItemAssertions = new CTabItem(tabFolder, SWT.NONE);
+        tabItemAssertions.setText("Assertions");
 
         Composite conf = createCompositeGenericProperties(tabFolder);
         Composite payload = createCompositePayload(tabFolder);
         Composite zz = createCompositeProperties(tabFolder);
+        Composite assertions = createAssertionComposite(tabFolder);
 
         tabItemConnSettings.setControl(conf);
         tabItemPayload.setControl(payload);
         tabItemProperties.setControl(zz);
+        tabItemAssertions.setControl(assertions);
 
         tabFolder.setSelection(tabItemConnSettings);
 
@@ -233,7 +240,8 @@ public class TestStepJMSRequestReplyTab extends AbstractTab<JMSRequestReply> imp
         c.setLayout(new FormLayout());
 
         Button btnAdd = new Button(c, SWT.PUSH);
-        btnAdd.setText("Add");
+        btnAdd.setImage(ImageCache.getImage(ImageCache.Icon.Create));
+        btnAdd.setToolTipText("Add a JMS property");
         btnAdd.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
@@ -262,7 +270,8 @@ public class TestStepJMSRequestReplyTab extends AbstractTab<JMSRequestReply> imp
         });
 
         Button btnRemove = new Button(c, SWT.PUSH);
-        btnRemove.setText("Remove");
+        btnRemove.setImage(ImageCache.getImage(ImageCache.Icon.Delete));
+        btnRemove.setToolTipText("Remove selected JMS properties");
         // remove selected rows from the table.
         btnRemove.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -279,9 +288,19 @@ public class TestStepJMSRequestReplyTab extends AbstractTab<JMSRequestReply> imp
         });
 
         Button btnEdit = new Button(c, SWT.PUSH);
-        btnEdit.setText("Edit");
+        btnEdit.setImage(ImageCache.getImage(ImageCache.Icon.Preferences));
+        btnEdit.setToolTipText("Edit selected JMS property");
+        // TODO: editing of an existing prop using button click.
 
         tblCustomProperties = new Table(c, SWT.MULTI | SWT.FULL_SELECTION);
+        tblCustomProperties.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseDoubleClick(MouseEvent e) {
+                TableItem item = tblCustomProperties.getItem(new Point(e.x, e.y));
+                // TODO: double click to edit
+                LOG.debug("TODO: start editing a JMS property here.");
+            }
+        });
         tblCustomProperties.setLinesVisible(true);
         tblCustomProperties.setHeaderVisible(true);
         for (String title : new String[]{"Name", "Value"}) {
@@ -302,6 +321,29 @@ public class TestStepJMSRequestReplyTab extends AbstractTab<JMSRequestReply> imp
         btnRemove.setLayoutData(FormDataBuilder.newBuilder().left(btnAdd).top(0).create());
         btnEdit.setLayoutData(FormDataBuilder.newBuilder().left(btnRemove).top(0).create());
         tblCustomProperties.setLayoutData(FormDataBuilder.newBuilder().left(0).top(btnAdd).right(100).bottom(100).create());
+
+        return c;
+    }
+
+    private Composite createAssertionComposite(Composite parent) {
+        Composite c = new Composite(parent, SWT.NONE);
+        c.setLayout(new FillLayout());
+
+        Table lol = new Table(c, SWT.MULTI | SWT.FULL_SELECTION);
+        lol.setLinesVisible(true);
+        lol.setHeaderVisible(true);
+        for (String title : new String[]{"Assertion name", "Type"}) {
+            TableColumn col = new TableColumn(lol, SWT.NONE);
+            col.setText(title);
+        }
+        lol.getColumn(0).setWidth(250);
+        lol.getColumn(1).setWidth(250);
+
+        for (PayloadAssertion pass : getEntity().getPayloadAssertions()) {
+            TableItem tc = new TableItem(lol, SWT.NONE);
+            tc.setText(0, pass.getClass().getName());
+            tc.setText(1, "String payload assertion");
+        }
 
         return c;
     }

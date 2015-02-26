@@ -100,7 +100,7 @@ public class JMSConnectionTab extends AbstractTab<JMSConnection> implements Focu
         final JMSConnection entity = getEntity();
 
         Group group = new Group(parent, SWT.NONE);
-        group.setText("Properties");
+        group.setText("Connection settings");
         group.setLayout(new GridLayout(2, false));
 
         txtContextFactory = UITools.createTextWithLabel(group, "Context factory:", entity.getContextFactory());

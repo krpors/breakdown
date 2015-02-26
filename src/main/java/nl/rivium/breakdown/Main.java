@@ -59,6 +59,7 @@ public class Main {
 
         // Second test step:
         PayloadAssertion sa = new PayloadAssertion("Some response");
+        jrr.getPayloadAssertions().add(sa);
 
         p.setAuthor("Me myself and I");
 

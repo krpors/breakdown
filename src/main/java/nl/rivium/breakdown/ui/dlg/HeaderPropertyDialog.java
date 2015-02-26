@@ -43,7 +43,7 @@ public class HeaderPropertyDialog extends TitleAreaDialog {
         txtValue = UITools.createTextWithLabel(container, "Value:", "");
         txtValue.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
-        lblError = UITools.createLabel(container, "Any error must be displayed here");
+        lblError = UITools.createLabel(container, "");
         // TODO red color for label.
         GridData data = new GridData();
         data.horizontalSpan = 2;
