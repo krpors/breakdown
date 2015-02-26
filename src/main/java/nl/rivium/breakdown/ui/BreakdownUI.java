@@ -171,7 +171,6 @@ public class BreakdownUI extends ApplicationWindow {
                 Object o = tabFolder.getVisibleEntity();
                 if (o != null && o instanceof GenericEntity) {
                     GenericEntity genericEntity = (GenericEntity) o;
-                    System.out.println("open is " + genericEntity);
                     if (genericEntity instanceof TestCase) {
                         TestCase testCase = (TestCase) genericEntity;
                         try {
@@ -181,6 +180,7 @@ public class BreakdownUI extends ApplicationWindow {
                             box.open();
                         } catch (AssertionException | BreakdownException e1) {
                             e1.printStackTrace();
+                            UITools.showException(getShell(), ":D", ":(", e1);
                         }
                     }
                 }
@@ -191,7 +191,7 @@ public class BreakdownUI extends ApplicationWindow {
 
         try {
             Project p = Main.createProject();
-            projectTree.setProject(Main.createProject());
+            loadProject(p);
             tabFolder.openTabItem(p.getTestSuites().get(0).getTestCases().get(0).getTestSteps().get(0));
         } catch (BreakdownException e) {
             e.printStackTrace();
@@ -216,6 +216,16 @@ public class BreakdownUI extends ApplicationWindow {
         if (projectTree.getProject() != null) {
             actionSaveProject.setEnabled(true);
         }
+    }
+
+    /**
+     * Loads an entire project, closes tabs etc.
+     * @param p The project to load.
+     */
+    public void loadProject(Project p) {
+        tabFolder.disposeAllTabs();
+        projectTree.setProject(p);
+        updateWidgets();
     }
 
     /**

@@ -37,6 +37,7 @@ public class TestStepJMSRequestReplyTab extends AbstractTab<JMSRequestReply> imp
 
     private Text txtName;
     private Text txtDescription;
+    private Spinner spinTimeout;
     private Combo cmbJMSConnection;
     private Text txtRequestDestination;
     private Text txtReplyDestination;
@@ -71,11 +72,11 @@ public class TestStepJMSRequestReplyTab extends AbstractTab<JMSRequestReply> imp
         layout.marginHeight = 5;
         compositeMain.setLayout(layout);
 
-        Group groupProperties = createDefaultGroup(compositeMain);
-        Composite groupConfiguration = createCompositeConfiguration(compositeMain);
+        Composite compositeDefault = createDefaultGroup(compositeMain);
+        Composite compositeConfiguration = createCompositeConfiguration(compositeMain);
 
-        groupProperties.setLayoutData(FormDataBuilder.newBuilder().left(0).right(100).create());
-        groupConfiguration.setLayoutData(FormDataBuilder.newBuilder().left(0).right(100).top(groupProperties).bottom(100).create());
+        compositeDefault.setLayoutData(FormDataBuilder.newBuilder().left(0).right(100).create());
+        compositeConfiguration.setLayoutData(FormDataBuilder.newBuilder().left(0).right(100).top(compositeDefault).bottom(100).create());
 
         registerFocusListeners();
 
@@ -88,13 +89,12 @@ public class TestStepJMSRequestReplyTab extends AbstractTab<JMSRequestReply> imp
      * @param compositeMain The main composite parent.
      * @return The group created.
      */
-    private Group createDefaultGroup(Composite compositeMain) {
+    private Composite createDefaultGroup(Composite compositeMain) {
         final TestStep step = getEntity();
         final TestCase testCase = step.getParent();
         final TestSuite testSuite = testCase.getParent();
 
-        Group groupProperties = new Group(compositeMain, SWT.NONE);
-        groupProperties.setText("Test step");
+        Composite groupProperties = new Composite(compositeMain, SWT.NONE);
 
         GridLayout gl = new GridLayout(2, false);
         groupProperties.setLayout(gl);
@@ -146,6 +146,11 @@ public class TestStepJMSRequestReplyTab extends AbstractTab<JMSRequestReply> imp
         return c;
     }
 
+    /**
+     * Creates the composite containing the JMS generic properties, like timeout, input and output destinations.
+     * @param compositeParent The composite parent.
+     * @return The composite containing properties.
+     */
     public Composite createCompositeGenericProperties(Composite compositeParent) {
         JMSRequestReply jrr = getEntity();
         Project parent = jrr.getParent().getParent().getParent();
@@ -163,6 +168,12 @@ public class TestStepJMSRequestReplyTab extends AbstractTab<JMSRequestReply> imp
                 cmbJMSConnection.select(i);
             }
         }
+
+        UITools.createLabel(c, "Request timeout:");
+        spinTimeout = new Spinner(c, SWT.BORDER);
+        spinTimeout.setMinimum(100);
+        spinTimeout.setMaximum(Integer.MAX_VALUE);
+        spinTimeout.setSelection((int) jrr.getTimeout());
 
         // Request destination, with the combo right next to it
         UITools.createLabel(c, "Request destination:");
@@ -306,6 +317,7 @@ public class TestStepJMSRequestReplyTab extends AbstractTab<JMSRequestReply> imp
         cmbJMSConnection.addFocusListener(this);
         cmbRequestType.addFocusListener(this);
         cmbResponseType.addFocusListener(this);
+        spinTimeout.addFocusListener(this);
     }
 
     @Override
@@ -319,6 +331,7 @@ public class TestStepJMSRequestReplyTab extends AbstractTab<JMSRequestReply> imp
         rr.setName(txtName.getText());
         rr.setDescription(txtDescription.getText());
         rr.getInput().setPayload(txtPayload.getText());
+        rr.setTimeout((long) spinTimeout.getSelection());
         if (cmbJMSConnection.getSelectionIndex() >= 0) {
             rr.setJmsConnectionName(cmbJMSConnection.getItem(cmbJMSConnection.getSelectionIndex()));
         }

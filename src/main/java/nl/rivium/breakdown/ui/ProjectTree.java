@@ -255,4 +255,23 @@ public class ProjectTree {
             return super.getText(element);
         }
     }
+
+    /**
+     * Sneaky class to add a non visible root to the tree viewer.
+     */
+    private class Root {
+        private Project project;
+
+        public Root(Project project) {
+            this.project = project;
+        }
+
+        public Project getProject() {
+            return project;
+        }
+
+        public void setProject(Project project) {
+            this.project = project;
+        }
+    }
 }

@@ -23,7 +23,7 @@ public class Main {
         conn1.setContextFactory("com.tibco.tibjms.naming.TibjmsInitialContextFactory");
         conn1.setConnectionUrl("tcp://localhost:7222");
         conn1.setUsername("admin");
-        conn1.setPassword(null);
+        conn1.setPassword("admin");
         conn1.setQueueConnectionFactory("QueueConnectionFactory");
         conn1.setTopicConnectionFactory("TopicConnectionFactory");
 

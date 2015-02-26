@@ -37,8 +37,7 @@ public class TestSuiteTab extends AbstractTab<TestSuite> implements FocusListene
         l.marginHeight = 5;
         compositeMain.setLayout(l);
 
-        Group compositeProperties = new Group(compositeMain, SWT.NONE);
-        compositeProperties.setText("Test suite");
+        Composite compositeProperties = new Composite(compositeMain, SWT.NONE);
 
         GridLayout gl = new GridLayout(2, false);
         compositeProperties.setLayout(gl);

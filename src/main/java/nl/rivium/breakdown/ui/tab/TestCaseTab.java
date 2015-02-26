@@ -40,8 +40,7 @@ public class TestCaseTab extends AbstractTab<TestCase> implements FocusListener 
         l.marginHeight = 5;
         compositeMain.setLayout(l);
 
-        Group compositeProperties = new Group(compositeMain, SWT.NONE);
-        compositeProperties.setText("Test case");
+        Composite compositeProperties = new Composite(compositeMain, SWT.NONE);
 
         GridLayout gl = new GridLayout(2, false);
         compositeProperties.setLayout(gl);

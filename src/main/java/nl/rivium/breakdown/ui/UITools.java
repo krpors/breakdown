@@ -30,24 +30,28 @@ public final class UITools {
      */
     public static void showException(Shell parent, String title, String message, Throwable ex) {
         List<IStatus> statusses = new ArrayList<>();
+
         Queue<Throwable> causes = new ArrayDeque<>();
-        causes.add(ex.getCause());
-        while(causes.peek() != null) {
-            Throwable cause = causes.remove();
-            statusses.add(new Status(SWT.ERROR, "pluginid", "Caused by: " + cause.toString()));
-            if (cause.getCause() != null) {
-                causes.add(cause.getCause());
+        // add causes:
+        if (ex.getCause() != null) {
+            causes.add(ex.getCause());
+            while (causes.peek() != null) {
+                Throwable cause = causes.remove();
+                statusses.add(new Status(SWT.ERROR, "pluginid", "Caused by: " + cause.toString()));
+                if (cause.getCause() != null) {
+                    causes.add(cause.getCause());
+                }
             }
         }
 
         IStatus[] array = statusses.toArray(new IStatus[statusses.size()]);
 
-        String exmsg = ex.getMessage();
-        if (exmsg == null || exmsg.trim().equals("")) {
-            exmsg = "Please inspect the details for further information.";
+        String reason = ex.getMessage();
+        if (reason == null || reason.trim().equals("")) {
+            reason = "Please inspect the details for further information.";
         }
 
-        MultiStatus status = new MultiStatus("plg", Status.ERROR, array, exmsg, ex);
+        MultiStatus status = new MultiStatus("plg", Status.ERROR, array, reason, ex);
 
         ErrorDialog.openError(parent, title, message, status);
     }

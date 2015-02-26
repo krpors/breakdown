@@ -2,6 +2,8 @@ package nl.rivium.breakdown.core.jms;
 
 import nl.rivium.breakdown.core.*;
 import nl.rivium.breakdown.core.assertion.PayloadAssertion;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jms.*;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -10,8 +12,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * A simple JMS request reply test step. Sends a JMS Text Message to a destination, with some payload and optionally
@@ -21,9 +21,14 @@ import java.util.Set;
 public class JMSRequestReply extends TestStep<JMSSenderInput> {
 
     /**
+     * Logger instance.
+     */
+    private static Logger LOG = LoggerFactory.getLogger(JMSRequestReply.class);
+
+    /**
      * Default timeout to wait for a response.
      */
-    private long timeout = 10000;
+    private long timeout = 1000;
 
     /**
      * The request destination (to send data to).
@@ -142,9 +147,12 @@ public class JMSRequestReply extends TestStep<JMSSenderInput> {
         // TODO: in EMS, using this connection works for queues and topics both. Why? What!
         try {
             Connection connection = getParent().getQueueConnection();
+            LOG.debug("Creating JMS session");
             Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
+            LOG.debug("Creating request destination '{}'", requestDestination);
             Destination destRequest = requestDestination.createDestination(session);
+            LOG.debug("Creating reply destination '{}'", replyDestination);
             Destination destReply = replyDestination.createDestination(session);
 
             // Create producer and consumer:
@@ -152,19 +160,29 @@ public class JMSRequestReply extends TestStep<JMSSenderInput> {
             MessageConsumer consumer = session.createConsumer(destReply);
             TextMessage tm = session.createTextMessage();
             for (String key : getInput().getProperties().keySet()) {
-                System.out.printf("%s -> %s\n", key, getInput().getProperties().get(key));
-                tm.setStringProperty(key, getInput().getProperties().get(key));
+                String val = getInput().getProperties().get(key);
+                LOG.debug("Setting JMS property '{}' = '{}'", key, val);
+                tm.setStringProperty(key, val);
             }
+            LOG.debug("Message payload = {}", getInput().getPayload());
             tm.setText(getInput().getPayload());
             producer.send(tm);
+            LOG.debug("Message sent to request destination '{}'", requestDestination);
 
             // Receive message, using timeout
+            LOG.debug("Waiting to receive message on reply destination '{}'...", replyDestination);
             Message m = consumer.receive(getTimeout());
+            if (m == null) {
+                throw new AssertionException("JMS message", "nothing", "No message received");
+            }
+
+            LOG.debug("Message received on reply destination '{}' (ID: '{}')", replyDestination, m.getJMSMessageID());
+
             if (m instanceof TextMessage) {
                 TextMessage replyMessage = (TextMessage) m;
                 assertPayload(replyMessage.getText());
             } else {
-                throw new AssertionException(TextMessage.class.getName(), null, "No message received");
+                throw new AssertionException(TextMessage.class.getName(), m.getClass().getName());
             }
         } catch (JMSException ex) {
             throw new BreakdownException("Failed to execute test step", ex);

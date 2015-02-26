@@ -70,8 +70,7 @@ public class JMSConnectionTab extends AbstractTab<JMSConnection> implements Focu
         layout.marginHeight = 5;
         compositeMain.setLayout(layout);
 
-        Group groupTop = new Group(compositeMain, SWT.NONE);
-        groupTop.setText("JMS Connection");
+        Composite groupTop = new Composite(compositeMain, SWT.NONE);
         GridLayout gl = new GridLayout(2, false);
         groupTop.setLayout(gl);
 

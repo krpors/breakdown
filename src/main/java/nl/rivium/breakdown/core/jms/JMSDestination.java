@@ -54,4 +54,9 @@ public class JMSDestination {
 
         return dest;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s (%s)", getName(), getType());
+    }
 }

@@ -45,26 +45,27 @@ public class ProjectTab extends AbstractTab<Project> implements FocusListener {
 
         Composite compositeMain = new Composite(parent, SWT.NONE);
         FormLayout layout = new FormLayout();
+        layout.marginWidth = 5;
+        layout.marginHeight = 5;
         compositeMain.setLayout(layout);
 
-        Group groupProperties = new Group(compositeMain, SWT.NONE);
-        groupProperties.setText("Project");
+        Composite compositeProperties = new Composite(compositeMain, SWT.NONE);
 
         GridLayout gl = new GridLayout(2, false);
-        groupProperties.setLayout(gl);
+        compositeProperties.setLayout(gl);
 
         // Create labels, textfields and such.
-        txtFilename = UITools.createTextWithLabel(groupProperties, "Filename:", project.getFilename());
-        txtProjectName = UITools.createTextWithLabel(groupProperties, "Project name:", project.getName());
-        txtAuthorName = UITools.createTextWithLabel(groupProperties, "Author name:", project.getAuthor());
-        txtDescription = UITools.createTextWithLabel(groupProperties, "Description:", project.getDescription());
+        txtFilename = UITools.createTextWithLabel(compositeProperties, "Filename:", project.getFilename());
+        txtProjectName = UITools.createTextWithLabel(compositeProperties, "Project name:", project.getName());
+        txtAuthorName = UITools.createTextWithLabel(compositeProperties, "Author name:", project.getAuthor());
+        txtDescription = UITools.createTextWithLabel(compositeProperties, "Description:", project.getDescription());
         txtFilename.setEditable(false);
 
         txtProjectName.addFocusListener(this);
         txtAuthorName.addFocusListener(this);
         txtDescription.addFocusListener(this);
 
-        groupProperties.setLayoutData(FormDataBuilder.newBuilder().left(0).right(100).top(0).bottom(100).create());
+        compositeProperties.setLayoutData(FormDataBuilder.newBuilder().left(0).right(100).top(0).bottom(100).create());
 
         return compositeMain;
     }

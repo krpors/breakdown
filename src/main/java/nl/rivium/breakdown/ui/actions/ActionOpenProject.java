@@ -34,9 +34,7 @@ public class ActionOpenProject extends BreakdownAction {
             LOG.info("Opening project '{}'", path);
             try {
                 Project p = Project.read(path);
-                getBreakdownUI().getTabFolder().disposeAllTabs();
-                getBreakdownUI().getProjectTree().setProject(p);
-                getBreakdownUI().updateWidgets();
+                getBreakdownUI().loadProject(p);
             } catch (JAXBException | BreakdownException e) {
                 String s = String.format("Unable to open file '%s'", path);
                 LOG.error(s, e);
