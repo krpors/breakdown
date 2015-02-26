@@ -21,7 +21,7 @@ public class ActionDeleteEntity extends Action {
     private ProjectTree tree;
 
     public ActionDeleteEntity(ProjectTree tree) {
-        super("&Delete", ImageCache.getDescriptor(ImageCache.UIImage.Delete));
+        super("&Delete", ImageCache.getDescriptor(ImageCache.Icon.Delete));
         this.tree = tree;
 //        setAccelerator(SWT.DEL);
     }

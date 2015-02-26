@@ -36,7 +36,7 @@ public final class ImageCache {
      * UIImage enumeration, and output a log line when it has been registered.
      */
     private static void registerImages() {
-        for (UIImage img : UIImage.values()) {
+        for (Icon img : Icon.values()) {
             imageRegistry.put(img.name(), new Image(display, ImageCache.class.getResourceAsStream(img.path)));
             LOG.debug("Registered image '{}' from path '{}'", img.name(), img.path);
         }
@@ -45,27 +45,27 @@ public final class ImageCache {
     /**
      * Gets an image from the image registry.
      *
-     * @param img The image from the enum to get.
+     * @param icon The image from the enum to get.
      * @return The Image.
      */
-    public static Image getImage(UIImage img) {
-        return imageRegistry.get(img.name());
+    public static Image getImage(Icon icon) {
+        return imageRegistry.get(icon.name());
     }
 
     /**
      * Gets an image descriptor from an image. Descriptors are frequently used in JFace actions.
      *
-     * @param img The image from the enum.
+     * @param icon The image from the enum.
      * @return The ImageDescriptor.
      */
-    public static ImageDescriptor getDescriptor(UIImage img) {
-        return imageRegistry.getDescriptor(img.name());
+    public static ImageDescriptor getDescriptor(Icon icon) {
+        return imageRegistry.getDescriptor(icon.name());
     }
 
     /**
-     * Enumeration with all images.
+     * Enumeration with all image icons.
      */
-    public enum UIImage {
+    public enum Icon {
 
         Folder("/images/small/Folder.png"),
         Project("/images/small/Home.png"),
@@ -82,7 +82,7 @@ public final class ImageCache {
 
         public final String path;
 
-        private UIImage(String path) {
+        private Icon(String path) {
             this.path = path;
         }
     }

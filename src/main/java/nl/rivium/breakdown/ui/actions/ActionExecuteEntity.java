@@ -1,14 +1,9 @@
 package nl.rivium.breakdown.ui.actions;
 
-import nl.rivium.breakdown.core.GenericEntity;
-import nl.rivium.breakdown.core.TestCase;
-import nl.rivium.breakdown.core.TestSuite;
-import nl.rivium.breakdown.core.jms.JMSConnection;
+import nl.rivium.breakdown.core.*;
 import nl.rivium.breakdown.ui.ImageCache;
 import nl.rivium.breakdown.ui.ProjectTree;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.SWT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +17,7 @@ public class ActionExecuteEntity extends Action {
     private ProjectTree tree;
 
     public ActionExecuteEntity(ProjectTree tree) {
-        super("&Execute", ImageCache.getDescriptor(ImageCache.UIImage.Play));
+        super("&Execute", ImageCache.getDescriptor(ImageCache.Icon.Play));
         this.tree = tree;
     }
 
@@ -36,5 +31,14 @@ public class ActionExecuteEntity extends Action {
 
         GenericEntity ge = (GenericEntity) o;
         LOG.debug("Executing {}", ge.getName());
+
+        try {
+            if (ge instanceof TestCase) {
+                TestCase testCase = (TestCase) ge;
+                testCase.execute();
+            }
+        } catch (BreakdownException | AssertionException e) {
+            LOG.error("Exception", e);
+        }
     }
 }

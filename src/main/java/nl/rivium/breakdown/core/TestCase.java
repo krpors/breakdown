@@ -119,21 +119,9 @@ public class TestCase extends GenericEntity<TestSuite, TestStep> {
         setUp();
 
         ListIterator<TestStep> it = testSteps.listIterator();
-        // We use an iterator here to get a possible previous test case when they are chained together. This is useful
-        // for assertions so you can refer to the previous run step etc.
         while (it.hasNext()) {
-            // First attempt to get the previous test step. It can be null if the iteration is at the very first 
-            // test step.
-            TestStep previous = null;
-            if (it.hasPrevious()) {
-                previous = testSteps.get(it.previousIndex());
-            }
-
             TestStep current = it.next();
-
-            LOG.info("TestCase '{}' -> '{}' input: {}", getName(), current.getName(), current.getInput());
             current.execute();
-            LOG.info("TestCase '{}' -> '{}' output: {}", getName(), current.getName());
         }
 
         tearDown();

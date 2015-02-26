@@ -18,7 +18,7 @@ public class ActionNewJMSConnection extends Action {
     private ProjectTree tree;
 
     public ActionNewJMSConnection(ProjectTree tree) {
-        super("&Create JMS connection", ImageCache.getDescriptor(ImageCache.UIImage.JMSConnection));
+        super("&Create JMS connection", ImageCache.getDescriptor(ImageCache.Icon.JMSConnection));
         this.tree = tree;
     }
 

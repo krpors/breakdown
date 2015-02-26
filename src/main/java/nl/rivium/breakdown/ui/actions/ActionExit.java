@@ -16,7 +16,7 @@ public class ActionExit extends BreakdownAction {
     public ActionExit(BreakdownUI ui) {
         super(ui, "&Exit");
         setAccelerator(SWT.ALT | SWT.F4);
-        setImageDescriptor(ImageCache.getDescriptor(ImageCache.UIImage.Exit));
+        setImageDescriptor(ImageCache.getDescriptor(ImageCache.Icon.Exit));
     }
 
     @Override

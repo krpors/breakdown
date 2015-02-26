@@ -52,7 +52,7 @@ public class TestStepJMSRequestReplyTab extends AbstractTab<JMSRequestReply> imp
     /**
      * Combobox with the response type.
      */
-    private Combo cmbResponseType;
+    private Combo cmbReplyType;
 
     public TestStepJMSRequestReplyTab(BreakdownUI ui, CTabFolder parent, JMSRequestReply entity) {
         super(ui, parent, entity);
@@ -148,6 +148,7 @@ public class TestStepJMSRequestReplyTab extends AbstractTab<JMSRequestReply> imp
 
     /**
      * Creates the composite containing the JMS generic properties, like timeout, input and output destinations.
+     *
      * @param compositeParent The composite parent.
      * @return The composite containing properties.
      */
@@ -191,7 +192,7 @@ public class TestStepJMSRequestReplyTab extends AbstractTab<JMSRequestReply> imp
         compositeReplyDest.setLayout(new GridLayout(2, false));
         txtReplyDestination = new Text(compositeReplyDest, SWT.BORDER);
         txtReplyDestination.setText(jrr.getReplyDestination().getName());
-        cmbResponseType = new Combo(compositeReplyDest, SWT.READ_ONLY);
+        cmbReplyType = new Combo(compositeReplyDest, SWT.READ_ONLY);
         txtReplyDestination.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
         compositeReplyDest.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
@@ -199,14 +200,14 @@ public class TestStepJMSRequestReplyTab extends AbstractTab<JMSRequestReply> imp
         for (int i = 0; i < DestinationType.values().length; i++) {
             DestinationType d = DestinationType.values()[i];
             cmbRequestType.add(d.name());
-            cmbResponseType.add(d.name());
+            cmbReplyType.add(d.name());
 
             if (jrr.getRequestDestination().getType() == d) {
                 cmbRequestType.select(i);
             }
 
             if (jrr.getReplyDestination().getType() == d) {
-                cmbResponseType.select(i);
+                cmbReplyType.select(i);
             }
         }
 
@@ -316,13 +317,13 @@ public class TestStepJMSRequestReplyTab extends AbstractTab<JMSRequestReply> imp
         txtRequestDestination.addFocusListener(this);
         cmbJMSConnection.addFocusListener(this);
         cmbRequestType.addFocusListener(this);
-        cmbResponseType.addFocusListener(this);
+        cmbReplyType.addFocusListener(this);
         spinTimeout.addFocusListener(this);
     }
 
     @Override
     protected Image getImage() {
-        return ImageCache.getImage(ImageCache.UIImage.TestStep);
+        return ImageCache.getImage(ImageCache.Icon.TestStep);
     }
 
     @Override
@@ -330,6 +331,10 @@ public class TestStepJMSRequestReplyTab extends AbstractTab<JMSRequestReply> imp
         JMSRequestReply rr = getEntity();
         rr.setName(txtName.getText());
         rr.setDescription(txtDescription.getText());
+        rr.getRequestDestination().setName(txtRequestDestination.getText());
+        rr.getRequestDestination().setType(DestinationType.valueOf(cmbRequestType.getItem(cmbRequestType.getSelectionIndex())));
+        rr.getReplyDestination().setName(txtReplyDestination.getText());
+        rr.getReplyDestination().setType(DestinationType.valueOf(cmbReplyType.getItem(cmbReplyType.getSelectionIndex())));
         rr.getInput().setPayload(txtPayload.getText());
         rr.setTimeout((long) spinTimeout.getSelection());
         if (cmbJMSConnection.getSelectionIndex() >= 0) {

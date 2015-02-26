@@ -21,7 +21,7 @@ public class ActionOpenProject extends BreakdownAction {
 
     public ActionOpenProject(BreakdownUI ui) {
         super(ui, "&Open Project...");
-        setImageDescriptor(ImageCache.getDescriptor(ImageCache.UIImage.Folder));
+        setImageDescriptor(ImageCache.getDescriptor(ImageCache.Icon.Folder));
         setAccelerator(SWT.CTRL | 'O');
     }
 

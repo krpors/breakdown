@@ -13,7 +13,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,7 +71,7 @@ public class ProjectTab extends AbstractTab<Project> implements FocusListener {
 
     @Override
     protected Image getImage() {
-        return ImageCache.getImage(ImageCache.UIImage.Project);
+        return ImageCache.getImage(ImageCache.Icon.Project);
     }
 
     @Override

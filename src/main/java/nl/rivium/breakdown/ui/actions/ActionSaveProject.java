@@ -20,7 +20,7 @@ public class ActionSaveProject extends BreakdownAction {
 
     public ActionSaveProject(BreakdownUI ui) {
         super(ui, "&Save Project");
-        setImageDescriptor(ImageCache.getDescriptor(ImageCache.UIImage.Save));
+        setImageDescriptor(ImageCache.getDescriptor(ImageCache.Icon.Save));
         setAccelerator(SWT.CTRL | 'S');
     }
 

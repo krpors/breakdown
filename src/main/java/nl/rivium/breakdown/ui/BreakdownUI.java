@@ -2,23 +2,23 @@ package nl.rivium.breakdown.ui;
 
 import nl.rivium.breakdown.Main;
 import nl.rivium.breakdown.core.*;
-import nl.rivium.breakdown.core.jms.JMSRequestReply;
 import nl.rivium.breakdown.ui.actions.ActionExit;
 import nl.rivium.breakdown.ui.actions.ActionNewProject;
 import nl.rivium.breakdown.ui.actions.ActionOpenProject;
 import nl.rivium.breakdown.ui.actions.ActionSaveProject;
 import org.eclipse.jface.action.*;
+import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.xml.bind.JAXBException;
 
 /**
  * Main entrypoint for the configuration user interface.
@@ -220,6 +220,7 @@ public class BreakdownUI extends ApplicationWindow {
 
     /**
      * Loads an entire project, closes tabs etc.
+     *
      * @param p The project to load.
      */
     public void loadProject(Project p) {

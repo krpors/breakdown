@@ -2,7 +2,6 @@ package nl.rivium.breakdown.ui.actions;
 
 import nl.rivium.breakdown.core.Project;
 import nl.rivium.breakdown.core.TestSuite;
-import nl.rivium.breakdown.core.jms.JMSConnection;
 import nl.rivium.breakdown.ui.ImageCache;
 import nl.rivium.breakdown.ui.ProjectTree;
 import org.eclipse.jface.action.Action;
@@ -19,7 +18,7 @@ public class ActionNewTestSuite extends Action {
     private ProjectTree tree;
 
     public ActionNewTestSuite(ProjectTree tree) {
-        super("&Create test suite", ImageCache.getDescriptor(ImageCache.UIImage.TestSuite));
+        super("&Create test suite", ImageCache.getDescriptor(ImageCache.Icon.TestSuite));
         this.tree = tree;
     }
 

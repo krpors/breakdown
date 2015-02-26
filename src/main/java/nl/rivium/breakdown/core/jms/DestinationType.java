@@ -6,7 +6,4 @@ public enum DestinationType {
     TEMPORARY_QUEUE,
     TEMPORARY_TOPIC;
 
-    public static void fromString(String s) {
-
-    }
 }

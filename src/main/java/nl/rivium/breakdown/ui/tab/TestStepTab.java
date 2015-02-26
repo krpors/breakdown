@@ -59,7 +59,7 @@ public class TestStepTab extends AbstractTab<TestStep> {
 
     @Override
     protected Image getImage() {
-        return ImageCache.getImage(ImageCache.UIImage.TestStep);
+        return ImageCache.getImage(ImageCache.Icon.TestStep);
     }
 
     @Override

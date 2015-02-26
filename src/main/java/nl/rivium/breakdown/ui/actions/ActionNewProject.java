@@ -3,6 +3,7 @@ package nl.rivium.breakdown.ui.actions;
 import nl.rivium.breakdown.core.Project;
 import nl.rivium.breakdown.ui.BreakdownUI;
 import nl.rivium.breakdown.ui.ImageCache;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 
 /**
@@ -11,7 +12,7 @@ import org.eclipse.swt.SWT;
 public class ActionNewProject extends BreakdownAction {
 
     public ActionNewProject(BreakdownUI ui) {
-        super(ui, "&New Project", ImageCache.getDescriptor(ImageCache.UIImage.Project));
+        super(ui, "&New Project", ImageCache.getDescriptor(ImageCache.Icon.Project));
         setAccelerator(SWT.CTRL | 'N');
     }
 

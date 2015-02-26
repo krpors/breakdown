@@ -5,6 +5,7 @@ import nl.rivium.breakdown.core.assertion.PayloadAssertion;
 import nl.rivium.breakdown.core.jms.JMSConnection;
 import nl.rivium.breakdown.core.jms.JMSRequestReply;
 import nl.rivium.breakdown.core.jms.JMSSenderInput;
+import org.apache.commons.lang.SerializationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -167,9 +168,9 @@ public class Project extends GenericEntity {
             return p;
         }
 
-
         throw new BreakdownException("Can not read project properly");
     }
+
 
     /**
      * Marshals the project to the given outputstream.

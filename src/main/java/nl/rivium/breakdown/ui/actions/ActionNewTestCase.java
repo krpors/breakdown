@@ -1,6 +1,5 @@
 package nl.rivium.breakdown.ui.actions;
 
-import nl.rivium.breakdown.core.Project;
 import nl.rivium.breakdown.core.TestCase;
 import nl.rivium.breakdown.core.TestSuite;
 import nl.rivium.breakdown.ui.ImageCache;
@@ -19,7 +18,7 @@ public class ActionNewTestCase extends Action {
     private ProjectTree tree;
 
     public ActionNewTestCase(ProjectTree tree) {
-        super("&Create test case", ImageCache.getDescriptor(ImageCache.UIImage.TestCase));
+        super("&Create test case", ImageCache.getDescriptor(ImageCache.Icon.TestCase));
         this.tree = tree;
     }
 

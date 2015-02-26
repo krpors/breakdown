@@ -175,7 +175,7 @@ public class JMSConnectionTab extends AbstractTab<JMSConnection> implements Focu
 
     @Override
     protected Image getImage() {
-        return ImageCache.getImage(ImageCache.UIImage.JMSConnection);
+        return ImageCache.getImage(ImageCache.Icon.JMSConnection);
     }
 
     @Override

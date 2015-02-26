@@ -223,26 +223,26 @@ public class ProjectTree {
         @Override
         public Image getImage(Object element) {
             if (element instanceof Project) {
-                return ImageCache.getImage(ImageCache.UIImage.Project);
+                return ImageCache.getImage(ImageCache.Icon.Project);
             }
 
             if (element instanceof TestSuite) {
-                return ImageCache.getImage(ImageCache.UIImage.TestSuite);
+                return ImageCache.getImage(ImageCache.Icon.TestSuite);
             }
 
             if (element instanceof TestCase) {
-                return ImageCache.getImage(ImageCache.UIImage.TestCase);
+                return ImageCache.getImage(ImageCache.Icon.TestCase);
             }
 
             if (element instanceof TestStep) {
-                return ImageCache.getImage(ImageCache.UIImage.TestStep);
+                return ImageCache.getImage(ImageCache.Icon.TestStep);
             }
 
             if (element instanceof JMSConnection) {
-                return ImageCache.getImage(ImageCache.UIImage.JMSConnection);
+                return ImageCache.getImage(ImageCache.Icon.JMSConnection);
             }
 
-            return ImageCache.getImage(ImageCache.UIImage.Folder);
+            return ImageCache.getImage(ImageCache.Icon.Folder);
         }
 
         @Override

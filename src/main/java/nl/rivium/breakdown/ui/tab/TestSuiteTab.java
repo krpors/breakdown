@@ -12,7 +12,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 
 public class TestSuiteTab extends AbstractTab<TestSuite> implements FocusListener {
@@ -54,7 +53,7 @@ public class TestSuiteTab extends AbstractTab<TestSuite> implements FocusListene
 
     @Override
     protected Image getImage() {
-        return ImageCache.getImage(ImageCache.UIImage.TestSuite);
+        return ImageCache.getImage(ImageCache.Icon.TestSuite);
     }
 
     @Override

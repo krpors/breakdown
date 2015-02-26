@@ -2,6 +2,7 @@ package nl.rivium.breakdown.core.jms;
 
 import nl.rivium.breakdown.core.*;
 import nl.rivium.breakdown.core.assertion.PayloadAssertion;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -131,8 +132,13 @@ public class JMSRequestReply extends TestStep<JMSSenderInput> {
      * @throws AssertionException An assertion exception when the assertion failed.
      */
     private void assertPayload(String payload) throws AssertionException {
+        if(payloadAssertions.size() <= 0) {
+            LOG.debug("No payload assertion defined, skipping");
+        }
+
         for (PayloadAssertion pa : payloadAssertions) {
             pa.execute(payload);
+            LOG.debug("Assertion OK for payload '{}'", StringUtils.abbreviate(pa.getAssertion(), 25));
         }
     }
 
@@ -164,7 +170,7 @@ public class JMSRequestReply extends TestStep<JMSSenderInput> {
                 LOG.debug("Setting JMS property '{}' = '{}'", key, val);
                 tm.setStringProperty(key, val);
             }
-            LOG.debug("Message payload = {}", getInput().getPayload());
+            LOG.debug("Message payload = {}", StringUtils.abbreviate(getInput().getPayload(), 50));
             tm.setText(getInput().getPayload());
             producer.send(tm);
             LOG.debug("Message sent to request destination '{}'", requestDestination);
@@ -184,6 +190,8 @@ public class JMSRequestReply extends TestStep<JMSSenderInput> {
             } else {
                 throw new AssertionException(TextMessage.class.getName(), m.getClass().getName());
             }
+
+            LOG.debug("Test step '{}' executed successfully", getName());
         } catch (JMSException ex) {
             throw new BreakdownException("Failed to execute test step", ex);
         }
