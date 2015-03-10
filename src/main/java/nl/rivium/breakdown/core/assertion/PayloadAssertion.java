@@ -6,13 +6,16 @@ import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import java.io.Serializable;
 
 /**
  * Simple string assertion on the payload of a test step.
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class PayloadAssertion {
+public class PayloadAssertion implements Serializable {
 
+    private static final long serialVersionUID = 2138067539470488776L;
+    
     /**
      * Logger for this class.
      */

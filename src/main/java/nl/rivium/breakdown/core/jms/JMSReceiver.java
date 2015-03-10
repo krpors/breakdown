@@ -6,8 +6,11 @@ import nl.rivium.breakdown.core.TestCase;
 import nl.rivium.breakdown.core.TestStep;
 
 import javax.jms.*;
+import java.io.Serializable;
 
-public class JMSReceiver extends TestStep<JMSReceiverInput> {
+public class JMSReceiver extends TestStep<JMSReceiverInput> implements Serializable {
+
+    private static final long serialVersionUID = -3327677613498175080L;
 
     public static final long TIMEOUT_DEFAULT = 10000;
 

@@ -3,8 +3,11 @@ package nl.rivium.breakdown.core.jms;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Session;
+import java.io.Serializable;
 
-public class JMSDestination {
+public class JMSDestination implements Serializable {
+
+    private static final long serialVersionUID = -2592304765782936009L;
 
     private DestinationType type;
     private String name;

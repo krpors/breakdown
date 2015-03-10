@@ -12,10 +12,13 @@ import javax.naming.NamingException;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import java.io.Serializable;
 import java.util.Properties;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class JMSConnection extends GenericEntity<Project, GenericEntity> {
+public class JMSConnection extends GenericEntity<Project, GenericEntity> implements Serializable {
+
+    private static final long serialVersionUID = 8887645362048544923L;
 
     /**
      * Static loggah.

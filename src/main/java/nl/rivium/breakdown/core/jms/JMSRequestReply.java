@@ -11,6 +11,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +20,9 @@ import java.util.List;
  * some extra properties. A response is expected on an reply destination within the configured amount of time.
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class JMSRequestReply extends TestStep<JMSSenderInput> {
+public class JMSRequestReply extends TestStep<JMSSenderInput> implements Serializable {
+
+    private static final long serialVersionUID = -3661004266445332968L;
 
     /**
      * Logger instance.
@@ -132,7 +135,7 @@ public class JMSRequestReply extends TestStep<JMSSenderInput> {
      * @throws AssertionException An assertion exception when the assertion failed.
      */
     private void assertPayload(String payload) throws AssertionException {
-        if(payloadAssertions.size() <= 0) {
+        if (payloadAssertions.size() <= 0) {
             LOG.debug("No payload assertion defined, skipping");
         }
 

@@ -17,12 +17,13 @@ import javax.xml.bind.annotation.*;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @XmlRootElement(name = "breakdownProject", namespace = "urn:breakdown:project:1.0")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Project extends GenericEntity {
+public class Project extends GenericEntity implements Serializable {
 
     private static final long serialVersionUID = -2600956139969094067L;
     /**

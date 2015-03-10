@@ -3,10 +3,13 @@ package nl.rivium.breakdown.core.jms;
 import nl.rivium.breakdown.core.*;
 
 import javax.jms.*;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class JMSSender extends TestStep<JMSSenderInput> {
+public class JMSSender extends TestStep<JMSSenderInput> implements Serializable {
+
+    private static final long serialVersionUID = -4329102836604077492L;
 
     private String destination;
     private Map<String, String> properties = new HashMap<>();

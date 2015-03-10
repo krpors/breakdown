@@ -7,12 +7,15 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class JMSSenderInput extends Input {
+public class JMSSenderInput extends Input implements Serializable {
 
+    private static final long serialVersionUID = -3509324163366260718L;
+    
     @XmlJavaTypeAdapter(PropertyAdapter.class)
     @XmlElement(name = "properties")
     private Map<String, String> properties = new HashMap<>();

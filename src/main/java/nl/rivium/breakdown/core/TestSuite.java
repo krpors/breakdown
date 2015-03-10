@@ -5,11 +5,14 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class TestSuite extends GenericEntity<Project, TestCase> {
+public class TestSuite extends GenericEntity<Project, TestCase> implements Serializable {
+
+    private static final long serialVersionUID = 7900036982707146104L;
 
     @XmlElement(name = "testCase")
     @XmlElementWrapper(name = "testCases")

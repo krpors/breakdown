@@ -8,12 +8,15 @@ import javax.jms.Connection;
 import javax.jms.JMSException;
 import javax.naming.NamingException;
 import javax.xml.bind.annotation.*;
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class TestCase extends GenericEntity<TestSuite, TestStep> {
+public class TestCase extends GenericEntity<TestSuite, TestStep> implements Serializable {
+
+    private static final long serialVersionUID = 644935277296004632L;
 
     /**
      * Our logger.
@@ -118,9 +121,7 @@ public class TestCase extends GenericEntity<TestSuite, TestStep> {
     public void execute() throws AssertionException, BreakdownException {
         setUp();
 
-        ListIterator<TestStep> it = testSteps.listIterator();
-        while (it.hasNext()) {
-            TestStep current = it.next();
+        for (TestStep current : testSteps) {
             current.execute();
         }
 

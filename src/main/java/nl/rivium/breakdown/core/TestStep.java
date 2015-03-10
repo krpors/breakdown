@@ -1,7 +1,10 @@
 package nl.rivium.breakdown.core;
 
-public abstract class TestStep<I extends Input> extends GenericEntity<TestCase, GenericEntity> {
+import java.io.Serializable;
 
+public abstract class TestStep<I extends Input> extends GenericEntity<TestCase, GenericEntity> implements Serializable {
+
+    private static final long serialVersionUID = 193690638533879299L;
     /**
      * Generic form of Input.
      */
