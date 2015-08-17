@@ -36,7 +36,7 @@ public class ProjectTree {
         treeViewer.setContentProvider(new ProjectTreeContentProvider());
         treeViewer.setLabelProvider(new ProjectTreeLabelProvider());
         treeViewer.addOpenListener(new ProjectTreeOpenListener(this));
-        final MenuManager mgr = new MenuManager("YO!");
+        final MenuManager mgr = new MenuManager();
         mgr.setRemoveAllWhenShown(true);
         mgr.addMenuListener(new IMenuListener() {
             @Override
@@ -61,9 +61,9 @@ public class ProjectTree {
                 }
             }
         });
-        Menu menu = mgr.createContextMenu(treeViewer.getTree());
+        Menu menu = mgr.createContextMenu(treeViewer.getControl());
 
-        treeViewer.getTree().setMenu(menu);
+        treeViewer.getControl().setMenu(menu);
 
     }
 

@@ -19,6 +19,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sun.net.www.content.text.Generic;
 
 /**
  * Main entrypoint for the configuration user interface.
@@ -44,6 +45,11 @@ public class BreakdownUI extends ApplicationWindow {
      * The tab folder containing open configurations.
      */
     private ComponentTabFolder tabFolder;
+
+    /**
+     * The status component.
+     */
+    private StatusComponent statusComponent;
 
     /**
      * Action to create a new project.
@@ -99,7 +105,7 @@ public class BreakdownUI extends ApplicationWindow {
     /**
      * Creates the top menu bar.
      *
-     * @return The menu.
+     * @return The menu.//
      */
     @Override
     protected MenuManager createMenuManager() {
@@ -157,36 +163,18 @@ public class BreakdownUI extends ApplicationWindow {
         SashForm lol = new SashForm(parent, SWT.VERTICAL | SWT.SMOOTH);
 
         SashForm sashForm = new SashForm(lol, SWT.HORIZONTAL | SWT.SMOOTH);
+        sashForm.setSashWidth(10);
+        sashForm.setToolTipText("Drag to resize");
 
         projectTree = new ProjectTree(this, sashForm);
         tabFolder = new ComponentTabFolder(this, sashForm);
 
         sashForm.setWeights(new int[]{30, 70});
 
-        Button b = new Button(lol, SWT.PUSH);
-        b.setText(" :D ");
-        b.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                Object o = tabFolder.getVisibleEntity();
-                if (o != null && o instanceof GenericEntity) {
-                    GenericEntity genericEntity = (GenericEntity) o;
-                    if (genericEntity instanceof TestCase) {
-                        TestCase testCase = (TestCase) genericEntity;
-                        try {
-                            testCase.execute();
-                            MessageBox box = new MessageBox(getShell(), SWT.ICON_INFORMATION);
-                            box.setMessage("OKAY");
-                            box.open();
-                        } catch (AssertionException | BreakdownException e1) {
-                            e1.printStackTrace();
-                            UITools.showException(getShell(), ":D", ":(", e1);
-                        }
-                    }
-                }
-            }
-        });
+        StatusComponent c = new StatusComponent(lol);
 
+        lol.setSashWidth(5);
+        lol.setToolTipText("Drag to resize");
         lol.setWeights(new int[]{80, 20});
 
         try {
