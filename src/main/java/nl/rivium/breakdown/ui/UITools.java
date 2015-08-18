@@ -42,6 +42,10 @@ public final class UITools {
                     causes.add(cause.getCause());
                 }
             }
+        } else {
+            // Note: must have at least one status or else the error will not be shown in any case.
+            // At least, this is the behaviour I saw on Windows machines.
+            statusses.add(new Status(SWT.ERROR, "pluginid", "Caused by: " + ex.getMessage()));
         }
 
         IStatus[] array = statusses.toArray(new IStatus[statusses.size()]);

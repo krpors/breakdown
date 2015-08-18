@@ -95,6 +95,7 @@
                 <configuration>
                     <source>1.7</source>
                     <target>1.7</target>
+                    <encoding>UTF-8</encoding>
                     <compilerArgs>
                         <arg>-Djava.endorsed.dirs=${project.basedir}/lib</arg>
                     </compilerArgs>
@@ -102,4 +103,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>

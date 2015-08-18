@@ -51,6 +51,7 @@ public class BreakdownUI extends ApplicationWindow {
      */
     private StatusComponent statusComponent;
 
+
     /**
      * Action to create a new project.
      */
@@ -171,7 +172,7 @@ public class BreakdownUI extends ApplicationWindow {
 
         sashForm.setWeights(new int[]{30, 70});
 
-        StatusComponent c = new StatusComponent(lol);
+        statusComponent = new StatusComponent(lol);
 
         lol.setSashWidth(5);
         lol.setToolTipText("Drag to resize");
@@ -224,6 +225,10 @@ public class BreakdownUI extends ApplicationWindow {
      */
     public ProjectTree getProjectTree() {
         return projectTree;
+    }
+
+    public TestRunnerTab getTestRunnerTab() {
+        return statusComponent.getTestRunnerTab();
     }
 
     private void run() {

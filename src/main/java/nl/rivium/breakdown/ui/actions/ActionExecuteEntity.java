@@ -1,8 +1,12 @@
 package nl.rivium.breakdown.ui.actions;
 
-import nl.rivium.breakdown.core.*;
+import nl.rivium.breakdown.core.AssertionException;
+import nl.rivium.breakdown.core.BreakdownException;
+import nl.rivium.breakdown.core.GenericEntity;
+import nl.rivium.breakdown.core.TestCase;
 import nl.rivium.breakdown.ui.ImageCache;
 import nl.rivium.breakdown.ui.ProjectTree;
+import nl.rivium.breakdown.ui.TestRunnerTab;
 import org.eclipse.jface.action.Action;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +35,11 @@ public class ActionExecuteEntity extends Action {
 
         GenericEntity ge = (GenericEntity) o;
         LOG.debug("Executing {}", ge.getName());
+
+        TestRunnerTab trt = tree.getBreakdownUI().getTestRunnerTab();
+        trt.setProject(tree.getProject());
+
+        // TODO: using get().get().dosomething() is tiring. Maybe an event dispatcher with listeners provides to be easier?
 
         try {
             if (ge instanceof TestCase) {

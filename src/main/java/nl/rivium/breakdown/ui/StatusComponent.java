@@ -2,7 +2,6 @@ package nl.rivium.breakdown.ui;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -15,7 +14,7 @@ public class StatusComponent {
 
     private CTabFolder folder;
 
-    private TestRunnerTab testRunnerComponent;
+    private TestRunnerTab testRunnerTab;
 
     public StatusComponent(Composite parent) {
         createContents(parent);
@@ -46,16 +45,15 @@ public class StatusComponent {
 
         folder = new CTabFolder(c, SWT.BORDER);
 
-        CTabItem item = new CTabItem(folder, SWT.NONE);
-        item.setText("Testrunner");
-        item.setToolTipText("Displays the test runner");
-
-        testRunnerComponent = new TestRunnerTab(folder);
-        item.setControl(testRunnerComponent.getComposite());
+        testRunnerTab = new TestRunnerTab(folder);
 
         // Test runner always selected by default.
-        folder.setSelection(item);
+        folder.setSelection(0);
 
         return c;
+    }
+
+    public TestRunnerTab getTestRunnerTab() {
+        return this.testRunnerTab;
     }
 }

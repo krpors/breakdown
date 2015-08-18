@@ -12,4 +12,5 @@ public class BreakdownException extends Exception {
     public BreakdownException(String message, Throwable cause) {
         super(message, cause);
     }
+
 }
