@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayDeque;
+import java.util.Collections;
 import java.util.Queue;
 
 /**
@@ -153,9 +154,7 @@ public class ComponentTabFolder {
         q.add(entity);
         while (q.peek() != null) {
             GenericEntity ge = q.remove();
-            for (GenericEntity child : ge.getChildren()) {
-                q.add(child);
-            }
+            Collections.addAll(q, ge.getChildren());
 
             // now iterate through all the open tab items, and see if their getData() returns
             // the entity found as a child.

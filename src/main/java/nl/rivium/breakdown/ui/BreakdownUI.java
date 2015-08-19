@@ -1,25 +1,21 @@
 package nl.rivium.breakdown.ui;
 
 import nl.rivium.breakdown.Main;
-import nl.rivium.breakdown.core.*;
+import nl.rivium.breakdown.core.BreakdownException;
+import nl.rivium.breakdown.core.Project;
 import nl.rivium.breakdown.ui.actions.ActionExit;
 import nl.rivium.breakdown.ui.actions.ActionNewProject;
 import nl.rivium.breakdown.ui.actions.ActionOpenProject;
 import nl.rivium.breakdown.ui.actions.ActionSaveProject;
 import org.eclipse.jface.action.*;
-import org.eclipse.jface.resource.ImageRegistry;
-import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.net.www.content.text.Generic;
 
 /**
  * Main entrypoint for the configuration user interface.
@@ -39,7 +35,7 @@ public class BreakdownUI extends ApplicationWindow {
     /**
      * The project tree.
      */
-    private ProjectTree projectTree;
+    private ProjectTree2 projectTree;
 
     /**
      * The tab folder containing open configurations.
@@ -167,7 +163,7 @@ public class BreakdownUI extends ApplicationWindow {
         sashForm.setSashWidth(10);
         sashForm.setToolTipText("Drag to resize");
 
-        projectTree = new ProjectTree(this, sashForm);
+        projectTree = new ProjectTree2(this, sashForm);
         tabFolder = new ComponentTabFolder(this, sashForm);
 
         sashForm.setWeights(new int[]{30, 70});
@@ -223,7 +219,7 @@ public class BreakdownUI extends ApplicationWindow {
      *
      * @return The project tree.
      */
-    public ProjectTree getProjectTree() {
+    public ProjectTree2 getProjectTree() {
         return projectTree;
     }
 
