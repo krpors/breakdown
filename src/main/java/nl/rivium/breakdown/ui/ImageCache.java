@@ -1,11 +1,20 @@
 package nl.rivium.breakdown.ui;
 
+import nl.rivium.breakdown.core.Project;
+import nl.rivium.breakdown.core.TestCase;
+import nl.rivium.breakdown.core.TestStep;
+import nl.rivium.breakdown.core.TestSuite;
+import nl.rivium.breakdown.core.jms.JMSConnection;
+import nl.rivium.breakdown.core.jms.JMSRequestReply;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Since SWT needs disposing of resources, we don't want to create memory leaks by re-creating SWT Resources all the time.
@@ -22,14 +31,25 @@ public final class ImageCache {
 
     private static ImageRegistry imageRegistry;
 
+    private static Map<Class, Icon> imageMap = new HashMap<>();
+
     public ImageCache() {
         ImageCache.display = Display.getDefault();
 
         imageRegistry = new ImageRegistry(display);
 
         registerImages();
+        registerClassImageMap();
     }
 
+    private static void registerClassImageMap() {
+        imageMap.put(Project.class, Icon.Project);
+        imageMap.put(TestCase.class, Icon.TestCase);
+        imageMap.put(TestSuite.class, Icon.TestSuite);
+        imageMap.put(TestStep.class, Icon.TestStep);
+        imageMap.put(JMSConnection.class, Icon.JMSConnection);
+        imageMap.put(JMSRequestReply.class, Icon.Delete);
+    }
 
     /**
      * Registers all the images which are currently (manually) configured in the
@@ -60,6 +80,15 @@ public final class ImageCache {
      */
     public static ImageDescriptor getDescriptor(Icon icon) {
         return imageRegistry.getDescriptor(icon.name());
+    }
+
+    public static Image getImage(Class clazz) {
+        Icon i = imageMap.get(clazz);
+        if (i == null) {
+            return null;
+        }
+
+        return getImage(i);
     }
 
     /**

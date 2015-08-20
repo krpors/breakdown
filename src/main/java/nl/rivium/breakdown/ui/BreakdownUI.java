@@ -12,7 +12,6 @@ import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +34,7 @@ public class BreakdownUI extends ApplicationWindow {
     /**
      * The project tree.
      */
-    private ProjectTree2 projectTree;
+    private ProjectTree projectTree;
 
     /**
      * The tab folder containing open configurations.
@@ -163,7 +162,7 @@ public class BreakdownUI extends ApplicationWindow {
         sashForm.setSashWidth(10);
         sashForm.setToolTipText("Drag to resize");
 
-        projectTree = new ProjectTree2(this, sashForm);
+        projectTree = new ProjectTree(this, sashForm);
         tabFolder = new ComponentTabFolder(this, sashForm);
 
         sashForm.setWeights(new int[]{30, 70});
@@ -219,7 +218,7 @@ public class BreakdownUI extends ApplicationWindow {
      *
      * @return The project tree.
      */
-    public ProjectTree2 getProjectTree() {
+    public ProjectTree getProjectTree() {
         return projectTree;
     }
 

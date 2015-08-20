@@ -2,28 +2,46 @@ package nl.rivium.breakdown.ui;
 
 import nl.rivium.breakdown.core.*;
 import nl.rivium.breakdown.core.jms.JMSConnection;
-import nl.rivium.breakdown.ui.actions.*;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayDeque;
+import java.util.Collections;
+import java.util.Deque;
+
 /**
  * The ProjectTree contains the tree with the structured project hierarchy.
+ * <p/>
+ * Work in progress, replacement of the original ProjectTree. Using TreeViewer proved it to be difficult to add custom
+ * nodes (e.g. "Jms Connections", "Stubs").
  */
 public class ProjectTree {
 
+    private static final String JMS_CONN_TREEITEM = "JMS_CONN_TREEITEM";
+
+
+    /**
+     * Logger.
+     */
     private static Logger LOG = LoggerFactory.getLogger(ProjectTree.class);
 
+    /**
+     * The UI.
+     */
     private BreakdownUI breakdownUI;
-    private TreeViewer treeViewer;
+
+    /**
+     * Tree with components.
+     */
+    private Tree tree;
+
+    /**
+     * The project being displayed.
+     */
     private Project project;
 
     public ProjectTree(BreakdownUI breakdownUI, Composite parent) {
@@ -31,247 +49,251 @@ public class ProjectTree {
         createContents(parent);
     }
 
+    /**
+     * Creates the main contents of the project tree.
+     *
+     * @param parent The parent composite.
+     */
     private void createContents(Composite parent) {
-        treeViewer = new TreeViewer(parent, SWT.SINGLE);
-        treeViewer.setContentProvider(new ProjectTreeContentProvider());
-        treeViewer.setLabelProvider(new ProjectTreeLabelProvider());
-        treeViewer.addOpenListener(new ProjectTreeOpenListener(this));
-        final MenuManager mgr = new MenuManager();
-        mgr.setRemoveAllWhenShown(true);
-        mgr.addMenuListener(new IMenuListener() {
+        tree = new Tree(parent, SWT.SINGLE | SWT.BORDER);
+        tree.addMouseListener(new MouseAdapter() {
             @Override
-            public void menuAboutToShow(IMenuManager iMenuManager) {
-                if (getFirstSelection() instanceof JMSConnection) {
-                    mgr.add(new ActionDeleteEntity(ProjectTree.this));
-                } else if (getFirstSelection() instanceof TestSuite) {
-                    mgr.add(new ActionExecuteEntity(ProjectTree.this));
-                    mgr.add(new Separator());
-                    mgr.add(new ActionNewTestCase(ProjectTree.this));
-                    mgr.add(new Separator());
-                    mgr.add(new ActionDeleteEntity(ProjectTree.this));
-                } else if (getFirstSelection() instanceof TestCase) {
-                    mgr.add(new ActionExecuteEntity(ProjectTree.this));
-                    mgr.add(new Separator());
-                    mgr.add(new ActionDeleteEntity(ProjectTree.this));
-                } else if (getFirstSelection() instanceof Project) {
-                    mgr.add(new ActionExecuteEntity(ProjectTree.this));
-                    mgr.add(new Separator());
-                    mgr.add(new ActionNewJMSConnection(ProjectTree.this));
-                    mgr.add(new ActionNewTestSuite(ProjectTree.this));
+            public void mouseDoubleClick(MouseEvent e) {
+                if (e.button == 1) { // left button, isn't 'constantized' anywhere.
+                    Object o = getFirstSelection();
+                    if (o instanceof GenericEntity) {
+                        GenericEntity ge = (GenericEntity) o;
+                        getBreakdownUI().getTabFolder().openTabItem(ge);
+                    }
                 }
             }
         });
-        Menu menu = mgr.createContextMenu(treeViewer.getControl());
 
-        treeViewer.getControl().setMenu(menu);
+        // To prevent expansions of tree items on double click. Check the source of the SWT Tree class, inside the
+        // wmNotifyChild method in the case statement OS.NM_DBLCLK:
+        //
+        // "When the user double clicks on a tree item or a line beside the item, the window proc for the tree
+        // collapses or expand the branch. When application code associates an action with double clicking, then
+        // the tree expand is unexpected and unwanted.  The fix is to avoid the operation by testing to see whether
+        // the mouse was inside a tree item."
+        tree.addListener(SWT.MeasureItem, new Listener() {
+            @Override
+            public void handleEvent(Event event) {
+                // no-op, we don't want to do anything at this point.
+            }
+        });
 
+
+        final Menu menu = new Menu(tree);
+        tree.setMenu(menu);
+        menu.addMenuListener(new TreeMenuListener(menu));
     }
 
-    public Object getFirstSelection() {
-        TreeSelection s = (TreeSelection) treeViewer.getSelection();
-        if (s == null) {
-            return null;
-        }
-        return s.getFirstElement();
-    }
-
-    /**
-     * Quick hack to expand to a level after an item is added.
-     *
-     * @param level The level.
-     */
-    public void expandToLevel(int level) {
-        treeViewer.expandToLevel(level);
-    }
-
-    /**
-     * Gets the breakdown UI.
-     *
-     * @return The BreakdownUI.
-     */
     public BreakdownUI getBreakdownUI() {
         return breakdownUI;
     }
 
-    /**
-     * Gets the project configuration associated with the tree. Can be null if it's not set yet.
-     *
-     * @return The project instance.
-     */
     public Project getProject() {
-        return this.project;
+        return project;
     }
 
     /**
-     * Loads up the tree using the given Project.
+     * Sets the project. Removes all tree items, initializes the tree.
      *
-     * @param p The Project to load into the tree.
+     * @param project The project.
      */
-    public void setProject(Project p) {
-        Root root = new Root(p);
-        this.project = p;
-        treeViewer.setInput(root);
-        treeViewer.expandAll();
+    public void setProject(Project project) {
+        this.project = project;
+
+        TreeItem mainRoot = new TreeItem(tree, SWT.NONE);
+        mainRoot.setText(project.getName());
+        mainRoot.setImage(ImageCache.getImage(ImageCache.Icon.Project));
+        mainRoot.setData(project);
+
+        createTreeItemWrapperJMSConnections(mainRoot);
+        createTreeItemWrapperTestSuites(mainRoot);
     }
 
     /**
-     * Rereshes the tree.
+     * Creates the JMS connections wrapper node and all JMS connections belonging to the project.
+     *
+     * @param root The root tree item.
+     */
+    private void createTreeItemWrapperJMSConnections(final TreeItem root) {
+        TreeItem item = new TreeItem(root, SWT.NONE);
+        item.setText("JMS connections");
+        item.setData(JMS_CONN_TREEITEM);
+        item.setImage(ImageCache.getImage(ImageCache.Icon.Folder));
+
+        createTreeItemJMSConnections(item);
+    }
+
+    /**
+     * Creates all JMS connection items present in the current project.
+     *
+     * @param root The root. Should be the "JMS connections" tree item.
+     */
+    private void createTreeItemJMSConnections(final TreeItem root) {
+        for (JMSConnection c : project.getJmsConnections()) {
+            TreeItem i = createTreeItem(root, c);
+        }
+    }
+
+    private void createTreeItemWrapperTestSuites(final TreeItem root) {
+        TreeItem item = new TreeItem(root, SWT.NONE);
+        item.setText("Test suites");
+        item.setImage(ImageCache.getImage(ImageCache.Icon.Create));
+        for (TestSuite ts : project.getTestSuites()) {
+            TreeItem i = createTreeItem(item, ts);
+            createTreeItemTestCases(i, ts);
+        }
+    }
+
+    private void createTreeItemTestCases(final TreeItem root, final TestSuite ts) {
+        for (TestCase tc : ts.getTestCases()) {
+            TreeItem i = createTreeItem(root, tc);
+            createTreeItemTestSteps(i, tc);
+        }
+    }
+
+    /**
+     * Creates test steps.
+     *
+     * @param root The root.
+     * @param tc   Testcase parent.
+     */
+    private void createTreeItemTestSteps(final TreeItem root, final TestCase tc) {
+        for (TestStep ts : tc.getTestSteps()) {
+            TreeItem i = createTreeItem(root, ts);
+        }
+    }
+
+    /**
+     * Generic utility method for creating a tree item in the tree.
+     *
+     * @param root The root to create the item under.
+     * @param e    The generic entity.
+     * @return The created tree item, with text, data and image.
+     */
+    private TreeItem createTreeItem(TreeItem root, GenericEntity e) {
+        TreeItem item = new TreeItem(root, SWT.NONE);
+
+        Image i = ImageCache.getImage(e.getClass());
+
+        item.setText(e.getName());
+        item.setData(e);
+        if (i != null) {
+            item.setImage(i);
+        }
+
+        return item;
+    }
+
+    /**
+     * Gets the first selection of the tree.
+     *
+     * @return The first selection (getData() on the TreeItem).
+     */
+    public Object getFirstSelection() {
+        if (tree.getSelection() != null) {
+            return tree.getSelection()[0].getData();
+        }
+
+        // nothing selected.
+        return null;
+    }
+
+    /**
+     * This will only refresh the display data of existing items. It will not remove, re-add or whatever. Use setProject
+     * for that. It will iterate through all the existing tree items, and refresh the names of them.
      */
     public void refresh() {
-        if (!treeViewer.getTree().isDisposed()) {
-            treeViewer.refresh(true);
+        if (tree.isDisposed()) {
+            return;
+        }
+
+        Deque<TreeItem> q = new ArrayDeque<>();
+        Collections.addAll(q, tree.getItems());
+        while (!q.isEmpty()) {
+            TreeItem item = q.remove();
+            Collections.addAll(q, item.getItems());
+
+            Object data = item.getData();
+            if (data instanceof GenericEntity) {
+                GenericEntity ge = (GenericEntity) data;
+                item.setText(ge.getName()); // update the name.
+            }
         }
     }
 
     /**
-     * Class for listening for open events when elements on the tree are double clicked, or the Enter key was used.
-     * Will open up a new tab, or bring an existing tab to the front.
+     * The menu listener, responsible for showing menus and responding to the events.
      */
-    class ProjectTreeOpenListener implements IOpenListener {
-        /**
-         * Project tree reference.
-         */
-        private final ProjectTree tree;
+    class TreeMenuListener extends MenuAdapter {
 
-        public ProjectTreeOpenListener(ProjectTree tree) {
-            this.tree = tree;
+        private final Menu menu;
+
+        public TreeMenuListener(final Menu menu) {
+            this.menu = menu;
+
         }
 
         @Override
-        public void open(OpenEvent openEvent) {
-            BreakdownUI ui = ProjectTree.this.breakdownUI;
+        public void menuShown(MenuEvent e) {
+            for (MenuItem item : menu.getItems()) {
+                item.dispose();
+            }
 
-            TreeSelection selection = (TreeSelection) openEvent.getSelection();
-            if (!(selection.getFirstElement() instanceof GenericEntity)) {
+            Object d = getFirstSelection();
+            if (JMS_CONN_TREEITEM.equals(d)) {
+                createMenuItemsJMSConnectionsWrapper(menu);
                 return;
+            } else if (d instanceof JMSConnection) {
+                createMenuItemsJMSConnections(menu);
             }
-
-            GenericEntity first = (GenericEntity) selection.getFirstElement();
-            ui.getTabFolder().openTabItem(first);
-        }
-    }
-
-    /**
-     * Content provider for the TreeViewer.
-     */
-    class ProjectTreeContentProvider implements ITreeContentProvider {
-
-        @Override
-        public Object[] getElements(Object o) {
-            // Sneaky way to add a root, so the Project node is visible.
-            if (o instanceof Root) {
-                Root root = (Root) o;
-                return new Object[]{root.getProject()};
-            }
-
-            if (o instanceof GenericEntity) {
-                GenericEntity genericEntity = (GenericEntity) o;
-                return genericEntity.getChildren();
-            }
-
-            return null;
         }
 
-        @Override
-        public Object[] getChildren(Object o) {
-            if (o instanceof GenericEntity) {
-                GenericEntity genericEntity = (GenericEntity) o;
-                return genericEntity.getChildren();
-            }
+        // TODO: MOVE THE SELECTION LISTENERS TO SOMETHING GENERIC CUS THIS SUX ASS
 
-            return null;
-        }
+        /**
+         * Create menu items for the 'JMS Connections' tree item.
+         *
+         * @param menu The parent menu.
+         */
+        private void createMenuItemsJMSConnectionsWrapper(final Menu menu) {
+            MenuItem itemAdd = UITools.createMenuItem(menu, "Add JMS connection", ImageCache.getImage(ImageCache.Icon.Create));
+            itemAdd.addSelectionListener(new SelectionAdapter() {
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    TreeItem item = (TreeItem) tree.getSelection()[0];
+                    item.removeAll();
 
-        @Override
-        public Object getParent(Object o) {
-            LOG.debug("getParent: no-op");
-            return null;
-        }
+                    JMSConnection c = new JMSConnection("JMS Connection", getProject());
+                    getBreakdownUI().getTabFolder().openTabItem(c);
 
-        @Override
-        public boolean hasChildren(Object o) {
-            if (o instanceof GenericEntity) {
-                GenericEntity genericEntity = (GenericEntity) o;
-                return genericEntity.getChildren().length > 0;
-            }
-
-            return false;
-        }
-
-        @Override
-        public void dispose() {
-
+                    createTreeItemJMSConnections(item);
+                }
+            });
         }
 
         /**
-         * Called whenever the tree is refreshed with new data.
+         * Creates the mnenu item for JMS connections.
          *
-         * @param viewer The viewer.
-         * @param o      ?
-         * @param o1     ?
+         * @param menu The parent menu.
          */
-        @Override
-        public void inputChanged(Viewer viewer, Object o, Object o1) {
-        }
-    }
+        private void createMenuItemsJMSConnections(final Menu menu) {
+            MenuItem itemDelete = UITools.createMenuItem(menu, "Delete connection", ImageCache.getImage(ImageCache.Icon.Delete));
+            itemDelete.addSelectionListener(new SelectionAdapter() {
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    TreeItem item = tree.getSelection()[0];
+                    JMSConnection conn = (JMSConnection) item.getData();
 
-    /**
-     * Label provider for tree elements.
-     */
-    class ProjectTreeLabelProvider extends LabelProvider {
+                    item.dispose();
+                    getProject().getJmsConnections().remove(conn);
+                }
+            });
 
-        @Override
-        public Image getImage(Object element) {
-            if (element instanceof Project) {
-                return ImageCache.getImage(ImageCache.Icon.Project);
-            }
-
-            if (element instanceof TestSuite) {
-                return ImageCache.getImage(ImageCache.Icon.TestSuite);
-            }
-
-            if (element instanceof TestCase) {
-                return ImageCache.getImage(ImageCache.Icon.TestCase);
-            }
-
-            if (element instanceof TestStep) {
-                return ImageCache.getImage(ImageCache.Icon.TestStep);
-            }
-
-            if (element instanceof JMSConnection) {
-                return ImageCache.getImage(ImageCache.Icon.JMSConnection);
-            }
-
-            return ImageCache.getImage(ImageCache.Icon.Folder);
-        }
-
-        @Override
-        public String getText(Object element) {
-            if (element instanceof GenericEntity) {
-                GenericEntity genericEntity = (GenericEntity) element;
-                return genericEntity.getName();
-            }
-
-            return super.getText(element);
-        }
-    }
-
-    /**
-     * Sneaky class to add a non visible root to the tree viewer.
-     */
-    private class Root {
-        private Project project;
-
-        public Root(Project project) {
-            this.project = project;
-        }
-
-        public Project getProject() {
-            return project;
-        }
-
-        public void setProject(Project project) {
-            this.project = project;
         }
     }
 }
