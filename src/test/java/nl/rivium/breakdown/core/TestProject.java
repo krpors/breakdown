@@ -5,8 +5,16 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import javax.xml.bind.JAXBException;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 /**
  * Tests project stuff.
@@ -122,5 +130,56 @@ public class TestProject {
     @Test(expected = JAXBException.class)
     public void unmarshalFaultyXML() throws JAXBException, BreakdownException {
         Project.read(TestProject.class.getResourceAsStream("/project-err.xml"));
+    }
+
+    /**
+     * Implementation to search for a class implementing an interface in all JARs on the classpath. Not fast, but works.
+     *
+     * @throws IOException
+     * @throws URISyntaxException
+     */
+    @Test
+    public void testSearchClasspath() throws IOException, URISyntaxException {
+        ClassLoader cl = ClassLoader.getSystemClassLoader();
+
+        URL[] urls = ((URLClassLoader) cl).getURLs();
+
+        for (URL url : urls) {
+            File f = new File(url.toURI());
+            if (f.isFile() && f.getName().endsWith(".jar")) {
+                JarFile jf = new JarFile(f);
+                Enumeration<JarEntry> e = jf.entries();
+                while (e.hasMoreElements()) {
+                    JarEntry je = e.nextElement();
+                    if (je.getName().endsWith(".class")) {
+                        String re = je.getName().substring(0, je.getName().indexOf(".class"));
+                        re = re.replace("/", ".");
+                        if (re.startsWith("java.") ||
+                                re.startsWith("com.sun") ||
+                                re.startsWith("javax.") ||
+                                re.startsWith("sun.") ||
+                                re.startsWith("javafx.")) {
+                            continue;
+                        }
+
+                        try {
+                            Class c = Class.forName(re, false, cl);
+                            Class[] ifs = c.getInterfaces();
+                            if (ifs.length == 0) {
+                                continue;
+                            }
+
+                            for (Class izz : ifs) {
+                                if (izz.getName().equals(Runnable.class.getName())) {
+                                    System.out.println("GOT A RUNNABLE!: " + c);
+                                }
+                            }
+                        } catch (ClassNotFoundException | NoClassDefFoundError e1) {
+                            // ignore
+                        }
+                    }
+                }
+            }
+        }
     }
 }

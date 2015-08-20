@@ -140,7 +140,7 @@ public class JMSRequestReply extends TestStep<JMSSenderInput> implements Seriali
         }
 
         for (PayloadAssertion pa : payloadAssertions) {
-            pa.execute(payload);
+            pa.execute(this, payload);
             LOG.debug("Assertion OK for payload '{}'", StringUtils.abbreviate(pa.getAssertion(), 25));
         }
     }
@@ -182,7 +182,7 @@ public class JMSRequestReply extends TestStep<JMSSenderInput> implements Seriali
             LOG.debug("Waiting to receive message on reply destination '{}'...", replyDestination);
             Message m = consumer.receive(getTimeout());
             if (m == null) {
-                throw new AssertionException("JMS message", "nothing", "No message received");
+                throw new AssertionException(this, "JMS message", "No JMS message to assert on", "No message received");
             }
 
             LOG.debug("Message received on reply destination '{}' (ID: '{}')", replyDestination, m.getJMSMessageID());
@@ -191,7 +191,7 @@ public class JMSRequestReply extends TestStep<JMSSenderInput> implements Seriali
                 TextMessage replyMessage = (TextMessage) m;
                 assertPayload(replyMessage.getText());
             } else {
-                throw new AssertionException(TextMessage.class.getName(), m.getClass().getName());
+                throw new AssertionException(this, TextMessage.class.getName(), m.getClass().getName());
             }
 
             LOG.debug("Test step '{}' executed successfully", getName());

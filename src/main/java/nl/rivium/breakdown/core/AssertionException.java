@@ -1,20 +1,22 @@
 package nl.rivium.breakdown.core;
 
-
 public class AssertionException extends Exception {
 
-   private Object expected;
+    private TestStep source;
+    private Object expected;
     private Object actual;
 
-    public AssertionException() {
+    public AssertionException(TestStep source) {
+        this.source = source;
     }
 
-    public AssertionException(Object expected, Object actual) {
-        this(expected, actual, "Assertion failed");
+    public AssertionException(TestStep source, Object expected, Object actual) {
+        this(source, expected, actual, "Assertion failed");
     }
 
-    public AssertionException(Object expected, Object actual, String message) {
+    public AssertionException(TestStep source, Object expected, Object actual, String message) {
         super(message);
+        this.source = source;
         this.expected = expected;
         this.actual = actual;
     }

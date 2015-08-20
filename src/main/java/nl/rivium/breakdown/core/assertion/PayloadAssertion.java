@@ -1,6 +1,7 @@
 package nl.rivium.breakdown.core.assertion;
 
 import nl.rivium.breakdown.core.AssertionException;
+import nl.rivium.breakdown.core.TestStep;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,7 +68,7 @@ public class PayloadAssertion implements Serializable {
         this.negate = negate;
     }
 
-    public void execute(String payload) throws AssertionException {
+    public void execute(TestStep testStep, String payload) throws AssertionException {
         if (payload == null) {
             return; // TODO: what if null?
         }
@@ -78,7 +79,7 @@ public class PayloadAssertion implements Serializable {
             }
         } else {
             if (!payload.contains(getAssertion())) {
-                throw new AssertionException(getAssertion(), payload, "does not  contain");
+                throw new AssertionException(testStep, getAssertion(), payload, "does not contain");
             }
         }
     }

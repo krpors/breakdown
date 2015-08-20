@@ -23,7 +23,6 @@ public class ProjectTree {
 
     private static final String JMS_CONN_TREEITEM = "JMS_CONN_TREEITEM";
 
-
     /**
      * Logger.
      */
