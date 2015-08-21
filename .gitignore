@@ -12,5 +12,8 @@
 hs_err_pid*
 
 # IntelliJ idea specifics:
-.iml
+*.iml
 .idea
+
+# Maven output
+target/
