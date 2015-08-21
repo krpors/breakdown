@@ -1,6 +1,5 @@
 package nl.rivium.breakdown.core.jms;
 
-import nl.rivium.breakdown.core.AssertionException;
 import nl.rivium.breakdown.core.BreakdownException;
 import nl.rivium.breakdown.core.TestCase;
 import nl.rivium.breakdown.core.TestStep;
@@ -39,13 +38,10 @@ public class JMSReceiver extends TestStep<JMSReceiverInput> implements Serializa
     }
 
     /**
-     * Execute this JMSReceiver test step
-     *
-     * @throws AssertionException
-     * @throws BreakdownException
+     * Execute this JMSReceiver test step.
      */
     @Override
-    public void execute() throws AssertionException, BreakdownException {
+    public void execute() throws BreakdownException {
         try {
             Connection conn = getParent().getQueueConnection();
             Session s = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
@@ -60,7 +56,8 @@ public class JMSReceiver extends TestStep<JMSReceiverInput> implements Serializa
 
             s.close();
         } catch (JMSException ex) {
-            throw new BreakdownException("Failed to execute test case", ex);
+            throw new BreakdownException("JMS exception", ex);
         }
+
     }
 }

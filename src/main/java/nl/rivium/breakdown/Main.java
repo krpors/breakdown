@@ -58,8 +58,14 @@ public class Main {
         jrr.setReplyDestination(new JMSDestination(DestinationType.TOPIC, "sample.topic"));
 
         // Second test step:
-        PayloadAssertion sa = new PayloadAssertion("Some response");
+        PayloadAssertion sa = new PayloadAssertion("Test assertion", "Some response");
         jrr.getPayloadAssertions().add(sa);
+
+        PayloadAssertion harf = new PayloadAssertion("Second assertion", "TIBCX service");
+        jrr.getPayloadAssertions().add(harf);
+
+        PayloadAssertion zoit = new PayloadAssertion("Third assertion", "TIBCO");
+        jrr.getPayloadAssertions().add(zoit);
 
         p.setAuthor("Me myself and I");
 

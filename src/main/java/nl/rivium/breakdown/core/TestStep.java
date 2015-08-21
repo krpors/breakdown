@@ -1,6 +1,9 @@
 package nl.rivium.breakdown.core;
 
+import javax.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class TestStep<I extends Input> extends GenericEntity<TestCase, GenericEntity> implements Serializable {
 
@@ -9,6 +12,10 @@ public abstract class TestStep<I extends Input> extends GenericEntity<TestCase, 
      * Generic form of Input.
      */
     private I input;
+
+
+    @XmlTransient
+    private List<ResultListener> listenerList = new ArrayList<>();
 
     public TestStep() {
     }
@@ -45,11 +52,30 @@ public abstract class TestStep<I extends Input> extends GenericEntity<TestCase, 
         return new GenericEntity[0];
     }
 
+    public boolean addResultListener(ResultListener resultListener) {
+        return listenerList.add(resultListener);
+    }
+
+    public void clearResultListeners() {
+        listenerList.clear();
+    }
+
+    public void removeResultListener(ResultListener r) {
+        listenerList.remove(r);
+    }
+
+    public int getResultListenerSize() {
+        return listenerList.size();
+    }
+
+    protected void fireListeners(Result result) {
+        for (ResultListener l : listenerList) {
+            l.resultAcquired(result);
+        }
+    }
+
     /**
      * Executed the test step.
-     *
-     * @throws AssertionException Whenever an assertion has failed in this step.
-     * @throws BreakdownException Whenever something goes wrong in executing the test step, like connection errors etc.
      */
-    public abstract void execute() throws AssertionException, BreakdownException;
+    public abstract void execute() throws BreakdownException;
 }

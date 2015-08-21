@@ -2,6 +2,7 @@ package nl.rivium.breakdown.core.jms;
 
 import nl.rivium.breakdown.core.*;
 import nl.rivium.breakdown.core.assertion.PayloadAssertion;
+import nl.rivium.breakdown.core.Result;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -132,27 +133,29 @@ public class JMSRequestReply extends TestStep<JMSSenderInput> implements Seriali
      * Assert payload and stuff.
      *
      * @param payload The payload to run assertions for.
-     * @throws AssertionException An assertion exception when the assertion failed.
      */
-    private void assertPayload(String payload) throws AssertionException {
+    private void assertPayload(String payload) {
         if (payloadAssertions.size() <= 0) {
             LOG.debug("No payload assertion defined, skipping");
         }
 
         for (PayloadAssertion pa : payloadAssertions) {
-            pa.execute(this, payload);
-            LOG.debug("Assertion OK for payload '{}'", StringUtils.abbreviate(pa.getAssertion(), 25));
+            try {
+                pa.execute(this, payload);
+                fireListeners(new Result(this, true));
+                LOG.debug("Assertion OK for payload '{}'", StringUtils.abbreviate(pa.getAssertion(), 25));
+            } catch (AssertionException e) {
+                LOG.debug("Assertion failed: {}", e.getMessage());
+                fireListeners(new Result(this, false, "String assertion failed", e));
+            }
         }
     }
 
     /**
      * Execute the JMS Request Reply test step.
-     *
-     * @throws AssertionException
-     * @throws BreakdownException
      */
     @Override
-    public void execute() throws AssertionException, BreakdownException {
+    public void execute() throws BreakdownException {
         // TODO: in EMS, using this connection works for queues and topics both. Why? What!
         try {
             Connection connection = getParent().getQueueConnection();
@@ -182,21 +185,23 @@ public class JMSRequestReply extends TestStep<JMSSenderInput> implements Seriali
             LOG.debug("Waiting to receive message on reply destination '{}' with timeout {} ms...", replyDestination);
             Message m = consumer.receive(getTimeout());
             if (m == null) {
-                throw new AssertionException(this, "JMS message", "No JMS message to assert on", "No message received");
-            }
-
-            LOG.debug("Message received on reply destination '{}' (ID: '{}')", replyDestination, m.getJMSMessageID());
-
-            if (m instanceof TextMessage) {
-                TextMessage replyMessage = (TextMessage) m;
-                assertPayload(replyMessage.getText());
+                // Nothing seems to be received at this point.
+                String msg = String.format("No message received on '%s'", replyDestination);
+                fireListeners(new Result(this, false, msg));
             } else {
-                throw new AssertionException(this, TextMessage.class.getName(), m.getClass().getName());
+                LOG.debug("Message received on reply destination '{}' (ID: '{}')", replyDestination, m.getJMSMessageID());
+
+                if (m instanceof TextMessage) {
+                    TextMessage replyMessage = (TextMessage) m;
+                    assertPayload(replyMessage.getText());
+                }
             }
 
-            LOG.debug("Test step '{}' executed successfully", getName());
+            LOG.debug("Test step '{}' finished execution", getName());
         } catch (JMSException ex) {
-            throw new BreakdownException("Failed to execute test step", ex);
+            // Something technical failed here. Does not count to the results. Throw up!
+            LOG.error("JMS exception occurred while executing test step '{}'. Exception: {}", getName(), ex);
+            throw new BreakdownException("JMS exception", ex);
         }
     }
 }

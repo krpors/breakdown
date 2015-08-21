@@ -11,7 +11,6 @@ import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class TestCase extends GenericEntity<TestSuite, TestStep> implements Serializable {
@@ -116,9 +115,32 @@ public class TestCase extends GenericEntity<TestSuite, TestStep> implements Seri
     }
 
     /**
+     * Cascades into the teststeps of this testcase and adds listeners.
+     *
+     * @param r The result listener.
+     */
+    public void addResultListener(ResultListener r) {
+        for (TestStep current : testSteps) {
+            current.addResultListener(r);
+        }
+    }
+
+    public void removeResultListener(ResultListener r){
+        for (TestStep current : testSteps) {
+            current.removeResultListener(r);
+        }
+    }
+
+    public void clearResultListeners() {
+        for (TestStep current : testSteps) {
+            current.clearResultListeners();
+        }
+    }
+
+    /**
      * Runs the testcase.
      */
-    public void execute() throws AssertionException, BreakdownException {
+    public void execute() throws BreakdownException {
         setUp();
 
         for (TestStep current : testSteps) {

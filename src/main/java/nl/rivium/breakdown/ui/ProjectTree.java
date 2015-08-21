@@ -299,11 +299,15 @@ public class ProjectTree {
                 public void widgetSelected(SelectionEvent e) {
                     TreeItem item = tree.getSelection()[0];
                     TestCase tc = (TestCase) item.getData();
+                    tc.clearResultListeners();
+                    tc.addResultListener(new ResultListener() {
+                        @Override
+                        public void resultAcquired(Result result) {
+                            System.out.println("CRUFT!!! " + result.getTestStep());
+                        }
+                    });
                     try {
                         tc.execute();
-
-                    } catch (AssertionException e1) {
-                        e1.printStackTrace();
                     } catch (BreakdownException e1) {
                         e1.printStackTrace();
                     }

@@ -167,15 +167,10 @@ public class BreakdownUI extends ApplicationWindow {
 
         sashForm.setWeights(new int[]{30, 70});
 
-        statusComponent = new StatusComponent(lol);
-
-        lol.setSashWidth(5);
-        lol.setToolTipText("Drag to resize");
-        lol.setWeights(new int[]{80, 20});
-
         try {
             Project p = Main.createProject();
             loadProject(p);
+            tabFolder.openTabItem(p.getTestSuites().get(0).getTestCases().get(0));
             tabFolder.openTabItem(p.getTestSuites().get(0).getTestCases().get(0).getTestSteps().get(0));
         } catch (BreakdownException e) {
             e.printStackTrace();
@@ -220,10 +215,6 @@ public class BreakdownUI extends ApplicationWindow {
      */
     public ProjectTree getProjectTree() {
         return projectTree;
-    }
-
-    public TestRunnerTab getTestRunnerTab() {
-        return statusComponent.getTestRunnerTab();
     }
 
     private void run() {

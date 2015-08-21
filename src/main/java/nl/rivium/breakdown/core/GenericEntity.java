@@ -41,12 +41,6 @@ public abstract class GenericEntity<P extends GenericEntity, C extends GenericEn
     @XmlTransient
     private P parent;
 
-    /**
-     * Execution listeners for a project.
-     */
-    @XmlTransient
-    private List<ExecutionListener> executionListeners = new ArrayList<>();
-
     public GenericEntity() {
     }
 
@@ -95,23 +89,6 @@ public abstract class GenericEntity<P extends GenericEntity, C extends GenericEn
     protected void removeFromParent() {
     }
 
-    /**
-     * Returns the execution listeners for this Project object.
-     *
-     * @return The execution listeners. Will never be null, but may be empty.
-     */
-    public List<ExecutionListener> getExecutionListeners() {
-        return executionListeners;
-    }
-
-    /**
-     * Adds an execution listener to the list.
-     *
-     * @param e The listener.
-     */
-    public void addExecutionListener(ExecutionListener e) {
-        executionListeners.add(e);
-    }
 
     /**
      * This is automatically called by JAXB as soon as the marshaller is finished. This way we can get the parent node

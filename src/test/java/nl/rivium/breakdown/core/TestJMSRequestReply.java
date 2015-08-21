@@ -2,12 +2,7 @@ package nl.rivium.breakdown.core;
 
 import nl.rivium.breakdown.core.assertion.PayloadAssertion;
 import nl.rivium.breakdown.core.jms.*;
-import org.junit.Assert;
 import org.junit.Test;
-
-import javax.xml.bind.JAXBException;
-import java.io.InputStream;
-import java.util.List;
 
 /**
  * Tests project stuff.
@@ -41,10 +36,16 @@ public class TestJMSRequestReply {
         rr.getPayloadAssertions().add(new PayloadAssertion("Some response"));
 
 
+        tc.addResultListener(new ResultListener() {
+            @Override
+            public void resultAcquired(Result result) {
+                System.out.println(result.getMessage());
+                System.out.println(result.getTestStep());
+            }
+        });
+
         try {
             tc.execute();
-        } catch (AssertionException e) {
-
         } catch (BreakdownException e) {
             e.printStackTrace();
         }

@@ -22,6 +22,8 @@ public class PayloadAssertion implements Serializable {
      */
     private static Logger LOG = LoggerFactory.getLogger(PayloadAssertion.class);
 
+    private String name;
+
     /**
      * Assertion contents.
      */
@@ -38,9 +40,15 @@ public class PayloadAssertion implements Serializable {
     private boolean isRegex = false;
 
     public PayloadAssertion() {
+        this("");
     }
 
-    public PayloadAssertion(String assertion) {
+    public PayloadAssertion(String name) {
+        this(name, "");
+    }
+
+    public PayloadAssertion(String name, String assertion) {
+        this.name = name;
         setAssertion(assertion);
     }
 
@@ -66,6 +74,14 @@ public class PayloadAssertion implements Serializable {
 
     public void setNegate(boolean negate) {
         this.negate = negate;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void execute(TestStep testStep, String payload) throws AssertionException {

@@ -341,8 +341,8 @@ public class TestStepJMSRequestReplyTab extends AbstractTab<JMSRequestReply> imp
 
         for (PayloadAssertion pass : getEntity().getPayloadAssertions()) {
             TableItem tc = new TableItem(lol, SWT.NONE);
-            tc.setText(0, pass.getClass().getName());
-            tc.setText(1, "String payload assertion");
+            tc.setText(0, pass.getName());
+            tc.setText(1, pass.getClass().getName());
         }
 
         return c;
