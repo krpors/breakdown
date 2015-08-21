@@ -245,10 +245,12 @@ public class ProjectTree {
 
             Object d = getFirstSelection();
             if (JMS_CONN_TREEITEM.equals(d)) {
-                createMenuItemsJMSConnectionsWrapper(menu);
+                createMenuItemsJMSConnectionsWrapper();
                 return;
             } else if (d instanceof JMSConnection) {
-                createMenuItemsJMSConnections(menu);
+                createMenuItemsJMSConnections();
+            } else if (d instanceof TestCase) {
+                createMenuItemsTestCase();
             }
         }
 
@@ -256,10 +258,8 @@ public class ProjectTree {
 
         /**
          * Create menu items for the 'JMS Connections' tree item.
-         *
-         * @param menu The parent menu.
          */
-        private void createMenuItemsJMSConnectionsWrapper(final Menu menu) {
+        private void createMenuItemsJMSConnectionsWrapper() {
             MenuItem itemAdd = UITools.createMenuItem(menu, "Add JMS connection", ImageCache.getImage(ImageCache.Icon.Create));
             itemAdd.addSelectionListener(new SelectionAdapter() {
                 @Override
@@ -277,11 +277,9 @@ public class ProjectTree {
 
         /**
          * Creates the mnenu item for JMS connections.
-         *
-         * @param menu The parent menu.
          */
-        private void createMenuItemsJMSConnections(final Menu menu) {
-            MenuItem itemDelete = UITools.createMenuItem(menu, "Delete connection", ImageCache.getImage(ImageCache.Icon.Delete));
+        private void createMenuItemsJMSConnections() {
+            MenuItem itemDelete = UITools.createMenuItem(menu, "Delete JMS connection", ImageCache.getImage(ImageCache.Icon.Delete));
             itemDelete.addSelectionListener(new SelectionAdapter() {
                 @Override
                 public void widgetSelected(SelectionEvent e) {
@@ -292,7 +290,25 @@ public class ProjectTree {
                     getProject().getJmsConnections().remove(conn);
                 }
             });
+        }
 
+        private void createMenuItemsTestCase() {
+            MenuItem itemDelete = UITools.createMenuItem(menu, "Execute", ImageCache.getImage(ImageCache.Icon.Play));
+            itemDelete.addSelectionListener(new SelectionAdapter() {
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    TreeItem item = tree.getSelection()[0];
+                    TestCase tc = (TestCase) item.getData();
+                    try {
+                        tc.execute();
+
+                    } catch (AssertionException e1) {
+                        e1.printStackTrace();
+                    } catch (BreakdownException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            });
         }
     }
 }

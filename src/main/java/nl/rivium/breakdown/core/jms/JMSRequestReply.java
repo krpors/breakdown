@@ -179,7 +179,7 @@ public class JMSRequestReply extends TestStep<JMSSenderInput> implements Seriali
             LOG.debug("Message sent to request destination '{}'", requestDestination);
 
             // Receive message, using timeout
-            LOG.debug("Waiting to receive message on reply destination '{}'...", replyDestination);
+            LOG.debug("Waiting to receive message on reply destination '{}' with timeout {} ms...", replyDestination);
             Message m = consumer.receive(getTimeout());
             if (m == null) {
                 throw new AssertionException(this, "JMS message", "No JMS message to assert on", "No message received");

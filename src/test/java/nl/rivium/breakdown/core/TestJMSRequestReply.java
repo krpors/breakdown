@@ -31,6 +31,7 @@ public class TestJMSRequestReply {
         TestCase tc = new TestCase("Blah", ts);
         JMSRequestReply rr = new JMSRequestReply("RR", tc);
         rr.setJmsConnectionName("tibems");
+        rr.setTimeout(5000);
         rr.setRequestDestination(new JMSDestination(DestinationType.QUEUE, "sample.queue"));
         rr.setReplyDestination(new JMSDestination(DestinationType.TOPIC, "sample.topic"));
         JMSSenderInput input = new JMSSenderInput();
@@ -42,7 +43,9 @@ public class TestJMSRequestReply {
 
         try {
             tc.execute();
-        } catch (AssertionException | BreakdownException e) {
+        } catch (AssertionException e) {
+
+        } catch (BreakdownException e) {
             e.printStackTrace();
         }
     }

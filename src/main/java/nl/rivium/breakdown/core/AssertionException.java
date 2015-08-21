@@ -21,6 +21,15 @@ public class AssertionException extends Exception {
         this.actual = actual;
     }
 
+    /**
+     * Returns the teststep which failed.
+     *
+     * @return The failed teststep.
+     */
+    public TestStep getTestStep() {
+        return source;
+    }
+
     public Object getExpected() {
         return expected;
     }
