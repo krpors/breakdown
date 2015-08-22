@@ -1,13 +1,15 @@
 package nl.rivium.breakdown.ui.tab;
 
-import nl.rivium.breakdown.core.*;
+import nl.rivium.breakdown.core.BreakdownException;
+import nl.rivium.breakdown.core.Result;
+import nl.rivium.breakdown.core.ResultListener;
+import nl.rivium.breakdown.core.TestCase;
 import nl.rivium.breakdown.ui.BreakdownUI;
 import nl.rivium.breakdown.ui.ImageCache;
 import nl.rivium.breakdown.ui.UITools;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -60,12 +62,24 @@ public class TestCaseTab extends AbstractTab<TestCase> implements FocusListener,
         b.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                try {
-                    table.removeAll();
-                    getEntity().execute();
-                } catch (BreakdownException e1) {
-                    e1.printStackTrace();
-                }
+                Display.getCurrent().asyncExec(new Runnable() {
+                    @Override
+                    public void run() {
+                        table.removeAll();
+                    }
+                });
+
+                Thread t = new Thread() {
+                    @Override
+                    public void run() {
+                        try {
+                            getEntity().execute();
+                        } catch (BreakdownException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+                };
+                t.start();
             }
         });
 
@@ -121,15 +135,25 @@ public class TestCaseTab extends AbstractTab<TestCase> implements FocusListener,
     }
 
     @Override
-    public void resultAcquired(Result result) {
+    public void resultAcquired(final Result result) {
         System.out.println("Test step " + result.getTestStep() + " resulted in " + result);
-        TableItem item = new TableItem(table, SWT.NONE);
-        item.setText(0, result.getTestStep().getName());
-        item.setText(1, result.getMessage());
-        if (result.isSuccess()) {
-            item.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_GREEN));
-        } else {
-            item.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-        }
+
+        Display.getDefault().asyncExec(new Runnable() {
+            @Override
+            public void run() {
+                if (table == null || table.isDisposed()) {
+                    return;
+                }
+
+                TableItem item = new TableItem(table, SWT.NONE);
+                item.setText(0, result.getTestStep().getName());
+                item.setText(1, result.getMessage());
+                if (result.isSuccess()) {
+                    item.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_GREEN));
+                } else {
+                    item.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+                }
+            }
+        });
     }
 }

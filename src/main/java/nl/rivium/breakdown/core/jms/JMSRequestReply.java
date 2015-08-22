@@ -156,6 +156,12 @@ public class JMSRequestReply extends TestStep<JMSSenderInput> implements Seriali
      */
     @Override
     public void execute() throws BreakdownException {
+        if (isInterrupted()) {
+            LOG.info("Test step interrupted, skipping...");
+            fireListeners(new Result(this, false, "Test step interrupted"));
+            return;
+        }
+
         // TODO: in EMS, using this connection works for queues and topics both. Why? What!
         try {
             Connection connection = getParent().getQueueConnection();

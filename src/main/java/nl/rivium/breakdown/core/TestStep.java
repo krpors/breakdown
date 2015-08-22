@@ -13,6 +13,11 @@ public abstract class TestStep<I extends Input> extends GenericEntity<TestCase, 
      */
     private I input;
 
+    /**
+     * Boolean indicating we should interrupt this step.
+     */
+    @XmlTransient
+    private boolean interrupted;
 
     @XmlTransient
     private List<ResultListener> listenerList = new ArrayList<>();
@@ -42,7 +47,7 @@ public abstract class TestStep<I extends Input> extends GenericEntity<TestCase, 
         return super.getParent();
     }
 
-    /**
+    /*
      * A test step does not have children elements, so always return null.
      *
      * @return null, because a test step cannot have and will not have any children elements.
@@ -72,6 +77,14 @@ public abstract class TestStep<I extends Input> extends GenericEntity<TestCase, 
         for (ResultListener l : listenerList) {
             l.resultAcquired(result);
         }
+    }
+
+    public void setInterrupted(boolean interrupted) {
+        this.interrupted = interrupted;
+    }
+
+    public boolean isInterrupted() {
+        return this.interrupted;
     }
 
     /**
